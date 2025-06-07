@@ -9,10 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
     @RequestMapping("/")
     public String home() {
-        return "layout/layoutmaster";
+        return "homepage";
     }
     @GetMapping("/signin")
     public String showSigninPage() {
-        return "layout/signin-signup";
+        return "signin-signup";
+    }
+    @GetMapping("/activity")
+    public String showActivityPage() {
+        return "activitylist";
     }
 }
