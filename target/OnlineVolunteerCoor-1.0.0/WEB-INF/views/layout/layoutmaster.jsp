@@ -15,21 +15,14 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Kind Heart Charity - Free Bootstrap 5.2.2 CSS Template</title>
+    <title>Online Volunteer Coor</title>
 
     <!-- CSS FILES -->
     <link href="${pageContext.request.contextPath}/src/css/bootstrap.min.css" rel="stylesheet">
 
     <link href="${pageContext.request.contextPath}/src/css/bootstrap-icons.css" rel="stylesheet">
 
-    <link href="${pageContext.request.contextPath}/src/css/templatemo-kind-heart-charity.css" rel="stylesheet">
-    <!--
-
-TemplateMo 581 Kind Heart Charity
-
-https://templatemo.com/tm-581-kind-heart-charity
-
--->
+    <link href="${pageContext.request.contextPath}/src/css/template-homepage.css" rel="stylesheet">
 
 </head>
 
@@ -42,7 +35,7 @@ https://templatemo.com/tm-581-kind-heart-charity
                 <div class="col-lg-8 col-12 d-flex flex-wrap">
                     <p class="d-flex me-4 mb-0">
                         <i class="bi-geo-alt me-2"></i>
-                        Akershusstranda 20, 0150 Oslo, Norway
+                        141 - 145 Dien Bien Phu, Ward 15, Binh Thanh District, HCM City
                     </p>
 
                     <p class="d-flex mb-0">
@@ -200,7 +193,6 @@ https://templatemo.com/tm-581-kind-heart-charity
             </div>
         </section>
 
-
         <section class="section-padding">
             <div class="container">
                 <div class="row">
@@ -266,7 +258,7 @@ https://templatemo.com/tm-581-kind-heart-charity
                         <div class="custom-text-box">
                             <h2 class="mb-2">Our Story</h2>
 
-                            <h5 class="mb-3">Kind Heart Charity, Non-Profit Organization</h5>
+                            <h5 class="mb-3">Online Volunteer Coor, Non-Profit Organization</h5>
 
                             <p class="mb-0">This is a Bootstrap 5.2.2 CSS template for charity organization websites.
                                 You can feel free to use it. Please tell your friends about TemplateMo website. Thank
@@ -1009,22 +1001,22 @@ https://templatemo.com/tm-581-kind-heart-charity
                     <p class="text-white d-flex mb-2">
                         <i class="bi-telephone me-2"></i>
 
-                        <a href="tel: 305-240-9671" class="site-footer-link">
-                            305-240-9671
+                        <a href="tel: +84 999 999 999" class="site-footer-link">
+                            +84 999 999 999
                         </a>
                     </p>
 
                     <p class="text-white d-flex">
                         <i class="bi-envelope me-2"></i>
 
-                        <a href="mailto:info@yourgmail.com" class="site-footer-link">
-                            donate@charity.org
+                        <a href="mailto:info@uef.edu.vn" class="site-footer-link">
+                            info@uef.edu.vn
                         </a>
                     </p>
 
                     <p class="text-white d-flex mt-3">
                         <i class="bi-geo-alt me-2"></i>
-                        Akershusstranda 20, 0150 Oslo, Norway
+                        141 - 145 Dien Bien Phu, Ward 15, Binh Thanh District, HCM City
                     </p>
 
                     <a href="#" class="custom-btn btn mt-3">Get Direction</a>
@@ -1037,9 +1029,7 @@ https://templatemo.com/tm-581-kind-heart-charity
                 <div class="row">
 
                     <div class="col-lg-6 col-md-7 col-12">
-                        <p class="copyright-text mb-0">Copyright © 2036 <a href="#">Kind Heart</a> Charity Org.
-                            Design: <a href="https://templatemo.com" target="_blank">TemplateMo</a><br>Distribution:
-                            <a href="https://themewagon.com">ThemeWagon</a>
+                        <p class="copyright-text mb-0">Copyright © 2025 <a href="#">Online Volunteer Coor </a> Org.
                         </p>
                     </div>
 
@@ -1062,7 +1052,7 @@ https://templatemo.com/tm-581-kind-heart-charity
                             </li>
 
                             <li class="social-icon-item">
-                                <a href="https://youtube.com/templatemo" class="social-icon-link bi-youtube"></a>
+                                <a href="https://youtube.com/" class="social-icon-link bi-youtube"></a>
                             </li>
                         </ul>
                     </div>
