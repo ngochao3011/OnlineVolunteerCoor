@@ -1,3 +1,40 @@
+
+@font-face {
+    font-family: 'Metropolis';
+    src: url('../fonts/Metropolis/Metropolis-Regular.woff2') format('woff2'),
+        url('../fonts/Metropolis/Metropolis-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Metropolis';
+    src: url('../fonts/Metropolis/Metropolis-Light.woff2') format('woff2'),
+        url('../fonts/Metropolis/Metropolis-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Metropolis';
+    src: url('../fonts/Metropolis/Metropolis-SemiBold.woff2') format('woff2'),
+        url('../fonts/Metropolis/Metropolis-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Metropolis';
+    src: url('../fonts/Metropolis/Metropolis-Bold.woff2') format('woff2'),
+        url('../fonts/Metropolis/Metropolis-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     --primary-color: #0a9ab8;
     --secondary-color: #3DD2D6;
@@ -5,6 +42,8 @@
     --white: #ffffff;
     --gray: #efefef;
     --gray-2: #757575;
+    
+    --body-font-family: 'Metropolis', sans-serif;
 
     --facebook-color: #4267B2;
     --google-color: #DB4437;
@@ -13,7 +52,7 @@
 }
 
 * {
-    font-family: 'Poppins', sans-serif;
+    font-family: var(--body-font-family);
     margin: 0;
     padding: 0;
     box-sizing: border-box;

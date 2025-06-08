@@ -60,7 +60,7 @@
                     </li>
 
                     <li class="nav-item ms-3">
-                        <a class="nav-link custom-btn custom-border-btn btn" href="${pageContext.request.contextPath}/signin">Sign in</a>
+                        <a class="nav-link custom-btn custom-border-btn btn" href="${pageContext.request.contextPath}/sign-in">Sign in</a>
                     </li>
                 </ul>
             </div>

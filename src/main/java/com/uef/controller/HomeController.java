@@ -11,10 +11,7 @@ public class HomeController {
     public String home() {
         return "homepage";
     }
-    @GetMapping("/signin")
-    public String showSigninPage() {
-        return "signin-signup";
-    }
+    
     @GetMapping("/activity")
     public String showActivityPage() {
         return "activitylist";

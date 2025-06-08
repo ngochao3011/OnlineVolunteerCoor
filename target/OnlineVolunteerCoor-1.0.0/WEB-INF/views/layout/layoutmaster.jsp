@@ -28,11 +28,11 @@
 
 <body>
 
-    <jsp:include page="header.jsp" />
+    <jsp:include page="/WEB-INF/views/layout/header.jsp" />
 
     <jsp:include page="${body}" />
 
-    <%@ include file="footer.jsp" %>
+    <%@ include file="/WEB-INF/views/layout/footer.jsp" %>
 
 </body>
 

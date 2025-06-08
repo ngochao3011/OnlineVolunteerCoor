@@ -1,1 +1,5 @@
+com\uef\model\TaiKhoanDAOImpl.class
+com\uef\controller\SigninSignupController.class
+com\uef\model\TaiKhoanDAO.class
 com\uef\controller\HomeController.class
+com\uef\model\TaiKhoan.class
