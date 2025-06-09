@@ -102,3 +102,4 @@
 <script src="${pageContext.request.contextPath}/src/js/click-scroll.js"></script>
 <script src="${pageContext.request.contextPath}/src/js/counter.js"></script>
 <script src="${pageContext.request.contextPath}/src/js/custom.js"></script>
+<script src="${pageContext.request.contextPath}/src/js/page-custom.js"></script>

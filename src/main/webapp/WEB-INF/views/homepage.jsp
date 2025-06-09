@@ -23,6 +23,8 @@
     <link href="${pageContext.request.contextPath}/src/css/bootstrap-icons.css" rel="stylesheet">
 
     <link href="${pageContext.request.contextPath}/src/css/template-homepage.css" rel="stylesheet">
+    
+    <link href="${pageContext.request.contextPath}/src/css/template-navbar.css" rel="stylesheet">
 
 </head>
 
@@ -873,7 +875,7 @@
     </main>
 
     <%@ include file="layout/footer.jsp" %>
-
+    
 </body>
 
 </html>

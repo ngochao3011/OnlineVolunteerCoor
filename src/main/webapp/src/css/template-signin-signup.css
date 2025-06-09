@@ -100,7 +100,7 @@ body {
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     transform: scale(0);
     transition: .5s ease-in-out;
-    transition-delay: 1s;
+    transition-delay: 0.5s;
 }
 
 .input-group {

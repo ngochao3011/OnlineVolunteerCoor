@@ -33,9 +33,16 @@ public class SigninSignupController {
     }
     
     @PostMapping("/sign-up")
-    public String processRegister(@ModelAttribute TaiKhoan taiKhoan, RedirectAttributes redirect) {
+    public String processRegister(@ModelAttribute TaiKhoan taiKhoan, 
+                                @RequestParam String xacNhanMatKhau, 
+                                RedirectAttributes redirect) {
         if (taiKhoanDAO.findByEmail(taiKhoan.getEmail()) != null) {
             redirect.addFlashAttribute("error", "Email đã tồn tại.");
+            return "redirect:/sign-up";
+        }
+        
+        if (!taiKhoan.getMatKhau().equals(xacNhanMatKhau)){
+            redirect.addFlashAttribute("error", "Mật khẩu không khớp. Vui lòng nhập lại!");
             return "redirect:/sign-up";
         }
 

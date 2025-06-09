@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -19,6 +20,11 @@
                     <div class="form-wrapper align-items-center">
                         <div class="form sign-up">
                             <form action="${pageContext.request.contextPath}/sign-up" method="post">
+                                <c:if test="${not empty error}">
+                                    <div class="alert alert-danger" style="color: red;">
+                                        ${error}
+                                    </div>
+                                </c:if>
                                 <div class="input-group">
                                         <i class='bx bx-mail-send'></i>
                                         <input type="email" name="email" placeholder="Email" required>
@@ -37,7 +43,7 @@
                                 </div>
                                 <div class="input-group">
                                         <i class='bx bxs-lock-alt'></i>
-                                        <input type="password" placeholder="Confirm password" required>
+                                        <input type="password" name="xacNhanMatKhau" placeholder="Confirm password" required>
                                 </div>
                                 <button type="submit">
                                         Sign up
@@ -60,13 +66,18 @@
                     <div class="form-wrapper align-items-center">
                         <div class="form sign-in">
                             <form action="${pageContext.request.contextPath}/sign-in" method="post">
+                                <c:if test="${not empty error}">
+                                    <div class="alert alert-danger" style="color: red;">
+                                        ${error}
+                                    </div>
+                                </c:if>
                                 <div class="input-group">
                                         <i class='bx bxs-user'></i>
-                                        <input type="text" name="email" placeholder="Email">
+                                        <input type="text" name="email" placeholder="Email" required>
                                 </div>
                                 <div class="input-group">
                                         <i class='bx bxs-lock-alt'></i>
-                                        <input type="password" name="matKhau" placeholder="Password">
+                                        <input type="password" name="matKhau" placeholder="Password" required>
                                 </div>
                                 <button>
                                         Sign in
