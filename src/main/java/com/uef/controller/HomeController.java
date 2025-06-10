@@ -15,7 +15,7 @@ public class HomeController {
     
     @GetMapping("/activity")
     public String showActivityPage() {
-        return "activitylist";
+        return "redirect:/sukien/list";
     }
     
     @GetMapping("/logout")
