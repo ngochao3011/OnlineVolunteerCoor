@@ -12,6 +12,7 @@
 
     <context:component-scan base-package="com.uef.controller" />
     <context:component-scan base-package="com.uef.model" />
+    <context:component-scan base-package="com.uef.service" />
 
     <mvc:annotation-driven/>
     <mvc:resources mapping="/src/**" location="/src/"/>
