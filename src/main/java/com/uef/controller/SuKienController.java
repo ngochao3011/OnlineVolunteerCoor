@@ -15,49 +15,49 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-@RequestMapping("/sukien")
+@RequestMapping("/activity")
 public class SuKienController {
 
     @Autowired
     private SuKienService suKienService;
 
-    @GetMapping("/list")
+    @GetMapping("")
     public String listSuKien(Model model) {
         List<SuKien> danhSach = suKienService.layDanhSachSuKien();
         model.addAttribute("danhSachSuKien", danhSach);
-        return "sukien/list";
+        return "activitylist";
     }
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
         model.addAttribute("suKien", new SuKien());
-        return "sukien/add";
+        return "activity/add";
     }
 
     @PostMapping("/add")
     public String addSuKien(@ModelAttribute SuKien suKien) {
         suKien.setThoiGianBatDau(LocalDateTime.now()); // Default start time
         suKienService.themSuKien(suKien);
-        return "redirect:/sukien/list";
+        return "redirect:/activity";
     }
 
     @GetMapping("/edit/{maSuKien}")
     public String showEditForm(@PathVariable int maSuKien, Model model) {
         SuKien suKien = suKienService.laySuKienTheoMa(maSuKien);
         model.addAttribute("suKien", suKien);
-        return "sukien/edit";
+        return "activity/edit";
     }
 
     @PostMapping("/edit")
     public String updateSuKien(@ModelAttribute SuKien suKien) {
         suKienService.capNhatSuKien(suKien);
-        return "redirect:/sukien/list";
+        return "redirect:/activity";
     }
 
     @GetMapping("/delete/{maSuKien}")
     public String deleteSuKien(@PathVariable int maSuKien) {
         suKienService.xoaSuKien(maSuKien);
-        return "redirect:/sukien/list";
+        return "redirect:/activity";
     }
 
     @PostMapping("/update")
@@ -65,6 +65,6 @@ public class SuKienController {
         SuKien suKien = suKienService.laySuKienTheoMa(maSuKien);
         suKien.setTrangThai(trangThai);
         suKienService.capNhatSuKien(suKien);
-        return "redirect:/sukien/list";
+        return "redirect:/activity";
     }
 }

@@ -13,11 +13,6 @@ public class HomeController {
         return "homepage";
     }
     
-    @GetMapping("/activity")
-    public String showActivityPage() {
-        return "redirect:/sukien/list";
-    }
-    
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

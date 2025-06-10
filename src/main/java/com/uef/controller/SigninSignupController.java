@@ -5,7 +5,6 @@
 package com.uef.controller;
 
 import com.uef.model.TaiKhoan;
-import com.uef.model.TaiKhoanDAO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.uef.service.TaiKhoanService;
 
 /**
  *
@@ -24,7 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class SigninSignupController {
     @Autowired
-    private TaiKhoanDAO taiKhoanDAO;
+    private TaiKhoanService taiKhoanService;
         
     @GetMapping("/sign-up")
     public String showRegisterPage(Model model) {
@@ -36,7 +36,7 @@ public class SigninSignupController {
     public String processRegister(@ModelAttribute TaiKhoan taiKhoan, 
                                 @RequestParam String xacNhanMatKhau, 
                                 RedirectAttributes redirect) {
-        if (taiKhoanDAO.findByEmail(taiKhoan.getEmail()) != null) {
+        if (taiKhoanService.getEmail(taiKhoan.getEmail()) != null) {
             redirect.addFlashAttribute("error", "Email đã tồn tại.");
             return "redirect:/sign-up";
         }
@@ -48,8 +48,7 @@ public class SigninSignupController {
 
         taiKhoan.setMatKhau(new BCryptPasswordEncoder().encode(taiKhoan.getMatKhau()));
         taiKhoan.setQuyenHan("Tình nguyện viên");
-        taiKhoanDAO.save(taiKhoan);
-        redirect.addFlashAttribute("success", "Đăng ký thành công. Mời đăng nhập.");
+        taiKhoanService.dangKyTaiKhoan(taiKhoan);
         return "redirect:/sign-in";
     }
     
@@ -63,7 +62,7 @@ public class SigninSignupController {
                                @RequestParam String matKhau,
                                HttpSession session,
                                RedirectAttributes redirect) {
-        TaiKhoan taiKhoan = taiKhoanDAO.findByEmail(email);
+        TaiKhoan taiKhoan = taiKhoanService.getEmail(email);
         if (taiKhoan != null && new BCryptPasswordEncoder().matches(matKhau, taiKhoan.getMatKhau())) {
             session.setAttribute("user", taiKhoan);
             return "redirect:/";

@@ -1,5 +1,9 @@
-com\uef\model\TaiKhoanDAOImpl.class
-com\uef\controller\SigninSignupController.class
-com\uef\model\TaiKhoanDAO.class
-com\uef\controller\HomeController.class
+com\uef\service\TaiKhoanService.class
 com\uef\model\TaiKhoan.class
+com\uef\service\SuKienService.class
+com\uef\controller\SigninSignupController.class
+com\uef\repository\TaiKhoanDAO.class
+com\uef\repository\TaiKhoanRepo.class
+com\uef\controller\SuKienController.class
+com\uef\model\SuKien.class
+com\uef\controller\HomeController.class
