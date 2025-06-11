@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.text.SimpleDateFormat;
 
 @Repository
 public class VolunteerDao {
@@ -24,36 +23,6 @@ public class VolunteerDao {
     public Volunteer getById(int id) {
         String sql = "SELECT * FROM [Tình Nguyện Viên] WHERE maTNV = ?";
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Volunteer.class), id);
-    }
-
-    // Thêm mới
-    public boolean save(Volunteer volunteer) {
-        String sql = "INSERT INTO [Tình Nguyện Viên] (maTNV, hoTen, sdtDienThoai, diaChi, trangThai, ngayDangKy) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String ngayDangKy = volunteer.getNgayDangKy() != null ? sdf.format(volunteer.getNgayDangKy()) : null;
-        return jdbcTemplate.update(sql,
-                volunteer.getMaTNV(),
-                volunteer.getHoTen(),
-                volunteer.getSdtDienThoai(),
-                volunteer.getDiaChi(),
-                volunteer.getTrangThai(),
-                ngayDangKy) > 0;
-    }
-
-    // Cập nhật
-    public boolean update(Volunteer v) {
-        String sql = "UPDATE [Tình Nguyện Viên] SET hoTen=?, sdtDienThoai=?, diaChi=?, trangThai=?, ngayDangKy=? "
-                + "WHERE maTNV=?";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String ngayDangKy = v.getNgayDangKy() != null ? sdf.format(v.getNgayDangKy()) : null;
-        return jdbcTemplate.update(sql,
-                v.getHoTen(),
-                v.getSdtDienThoai(),
-                v.getDiaChi(),
-                v.getTrangThai(),
-                ngayDangKy,
-                v.getMaTNV()) > 0;
     }
 
     // Xóa
