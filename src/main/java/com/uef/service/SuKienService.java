@@ -8,13 +8,16 @@ import com.uef.model.SuKien;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.sql.DataSource;
+import org.slf4j.*;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SuKienService {
+
+    private static final Logger logger = LoggerFactory.getLogger(SuKienService.class);
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -22,60 +25,109 @@ public class SuKienService {
     @Autowired
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        logger.debug("DataSource đã được thiết lập: {}", dataSource);
     }
 
     // Thêm sự kiện mới
+    @Transactional
     public void themSuKien(SuKien suKien) {
-        String sql = "INSERT INTO [Sự Kiện] (tenSuKien, moTa, thoiGianBatDau, thoiGianKetThuc, diaDiem, trangThai) VALUES (?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, suKien.getTenSuKien(), suKien.getMoTa(), suKien.getThoiGianBatDau(),
-                suKien.getThoiGianKetThuc(), suKien.getDiaDiem(), suKien.getTrangThai());
+        try {
+            // Kiểm tra dữ liệu đầu vào
+            if (suKien.getTenSuKien() == null || suKien.getTenSuKien().isEmpty()) {
+                throw new IllegalArgumentException("Tên sự kiện không được để trống");
+            }
+            if (suKien.getThoiGianBatDau() == null) {
+                suKien.setThoiGianBatDau(LocalDateTime.now());
+            }
+            if (suKien.getTrangThai() == null) {
+                suKien.setTrangThai("Chưa bắt đầu"); // Giá trị mặc định
+            }
+
+            String sql = "INSERT INTO [Sự Kiện] (tenSuKien, moTa, thoiGianBatDau, thoiGianKetThuc, diaDiem, trangThai) VALUES (?, ?, ?, ?, ?, ?)";
+            int rowsAffected = jdbcTemplate.update(sql,
+                    suKien.getTenSuKien(),
+                    suKien.getMoTa(),
+                    suKien.getThoiGianBatDau(),
+                    suKien.getThoiGianKetThuc(),
+                    suKien.getDiaDiem(),
+                    suKien.getTrangThai()
+            );
+            logger.info("Thêm sự kiện thành công, số hàng ảnh hưởng: {}", rowsAffected);
+        } catch (Exception e) {
+            logger.error("Lỗi khi thêm sự kiện: {}", e.getMessage(), e);
+            throw new RuntimeException("Không thể thêm sự kiện vào CSDL", e);
+        }
     }
 
     // Cập nhật sự kiện
+    @Transactional
     public void capNhatSuKien(SuKien suKien) {
-        String sql = "UPDATE [Sự Kiện] SET tenSuKien = ?, moTa = ?, thoiGianBatDau = ?, thoiGianKetThuc = ?, diaDiem = ?, trangThai = ? WHERE maSuKien = ?";
-        jdbcTemplate.update(sql, suKien.getTenSuKien(), suKien.getMoTa(), suKien.getThoiGianBatDau(),
-                suKien.getThoiGianKetThuc(), suKien.getDiaDiem(), suKien.getTrangThai(), suKien.getMaSuKien());
+        try {
+            String sql = "UPDATE [Sự Kiện] SET tenSuKien = ?, moTa = ?, thoiGianBatDau = ?, thoiGianKetThuc = ?, diaDiem = ?, trangThai = ? WHERE maSuKien = ?";
+            int rowsAffected = jdbcTemplate.update(sql,
+                    suKien.getTenSuKien(),
+                    suKien.getMoTa(),
+                    suKien.getThoiGianBatDau(),
+                    suKien.getThoiGianKetThuc(),
+                    suKien.getDiaDiem(),
+                    suKien.getTrangThai(),
+                    suKien.getMaSuKien()
+            );
+            logger.info("Cập nhật sự kiện thành công, số hàng ảnh hưởng: {}", rowsAffected);
+        } catch (Exception e) {
+            logger.error("Lỗi khi cập nhật sự kiện: {}", e.getMessage(), e);
+            throw new RuntimeException("Không thể cập nhật sự kiện", e);
+        }
     }
 
     // Xóa sự kiện
+    @Transactional
     public void xoaSuKien(int maSuKien) {
-        String sql = "DELETE FROM [Sự Kiện] WHERE maSuKien = ?";
-        jdbcTemplate.update(sql, maSuKien);
+        try {
+            String sql = "DELETE FROM [Sự Kiện] WHERE maSuKien = ?";
+            int rowsAffected = jdbcTemplate.update(sql, maSuKien);
+            logger.info("Xóa sự kiện thành công, số hàng ảnh hưởng: {}", rowsAffected);
+        } catch (Exception e) {
+            logger.error("Lỗi khi xóa sự kiện: {}", e.getMessage(), e);
+            throw new RuntimeException("Không thể xóa sự kiện", e);
+        }
     }
 
     // Lấy danh sách tất cả sự kiện
     public List<SuKien> layDanhSachSuKien() {
-        System.out.println("Current java.library.path: " + System.getProperty("java.library.path"));
-        String sql = "SELECT * FROM [Sự Kiện]";
         try {
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new SuKien(
-                rs.getInt("maSuKien"),
-                rs.getString("tenSuKien"),
-                rs.getString("moTa"),
-                rs.getObject("thoiGianBatDau", LocalDateTime.class),
-                rs.getObject("thoiGianKetThuc", LocalDateTime.class),
-                rs.getString("diaDiem"),
-                rs.getString("trangThai")
-        ));
-    } catch (Exception e) {
-        e.printStackTrace();
-        System.out.println("JDBC error: " + e.getMessage());
-        throw e;
-    }
+            String sql = "SELECT * FROM [Sự Kiện]";
+            return jdbcTemplate.query(sql, (rs, rowNum) -> new SuKien(
+                    rs.getInt("maSuKien"),
+                    rs.getString("tenSuKien"),
+                    rs.getString("moTa"),
+                    rs.getObject("thoiGianBatDau", LocalDateTime.class),
+                    rs.getObject("thoiGianKetThuc", LocalDateTime.class),
+                    rs.getString("diaDiem"),
+                    rs.getString("trangThai")
+            ));
+        } catch (Exception e) {
+            logger.error("Lỗi khi lấy danh sách sự kiện: {}", e.getMessage(), e);
+            throw new RuntimeException("Không thể lấy danh sách sự kiện", e);
+        }
     }
 
     // Lấy sự kiện theo mã
     public SuKien laySuKienTheoMa(int maSuKien) {
-        String sql = "SELECT * FROM [Sự Kiện] WHERE maSuKien = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{maSuKien}, (rs, rowNum) -> new SuKien(
-                rs.getInt("maSuKien"),
-                rs.getString("tenSuKien"),
-                rs.getString("moTa"),
-                rs.getObject("thoiGianBatDau", LocalDateTime.class),
-                rs.getObject("thoiGianKetThuc", LocalDateTime.class),
-                rs.getString("diaDiem"),
-                rs.getString("trangThai")
-        ));
+        try {
+            String sql = "SELECT * FROM [Sự Kiện] WHERE maSuKien = ?";
+            return jdbcTemplate.queryForObject(sql, new Object[]{maSuKien}, (rs, rowNum) -> new SuKien(
+                    rs.getInt("maSuKien"),
+                    rs.getString("tenSuKien"),
+                    rs.getString("moTa"),
+                    rs.getObject("thoiGianBatDau", LocalDateTime.class),
+                    rs.getObject("thoiGianKetThuc", LocalDateTime.class),
+                    rs.getString("diaDiem"),
+                    rs.getString("trangThai")
+            ));
+        } catch (Exception e) {
+            logger.error("Lỗi khi lấy sự kiện theo mã {}: {}", maSuKien, e.getMessage(), e);
+            throw new RuntimeException("Không thể lấy sự kiện", e);
+        }
     }
 }
