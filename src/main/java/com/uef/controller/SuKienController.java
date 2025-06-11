@@ -32,7 +32,7 @@ public class SuKienController {
         } catch (Exception e) {
             logger.error("Lỗi khi lấy danh sách sự kiện: {}", e.getMessage(), e);
             model.addAttribute("error", "Không thể tải danh sách sự kiện");
-            return "activity/list";
+            return "activitylist";
         }
     }
 
