@@ -62,14 +62,11 @@
 
             <!-- Nút Thêm mới và Xuất CSV -->
             <div class="mb-3">
-                <a href="${pageContext.request.contextPath}/volunteer/add" class="btn btn-primary">
-                    <i class="fa fa-plus"></i> Thêm mới
-                </a>
+
                 <a href="${pageContext.request.contextPath}/volunteer/export" class="btn btn-success ms-2">
                     <i class="fa fa-file-csv"></i> Xuất CSV
                 </a>
             </div>
-
             <!-- Form tìm kiếm -->
             <form id="searchForm" action="${pageContext.request.contextPath}/volunteer/search" method="get" onsubmit="return validateSearch();">
                 <div class="input-group mb-3">
@@ -78,7 +75,6 @@
                     <button type="submit" class="btn btn-primary">Tìm kiếm</button>
                 </div>
             </form>
-
             <script>
                 const keywordInput = document.getElementById('keyword');
                 const searchForm = document.getElementById('searchForm');
@@ -125,9 +121,6 @@
                                             </c:if>
                                         </td>
                                         <td>
-                                            <a href="${pageContext.request.contextPath}/volunteer/edit/${v.maTNV}" class="btn btn-sm btn-warning">
-                                                <i class="fa fa-pen"></i> Sửa
-                                            </a>
                                             <form action="${pageContext.request.contextPath}/volunteer/delete" method="post" style="display:inline;">
                                                 <input type="hidden" name="maTNV" value="${v.maTNV}"/>
                                                 <button type="submit" class="btn btn-sm btn-danger"
