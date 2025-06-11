@@ -48,46 +48,6 @@ public class VolunteerController {
         return "VolunteerForm";
     }
 
-    // Xử lý thêm mới tình nguyện viên
-    @PostMapping("/add")
-    public String addVolunteer(
-            @RequestParam("email") String email,
-            @RequestParam("matKhau") String matKhau,
-            @RequestParam("sdtDienThoai") String sdt,
-            @ModelAttribute("volunteer") Volunteer volunteer,
-            RedirectAttributes redirectAttributes) {
-
-        try {
-            // Tạo đối tượng tài khoản mới
-            TaiKhoan taiKhoan = new TaiKhoan();
-            taiKhoan.setEmail(email);
-            taiKhoan.setMatKhau(matKhau);
-            taiKhoan.setSdt(sdt);  // bạn lấy riêng ra đúng rồi
-            taiKhoan.setQuyenHan("Tình nguyện viên");
-
-            // Nếu chưa có ngày đăng ký thì set ngày hiện tại
-            if (volunteer.getNgayDangKy() == null) {
-                volunteer.setNgayDangKy(new Date());
-            }
-
-            // Gọi service xử lý
-            volunteerService.addVolunteer(taiKhoan, volunteer);
-
-            // Thành công
-            redirectAttributes.addFlashAttribute("successMessage", "Thêm tình nguyện viên thành công.");
-            return "redirect:/volunteer";
-
-        } catch (IllegalArgumentException e) {
-            // Xử lý lỗi nghiệp vụ (VD: email trùng)
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/volunteer/add";
-        } catch (Exception e) {
-            // Xử lý lỗi hệ thống (VD: NullPointerException, lỗi DB)
-            redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra. Vui lòng thử lại.");
-            return "redirect:/volunteer/add";
-        }
-    }
-
     // Hiển thị form sửa tình nguyện viên theo ID
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") int id, Model model) {

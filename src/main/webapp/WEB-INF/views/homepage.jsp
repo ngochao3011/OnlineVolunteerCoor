@@ -100,7 +100,7 @@
                 <div class="row">
 
                     <div class="col-lg-10 col-12 text-center mx-auto">
-                        <h2 class="mb-5">Welcome to Kind Heart Charity</h2>
+                        <h2 class="mb-5">Welcome to Online Volunteer Coor</h2>
                     </div>
 
                     <div class="col-lg-3 col-md-6 col-12 mb-4 mb-lg-0">
@@ -400,7 +400,6 @@
 
                     <div class="col-lg-6 col-12">
                         <h2 class="text-white mb-4">Volunteer</h2>
-                        <a href="${pageContext.request.contextPath}/volunteer" class="custom-btn btn mb-4">Volunteer Management</a>
                         <form class="custom-form volunteer-form mb-5 mb-lg-0" action="#" method="post" role="form">
                             <h3 class="mb-4">Become a volunteer today</h3>
 

@@ -29,4 +29,8 @@ public class TaiKhoanService {
     public TaiKhoan getEmail(String email){
         return taiKhoanRepo.findByEmail(email);
     }
+    
+    public Integer getID(String email){
+        return taiKhoanRepo.getID(email);
+    }
 }

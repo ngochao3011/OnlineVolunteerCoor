@@ -14,5 +14,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TaiKhoanRepo {
     TaiKhoan findByEmail(String email);
-    int save(TaiKhoan tk);
+    boolean save(TaiKhoan tk);
+    Integer getID(String email);
 }

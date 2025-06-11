@@ -6,7 +6,7 @@ public class Volunteer {
 
     private int maTNV;
     private String hoTen;
-    private String sdtDienThoai;
+    private String sdt;
     private String diaChi;
     private String trangThai;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -18,7 +18,7 @@ public class Volunteer {
     public Volunteer(int maTNV, String hoTen, String sdtDienThoai, String diaChi, String trangThai, Date ngayDangKy) {
         this.maTNV = maTNV;
         this.hoTen = hoTen;
-        this.sdtDienThoai = sdtDienThoai;
+        this.sdt = sdtDienThoai;
         this.diaChi = diaChi;
         this.trangThai = trangThai;
         this.ngayDangKy = ngayDangKy;
@@ -42,11 +42,11 @@ public class Volunteer {
     }
 
     public String getSdtDienThoai() {
-        return sdtDienThoai;
+        return sdt;
     }
 
     public void setSdtDienThoai(String sdtDienThoai) {
-        this.sdtDienThoai = sdtDienThoai;
+        this.sdt = sdtDienThoai;
     }
 
     public String getDiaChi() {

@@ -28,21 +28,27 @@
                     <li class="nav-item">
                         <a class="nav-link click-scroll" href="${pageContext.request.contextPath}/">Home</a>
                     </li>
+                    
+                    <c:if test="${empty sessionScope.user}">
+                        <li class="nav-item">
+                            <a class="nav-link click-scroll" href="#section_2">About</a>
+                        </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link click-scroll" href="#section_2">About</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link click-scroll" href="#section_3">Causes</a>
+                        </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link click-scroll" href="#section_3">Causes</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link click-scroll" href="#section_4">Volunteer</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link click-scroll" href="#section_4">Volunteer</a>
+                        </li>
+                    </c:if>
                     
                     <!-- Nếu đã đăng nhập -->
                     <c:if test="${not empty sessionScope.user}">
+                        <li class="nav-item">
+                            <a class="nav-link btn" href="${pageContext.request.contextPath}/volunteer">Volunteer</a>
+                        </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link btn" href="${pageContext.request.contextPath}/activity">Activity</a>
                         </li>

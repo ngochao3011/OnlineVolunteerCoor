@@ -1,8 +1,7 @@
 package com.uef.service;
 
-import com.uef.repository.TaiKhoanDAO;
 import com.uef.model.Volunteer;
-import com.uef.model.VolunteerDao;
+import com.uef.repository.VolunteerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,35 +10,38 @@ import java.util.List;
 @Service
 public class VolunteerService {
 
-    private final VolunteerDao volunteerDao;
-
     @Autowired
-    public VolunteerService(VolunteerDao volunteerDao, TaiKhoanDAO taiKhoanDao) {
-        this.volunteerDao = volunteerDao;
-    }
+    private VolunteerRepo volunteerRepo;
 
     public List<Volunteer> getAllVolunteers() {
-        return volunteerDao.getAll();
+        return volunteerRepo.getAll();
     }
 
     public Volunteer getVolunteerById(int id) {
-        return volunteerDao.getById(id);
+        return volunteerRepo.getById(id);
+    }
+    
+    public boolean addVolunteer(Volunteer v) {
+        return volunteerRepo.save(v); // Đăng ký thông tin tình nguyện viên
+    }
+    
+    public boolean updateVolunteer(Volunteer v) {
+        return volunteerRepo.update(v);
     }
 
-
     public boolean deleteVolunteer(int id) {
-        return volunteerDao.delete(id);
+        return volunteerRepo.delete(id);
     }
 
     public List<Volunteer> searchByName(String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
-            return volunteerDao.getAll();  // Trả về danh sách tất cả nếu từ khóa rỗng
+            return volunteerRepo.getAll();  // Trả về danh sách tất cả nếu từ khóa rỗng
         }
-        return volunteerDao.searchByName(keyword);
+        return volunteerRepo.searchByName(keyword);
     }
 
     public String exportVolunteersToCSV() {
-        List<Volunteer> volunteers = volunteerDao.getAll();
+        List<Volunteer> volunteers = volunteerRepo.getAll();
 
         StringBuilder sb = new StringBuilder();
         // Header
