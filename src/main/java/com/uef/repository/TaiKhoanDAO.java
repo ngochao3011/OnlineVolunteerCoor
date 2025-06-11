@@ -31,9 +31,30 @@ public class TaiKhoanDAO implements TaiKhoanRepo {
         }
     }
 
+@Override
+    public int save(TaiKhoan taiKhoan) {
+        try {
+            String sql = "INSERT INTO [Tài Khoản] (email, matKhau, hoTen, sdtDienThoai, quyenHan) VALUES (?, ?, ?, ?, ?)";
+            jdbcTemplate.update(sql,
+                    taiKhoan.getEmail(),
+                    taiKhoan.getMatKhau(),
+                    taiKhoan.getHoTen(),
+                    taiKhoan.getSdt(),
+                    taiKhoan.getQuyenHan());
+
+            // Lấy ID vừa tạo
+            return jdbcTemplate.queryForObject("SELECT IDENT_CURRENT('[Tài Khoản]')", Integer.class);
+
+        } catch (DuplicateKeyException e) {
+            // Ném lỗi có ý nghĩa
+            throw new IllegalArgumentException("Email đã tồn tại. Vui lòng sử dụng email khác.");
+        }
+    }
+
     @Override
-    public boolean save(TaiKhoan tk) {
-        String sql = "INSERT INTO [Tài Khoản] (email, matKhau, hoTen, sdtDienThoai, quyenHan) VALUES (?, ?, ?, ?, ?)";
-        return jdbcTemplate.update(sql, tk.getEmail(), tk.getMatKhau(), tk.getHoTen(), tk.getSdt(), tk.getQuyenHan()) > 0;
+    public boolean isEmailExists(String email) {
+        String sql = "SELECT COUNT(*) FROM [Tài Khoản] WHERE email = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, email);
+        return count != null && count > 0;
     }
 }
