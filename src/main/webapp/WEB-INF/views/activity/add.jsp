@@ -4,27 +4,73 @@
     Author     : HP
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
 <html>
     <head>
-        <title>Add Event</title>
+        <title>Thêm Hoạt Động Mới</title>
+        <!-- CSS FILES -->
+        <link href="${pageContext.request.contextPath}/src/css/bootstrap.min.css" rel="stylesheet">
+        <link href="${pageContext.request.contextPath}/src/css/bootstrap-icons.css" rel="stylesheet">
+        <link href="${pageContext.request.contextPath}/src/css/template-homepage.css" rel="stylesheet">
+        <link href="${pageContext.request.contextPath}/src/css/template-navbar.css" rel="stylesheet">
+        <link href="${pageContext.request.contextPath}/src/css/template-activitylist.css" rel="stylesheet">
+
     </head>
     <body>
-        <h2>Add New Event</h2>
-        <form action="${pageContext.request.contextPath}/activity/add" method="post">
-            <label>Event Name:</label><input type="text" name="tenSuKien" required><br>
-            <label>Description:</label><textarea name="moTa"></textarea><br>
-            <label>Start Time:</label><input type="datetime-local" name="thoiGianBatDau" required><br>
-            <label>End Time:</label><input type="datetime-local" name="thoiGianKetThuc" required><br>
-            <label>Location:</label><input type="text" name="diaDiem" required><br>
-            <label>Status:</label>
-            <select name="trangThai">
-                <option value="Sắp tới">Upcoming</option>
-                <option value="Đang diễn ra">In Progress</option>
-                <option value="Đã hoàn thành">Completed</option>
-            </select><br>
-            <input type="submit" value="Add">
-        </form>
-        <a href="${pageContext.request.contextPath}/activity">Back</a>
+        <jsp:include page="../layout/header.jsp" />
+        <jsp:include page="../layout/navbar.jsp" />
+
+        <section class="blog-section spad">
+            <div class="container">
+                <div class="section-title text-center">
+                    <h2>Thêm Hoạt Động Mới</h2>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <c:if test="${not empty error}">
+                            <div class="alert alert-danger" role="alert">
+                                ${error}
+                            </div>
+                        </c:if>
+                        <form action="${pageContext.request.contextPath}/activity/add" method="post" class="p-4 border rounded">
+                            <div class="mb-3">
+                                <label for="tenSuKien" class="form-label">Tên Hoạt Động:</label>
+                                <input type="text" class="form-control" id="tenSuKien" name="tenSuKien" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="moTa" class="form-label">Mô Tả:</label>
+                                <textarea class="form-control" id="moTa" name="moTa" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="thoiGianBatDau" class="form-label">Thời Gian Bắt Đầu:</label>
+                                <input type="datetime-local" class="form-control" id="thoiGianBatDau" name="thoiGianBatDau" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="thoiGianKetThuc" class="form-label">Thời Gian Kết Thúc:</label>
+                                <input type="datetime-local" class="form-control" id="thoiGianKetThuc" name="thoiGianKetThuc" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="diaDiem" class="form-label">Địa Điểm:</label>
+                                <input type="text" class="form-control" id="diaDiem" name="diaDiem" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="trangThai" class="form-label">Trạng Thái:</label>
+                                <select class="form-select" id="trangThai" name="trangThai" required>
+                                    <option value="Sắp tới">Upcoming</option>
+                                    <option value="Đang diễn ra">In Progress</option>
+                                    <option value="Đã hoàn thành">Completed</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Thêm</button>
+                            <a href="${pageContext.request.contextPath}/activity" class="btn btn-secondary">Quay Lại</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <jsp:include page="../layout/footer.jsp" />
     </body>
 </html>
