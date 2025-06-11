@@ -1,26 +1,21 @@
 package com.uef.service;
 
-import com.uef.model.TaiKhoan;
-import com.uef.model.TaiKhoanDAO;
+import com.uef.repository.TaiKhoanDAO;
 import com.uef.model.Volunteer;
 import com.uef.model.VolunteerDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Service
 public class VolunteerService {
 
     private final VolunteerDao volunteerDao;
-    private final TaiKhoanDAO taiKhoanDao;
 
     @Autowired
     public VolunteerService(VolunteerDao volunteerDao, TaiKhoanDAO taiKhoanDao) {
         this.volunteerDao = volunteerDao;
-        this.taiKhoanDao = taiKhoanDao;
     }
 
     public List<Volunteer> getAllVolunteers() {
@@ -30,26 +25,7 @@ public class VolunteerService {
     public Volunteer getVolunteerById(int id) {
         return volunteerDao.getById(id);
     }
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-    @Transactional
-    public void addVolunteer(TaiKhoan taiKhoan, Volunteer volunteer) {
-        if (taiKhoan.getMatKhau() == null || taiKhoan.getMatKhau().trim().isEmpty()) {
-            throw new IllegalArgumentException("Mật khẩu không được để trống.");
-        }
 
-        if (taiKhoanDao.isEmailExists(taiKhoan.getEmail())) {
-            throw new IllegalArgumentException("Email đã tồn tại. Vui lòng sử dụng email khác.");
-        }
-        taiKhoan.setMatKhau(passwordEncoder.encode(taiKhoan.getMatKhau()));
-        int taiKhoanId = taiKhoanDao.save(taiKhoan);
-        volunteer.setMaTNV(taiKhoanId);
-        volunteerDao.save(volunteer);
-    }
-
-    public boolean updateVolunteer(Volunteer v) {
-        return volunteerDao.update(v);
-    }
 
     public boolean deleteVolunteer(int id) {
         return volunteerDao.delete(id);
