@@ -15,5 +15,4 @@ import org.springframework.stereotype.Repository;
 public interface TaiKhoanRepo {
     TaiKhoan findByEmail(String email);
     int save(TaiKhoan tk);
-    boolean isEmailExists(String email);
 }
