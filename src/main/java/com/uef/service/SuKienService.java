@@ -18,7 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class SuKienService {
 
     private static final Logger logger = LoggerFactory.getLogger(SuKienService.class);
-
+    public static final int PAGE_SIZE = 12; // Số sự kiện mỗi trang
+    
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -109,6 +110,37 @@ public class SuKienService {
         } catch (Exception e) {
             logger.error("Lỗi khi lấy danh sách sự kiện: {}", e.getMessage(), e);
             throw new RuntimeException("Không thể lấy danh sách sự kiện", e);
+        }
+    }
+
+    // Lấy danh sách sự kiện theo trang
+    public List<SuKien> layDanhSachSuKienTheoTrang(int page) {
+        try {
+            int offset = (page - 1) * PAGE_SIZE;
+            String sql = "SELECT * FROM [Sự Kiện] ORDER BY thoiGianBatDau DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+            return jdbcTemplate.query(sql, new Object[]{offset, PAGE_SIZE}, (rs, rowNum) -> new SuKien(
+                    rs.getInt("maSuKien"),
+                    rs.getString("tenSuKien"),
+                    rs.getString("moTa"),
+                    rs.getObject("thoiGianBatDau", LocalDateTime.class),
+                    rs.getObject("thoiGianKetThuc", LocalDateTime.class),
+                    rs.getString("diaDiem"),
+                    rs.getString("trangThai")
+            ));
+        } catch (Exception e) {
+            logger.error("Lỗi khi lấy danh sách sự kiện theo trang {}: {}", page, e.getMessage(), e);
+            throw new RuntimeException("Không thể lấy danh sách sự kiện theo trang", e);
+        }
+    }
+
+    // Đếm tổng số sự kiện
+    public int demTongSoSuKien() {
+        try {
+            String sql = "SELECT COUNT(*) FROM [Sự Kiện]";
+            return jdbcTemplate.queryForObject(sql, Integer.class);
+        } catch (Exception e) {
+            logger.error("Lỗi khi đếm tổng số sự kiện: {}", e.getMessage(), e);
+            throw new RuntimeException("Không thể đếm tổng số sự kiện", e);
         }
     }
 
