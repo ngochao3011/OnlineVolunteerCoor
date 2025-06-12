@@ -24,10 +24,23 @@ public class SuKienController {
     private SuKienService suKienService;
 
     @GetMapping("")
-    public String listSuKien(Model model) {
+    public String listSuKien(@RequestParam(name = "page", defaultValue = "1") int page, Model model) {
         try {
-            List<SuKien> danhSach = suKienService.layDanhSachSuKien();
-            model.addAttribute("danhSachSuKien", danhSach);
+            // Lấy danh sách sự kiện theo trang
+            List<SuKien> danhSachSuKien = suKienService.layDanhSachSuKienTheoTrang(page);
+            int totalItems = suKienService.demTongSoSuKien();
+            int totalPages = (int) Math.ceil((double) totalItems / SuKienService.PAGE_SIZE); // Sử dụng PAGE_SIZE từ Service
+
+            // Đảm bảo trang hiện tại không vượt quá tổng số trang
+            if (page > totalPages && totalPages > 0) {
+                page = totalPages;
+            }
+
+            // Đặt các thuộc tính để sử dụng trong JSP
+            model.addAttribute("danhSachSuKien", danhSachSuKien);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", totalPages);
+
             return "activitylist";
         } catch (Exception e) {
             logger.error("Lỗi khi lấy danh sách sự kiện: {}", e.getMessage(), e);
