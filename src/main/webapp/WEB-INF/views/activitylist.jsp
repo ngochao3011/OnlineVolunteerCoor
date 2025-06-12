@@ -26,6 +26,21 @@
                 overflow: hidden; /* Đảm bảo nội dung không tràn ra ngoài viền */
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Thêm bóng nhẹ */
             }
+            .pagination {
+                justify-content: center;
+                margin-top: 20px;
+            }
+            .pagination .page-item.active .page-link {
+                background-color: #007bff;
+                border-color: #007bff;
+                color: white;
+            }
+            .pagination .page-link {
+                color: #007bff;
+            }
+            .pagination .page-link:hover {
+                background-color: #e9ecef;
+            }
         </style>
 
     </head>
@@ -71,13 +86,36 @@
                     <p class="text-center mt-4">Hiện chưa có hoạt động nào.</p>
                 </c:if>
             </div>
+
+            <!-- Phân trang -->
+            <c:if test="${not empty danhSachSuKien}">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <!-- Nút Previous -->
+                        <li class="page-item ${currentPage <= 1 ? 'disabled' : ''}">
+                            <a class="page-link" href="${pageContext.request.contextPath}/activity?page=${currentPage - 1}" aria-label="Previous">
+                                <span aria-hidden="true">«</span>
+                            </a>
+                        </li>
+                        <!-- Các trang -->
+                        <c:forEach begin="1" end="${totalPages}" var="i">
+                            <li class="page-item ${i == currentPage ? 'active' : ''}">
+                                <a class="page-link" href="${pageContext.request.contextPath}/activity?page=${i}">${i}</a>
+                            </li>
+                        </c:forEach>
+                        <!-- Nút Next -->
+                        <li class="page-item ${currentPage >= totalPages ? 'disabled' : ''}">
+                            <a class="page-link" href="${pageContext.request.contextPath}/activity?page=${currentPage + 1}" aria-label="Next">
+                                <span aria-hidden="true">»</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </c:if>
+
         </section>
 
         <jsp:include page="layout/footer.jsp" />
     </body>
-</html>
-
-    <jsp:include page="layout/footer.jsp" />
-</body>
 </html>
 
