@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html" language="java" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -7,24 +7,38 @@
 <html>
     <head>
         <title>Danh sách Tình nguyện viên</title>
+        
+        <!-- CSS FILES -->
+        <link href="${pageContext.request.contextPath}/src/css/bootstrap.min.css" rel="stylesheet">
+
+        <link href="${pageContext.request.contextPath}/src/css/bootstrap-icons.css" rel="stylesheet">
+
+        <link href="${pageContext.request.contextPath}/src/css/template-homepage.css" rel="stylesheet">
+
+        <link href="${pageContext.request.contextPath}/src/css/template-navbar.css" rel="stylesheet">
+        
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <!-- Bootstrap -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        
+        <!-- CSS CUSTOME -->
         <style>
             body {
                 background-color: #e3f2fd; /* xanh dương nhạt */
             }
-            .container {
+            .container-volunteer {
                 background-color: #ffffff;
-                padding: 30px;
-                margin-top: 40px;
-                border-radius: 15px;
+                padding: 15px;
+                padding-left: 30px;
+                padding-right: 30px;
                 box-shadow: 0 0 20px rgba(0,0,0,0.1);
             }
-            h2 {
+            h4 {
                 color: #1976d2;
+            }
+            .export-btn {
+                margin-left: 0px;
             }
             .table thead {
                 background-color: #bbdefb;
@@ -47,10 +61,17 @@
                 return true;
             }
         </script>
+        
     </head>
     <body>
-        <div class="container">
-            <h2 class="mb-4"><i class="fa fa-users"></i> Danh sách Tình nguyện viên</h2>
+        <jsp:include page="layout/header.jsp" />
+
+        <jsp:include page="layout/navbar.jsp" />
+        
+        <div class="container-volunteer">
+            <h4 class="d-flex align-items-center">
+                <i class="fas fa-users me-2 text-primary"></i> Danh sách Tình nguyện viên
+            </h4>
 
             <!-- Hiển thị thông báo -->
             <c:if test="${not empty successMessage}">
@@ -60,24 +81,24 @@
                 <div class="alert alert-warning mt-3">${errorMessage}</div>
             </c:if>
 
-            <!-- Nút Thêm mới và Xuất CSV -->
-            <div class="mb-3">
-                <a href="${pageContext.request.contextPath}/volunteer/add" class="btn btn-primary">
-                    <i class="fa fa-plus"></i> Thêm mới
-                </a>
-                <a href="${pageContext.request.contextPath}/volunteer/export" class="btn btn-success ms-2">
-                    <i class="fa fa-file-csv"></i> Xuất CSV
-                </a>
-            </div>
-
-            <!-- Form tìm kiếm -->
-            <form id="searchForm" action="${pageContext.request.contextPath}/volunteer/search" method="get" onsubmit="return validateSearch();">
-                <div class="input-group mb-3">
-                    <input type="text" id="keyword" name="keyword" value="${searchKeyword}" 
-                           placeholder="Tìm kiếm tình nguyện viên" class="form-control">
-                    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+            <!-- Nút Xuất CSV -->
+            <div class="row mb-1">
+                <div class="col col-md-8">
+                    <a href="${pageContext.request.contextPath}/volunteer/export" class="btn btn-success export-btn">
+                        <i class="fa fa-file-csv"></i> Xuất CSV
+                    </a>
                 </div>
-            </form>
+                <div class="col-md-4 text-end">
+                    <!-- Form tìm kiếm -->
+                    <form class="d-flex" id="searchForm" action="${pageContext.request.contextPath}/volunteer/search" method="get" onsubmit="return validateSearch();">
+                        <div class="input-group mb-3">
+                            <input type="text" id="keyword" name="keyword" value="${searchKeyword}" 
+                                   placeholder="Tìm kiếm tình nguyện viên" class="form-control">
+                            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
             <script>
                 const keywordInput = document.getElementById('keyword');
@@ -91,7 +112,7 @@
 
             <!-- Bảng danh sách -->
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table class="table table-hover table-bordered text-center align-middle">
                     <thead class="table-light">
                         <tr>
                             <th>#</th>
@@ -124,10 +145,7 @@
                                                 <fmt:formatDate value="${v.ngayDangKy}" pattern="dd/MM/yyyy" />
                                             </c:if>
                                         </td>
-                                        <td>
-                                            <a href="${pageContext.request.contextPath}/volunteer/edit/${v.maTNV}" class="btn btn-sm btn-warning">
-                                                <i class="fa fa-pen"></i> Sửa
-                                            </a>
+                                        <td>            
                                             <form action="${pageContext.request.contextPath}/volunteer/delete" method="post" style="display:inline;">
                                                 <input type="hidden" name="maTNV" value="${v.maTNV}"/>
                                                 <button type="submit" class="btn btn-sm btn-danger"
@@ -149,5 +167,6 @@
                 </table>
             </div>
         </div>
+        <%@ include file="layout/footer.jsp" %>
     </body>
 </html>

@@ -73,15 +73,13 @@
                                 </c:if>
                                 <div class="input-group">
                                         <i class='bx bxs-user'></i>
-                                        <input type="text" name="email" placeholder="Email" required>
+                                        <input type="text" name="username" placeholder="Email" required />
                                 </div>
                                 <div class="input-group">
                                         <i class='bx bxs-lock-alt'></i>
-                                        <input type="password" name="matKhau" placeholder="Password" required>
+                                        <input type="password" name="password" placeholder="Password" required />
                                 </div>
-                                <button>
-                                        Sign in
-                                </button>
+                                <button type="submit">Sign In</button>
                                 <p>
                                         <b>
                                                 Forgot password?

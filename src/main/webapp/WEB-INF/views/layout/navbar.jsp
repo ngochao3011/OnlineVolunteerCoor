@@ -44,7 +44,7 @@
                     </c:if>
                     
                     <!-- Nếu đã đăng nhập -->
-                    <c:if test="${not empty sessionScope.user}">
+                    <c:if test="${not empty sessionScope.user and sessionScope.user.quyenHan == 'Điều phối viên'}">
                         <li class="nav-item">
                             <a class="nav-link btn" href="${pageContext.request.contextPath}/volunteer">Volunteer</a>
                         </li>

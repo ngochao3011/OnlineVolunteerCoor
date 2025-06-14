@@ -88,12 +88,12 @@ public class SigninSignupController {
     }
     
     @PostMapping("/sign-in")
-    public String processLogin(@RequestParam String email,
-                               @RequestParam String matKhau,
+    public String processLogin(@RequestParam String username,
+                               @RequestParam String password,
                                HttpSession session,
                                RedirectAttributes redirect) {
-        TaiKhoan taiKhoan = taiKhoanService.getEmail(email);
-        if (taiKhoan != null && new BCryptPasswordEncoder().matches(matKhau, taiKhoan.getMatKhau())) {
+        TaiKhoan taiKhoan = taiKhoanService.getEmail(username);
+        if (taiKhoan != null && new BCryptPasswordEncoder().matches(password, taiKhoan.getMatKhau())) {
             session.setAttribute("user", taiKhoan);
             return "redirect:/";
         }

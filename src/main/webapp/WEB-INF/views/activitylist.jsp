@@ -20,6 +20,9 @@
 
         <!-- Thêm CSS tùy chỉnh -->
         <style>
+            h4 {
+                color: #1976d2;
+            }
             .blog-item {
                 border: 2px solid #ccc; /* Viền màu xám, độ dày 2px */
                 border-radius: 6px; /* Góc bo tròn */
@@ -52,8 +55,7 @@
         <section class="blog-section spad">
             <div class="container">
                 <div class="section-title text-center">
-                    <h2>Danh Sách Hoạt Động Tình Nguyện</h2>
-                    <p>Cùng tham gia các hoạt động ý nghĩa cho cộng đồng</p>
+                    <h4>Danh Sách Hoạt Động Tình Nguyện</h4>
                 </div>
                 <div class="row">
                     <div class="col-12 mb-4 text-end">
