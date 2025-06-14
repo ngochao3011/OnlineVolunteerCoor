@@ -72,4 +72,15 @@ public class Volunteer {
     public void setNgayDangKy(Date ngayDangKy) {
         this.ngayDangKy = ngayDangKy;
     }
+    @Override
+    public String toString() {
+        return "Volunteer{"
+                + "maTNV=" + maTNV
+                + ", hoTen='" + hoTen + '\''
+                + ", sdtDienThoai='" + sdtDienThoai + '\''
+                + ", diaChi='" + diaChi + '\''
+                + ", trangThai='" + trangThai + '\''
+                + ", ngayDangKy=" + ngayDangKy
+                + '}';
+    }
 }
