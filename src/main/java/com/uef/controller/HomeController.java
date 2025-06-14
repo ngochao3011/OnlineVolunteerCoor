@@ -16,6 +16,11 @@ public class HomeController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/";  // hoặc về trang chủ
+        return "redirect:/";
+    }
+    
+    @GetMapping("/403")
+    public String errorPage(HttpSession session) {
+        return "403";
     }
 }
