@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.uef.service.TaiKhoanService;
 import com.uef.service.VolunteerService;
-import java.util.Date;
+import java.sql.Date;
 
 /**
  *
@@ -55,7 +55,6 @@ public class SigninSignupController {
         }
 
         taiKhoan.setMatKhau(new BCryptPasswordEncoder().encode(taiKhoan.getMatKhau()));
-        taiKhoan.setQuyenHan("Tình nguyện viên");
         if (!taiKhoanService.dangKyTaiKhoan(taiKhoan)){
             redirect.addFlashAttribute("error", "Có lỗi khi đăng ký tài khoản!");
             return "redirect:/sign-up";
@@ -67,14 +66,16 @@ public class SigninSignupController {
             return "redirect:/sign-up";
         }
         Volunteer volunteer = new Volunteer();
-        volunteer.setMaTNV(id);
+        volunteer.setMaThanhVien(id);
         volunteer.setHoTen(hoTen);
-        volunteer.setSdtDienThoai(sdt);
+        volunteer.setSdt(sdt);
         volunteer.setDiaChi("");
         volunteer.setTrangThai("Đã đăng ký");
         // Lấy ngày hiện tại của hệ thống
-        Date now = new Date();
-        volunteer.setNgayDangKy(now);
+        Date currentDate = new Date(System.currentTimeMillis());
+        volunteer.setNgayDangKy(currentDate);
+        volunteer.setUrlAvatar("");
+        volunteer.setChucVu("Tình nguyện viên");
         if (!volunteerService.addVolunteer(volunteer)){
             redirect.addFlashAttribute("error", "Có lỗi khi đăng ký thông tin cá nhân!");        
             return "redirect:/sign-up";

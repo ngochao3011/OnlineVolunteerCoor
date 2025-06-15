@@ -11,7 +11,7 @@ import java.util.Date;
  * @author ACER
  */
 public class LichSuThaoTac {
-     private int id;
+    private int id;
     private int maTNV;
     private String hanhDong;
     private String truocKhiSua;
@@ -46,7 +46,7 @@ public class LichSuThaoTac {
         this.id = id;
     }
 
-    public void setMaTNV(int maTNV) {
+    public void setMaThanhVien(int maTNV) {
         this.maTNV = maTNV;
     }
 

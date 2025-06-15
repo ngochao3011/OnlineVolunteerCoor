@@ -7,7 +7,6 @@ package com.uef.repository;
 import com.uef.model.TaiKhoan;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Repository;
@@ -24,7 +23,9 @@ public class TaiKhoanDAO implements TaiKhoanRepo {
 
     @Override
     public TaiKhoan findByEmail(String email) {
-        String sql = "SELECT * FROM [Tài Khoản] WHERE email = ?";
+        String sql = "select TK.maTaiKhoan, TK.email, TK.matKhau, TV.ChucVu as quyenHan from TAIKHOAN TK " +
+                    "inner join THANHVIEN TV on TK.maTaiKhoan = TV.maThanhVien " +
+                    "where email = ?";
         try {
             return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(TaiKhoan.class), email);
         } catch (EmptyResultDataAccessException e) {
@@ -35,17 +36,16 @@ public class TaiKhoanDAO implements TaiKhoanRepo {
     @Override
     public boolean save(TaiKhoan taiKhoan) {
 
-        String sql = "INSERT INTO [Tài Khoản] (email, matKhau, quyenHan) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO TAIKHOAN (email, matKhau) VALUES (?, ?)";
         return jdbcTemplate.update(sql,
                 taiKhoan.getEmail(),
-                taiKhoan.getMatKhau(),
-                taiKhoan.getQuyenHan()) > 0;
+                taiKhoan.getMatKhau()) > 0;
 
     }
 
     @Override
     public Integer getID(String email) {
-        String sql = "SELECT taiKhoan FROM [Tài Khoản] WHERE email = ?";
+        String sql = "SELECT maTaiKhoan FROM TAIKHOAN WHERE email = ?";
         return jdbcTemplate.queryForObject(sql, Integer.class, email);
     }
 }

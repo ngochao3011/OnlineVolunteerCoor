@@ -9,13 +9,13 @@ package com.uef.model;
  * @author ADMIN
  */
 public class TaiKhoan {
-    private int taiKhoan;
+    private int maTaiKhoan;
     private String email;
     private String matKhau;
     private String quyenHan;
 
-    public int getTaiKhoan() {
-        return taiKhoan;
+    public int getMaTaiKhoan() {
+        return maTaiKhoan;
     }
 
     public String getEmail() {
@@ -30,8 +30,8 @@ public class TaiKhoan {
         return quyenHan;
     }
 
-    public void setTaiKhoan(int taiKhoan) {
-        this.taiKhoan = taiKhoan;
+    public void setTaiKhoan(int maTaiKhoan) {
+        this.maTaiKhoan = maTaiKhoan;
     }
 
     public void setEmail(String email) {

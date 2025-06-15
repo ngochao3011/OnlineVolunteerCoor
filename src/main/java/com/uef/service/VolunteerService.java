@@ -27,8 +27,8 @@ public class VolunteerService {
         return ((VolunteerDao) volunteerRepo).countAll();
     }
 
-    public Volunteer getVolunteerById(int maTNV) {
-        return volunteerRepo.getById(maTNV);
+    public Volunteer getVolunteerById(int maThanhVien) {
+        return volunteerRepo.getById(maThanhVien);
     }
 
     public boolean addVolunteer(Volunteer v) {
@@ -36,7 +36,7 @@ public class VolunteerService {
     }
 
     public boolean updateVolunteer(Volunteer v) {
-        Volunteer old = volunteerRepo.getById(v.getMaTNV());
+        Volunteer old = volunteerRepo.getById(v.getMaThanhVien());
         if (old == null) {
             return false;
         }
@@ -45,7 +45,7 @@ public class VolunteerService {
 
         if (success) {
             LichSuThaoTac log = new LichSuThaoTac();
-            log.setMaTNV(v.getMaTNV());
+            log.setMaThanhVien(v.getMaThanhVien());
             log.setHanhDong("Sửa");
             log.setTruocKhiSua(old.toString());
             log.setSauKhiSua(v.toString());
@@ -56,20 +56,20 @@ public class VolunteerService {
         return success;
     }
 
-    public boolean deleteVolunteer(int maTNV) {
-        Volunteer old = volunteerRepo.getById(maTNV);
+    public boolean deleteVolunteer(int maThanhVien) {
+        Volunteer old = volunteerRepo.getById(maThanhVien);
         if (old == null) {
             return false;
         }
 
-        boolean deleted = volunteerRepo.delete(maTNV);
+        boolean deleted = volunteerRepo.delete(maThanhVien);
 
         if (deleted) {
             LichSuThaoTac log = new LichSuThaoTac();
-            log.setMaTNV(maTNV);
+            log.setMaThanhVien(maThanhVien);
             log.setHanhDong("Xóa");
             log.setTruocKhiSua(old.toString());
-            log.setSauKhiSua("");  // Vì đã xóa nên không còn dữ liệu sau
+            log.setSauKhiSua("");  // Đã xóa, không còn dữ liệu
             log.setThoiGian(new Date());
             lichSuThaoTacService.ghiNhanLichSu(log);
         }
@@ -92,16 +92,18 @@ public class VolunteerService {
     }
 
     public String exportVolunteersToCSV() {
-        List<Volunteer> volunteers = volunteerRepo.getAll(1, Integer.MAX_VALUE); // Lấy tất cả để xuất CSV
+        List<Volunteer> volunteers = volunteerRepo.getAll(1, Integer.MAX_VALUE); // Lấy tất cả để export
         StringBuilder sb = new StringBuilder();
-        sb.append("Mã Tình Nguyện Viên,Họ Tên,Số Điện Thoại,Địa Chỉ,Trạng Thái,Ngày Đăng Ký\n");
+sb.append("Mã Thành Viên,Họ Tên,Số Điện Thoại,Địa Chỉ,Trạng Thái,Ngày Đăng Ký,Chức Vụ,URL Avatar\n");
         for (Volunteer v : volunteers) {
-            sb.append(v.getMaTNV()).append(",");
+            sb.append(v.getMaThanhVien()).append(",");
             sb.append(escapeCSV(v.getHoTen())).append(",");
-            sb.append(escapeCSV(v.getSdtDienThoai())).append(",");
+            sb.append(escapeCSV(v.getSdt())).append(",");
             sb.append(escapeCSV(v.getDiaChi())).append(",");
             sb.append(escapeCSV(v.getTrangThai())).append(",");
-            sb.append(v.getNgayDangKy() != null ? v.getNgayDangKy().toString() : "").append("\n");
+            sb.append(v.getNgayDangKy() != null ? v.getNgayDangKy().toString() : "").append(",");
+            sb.append(escapeCSV(v.getChucVu())).append(",");
+            sb.append(escapeCSV(v.getUrlAvatar())).append("\n");
         }
         return sb.toString();
     }
@@ -115,5 +117,8 @@ public class VolunteerService {
             return "\"" + data + "\"";
         }
         return data;
+    }
+    public Volunteer getById(int id) {
+        return volunteerRepo.getById(id);
     }
 }

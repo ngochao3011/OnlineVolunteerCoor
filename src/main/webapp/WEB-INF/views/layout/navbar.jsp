@@ -77,7 +77,7 @@
                                 <img src="${pageContext.request.contextPath}/src/images/default-avatar.png" 
                                      alt="Avatar" class="avatar" onclick="toggleDropdown()" />
                                 <div id="accountDropdown" class="dropdown-content">
-                                    <a href="${pageContext.request.contextPath}/profile">Tài khoản</a>
+                                    <a href="${pageContext.request.contextPath}/account">Tài khoản</a>
                                     <a href="${pageContext.request.contextPath}/logout">Đăng xuất</a>
                                 </div>
                             </div>

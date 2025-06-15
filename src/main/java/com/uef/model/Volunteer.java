@@ -1,36 +1,25 @@
 package com.uef.model;
-import java.util.Date;
-import org.springframework.format.annotation.DateTimeFormat;
+
+import java.sql.Date;
 
 public class Volunteer {
 
-    private int maTNV;
+    private int maThanhVien;
     private String hoTen;
     private String sdt;
     private String diaChi;
     private String trangThai;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date ngayDangKy;
+    private String urlAvatar;
+    private String chucVu; // tương đương quyền hạn
 
-    public Volunteer() {
+    // Getter và Setter
+    public int getMaThanhVien() {
+        return maThanhVien;
     }
 
-    public Volunteer(int maTNV, String hoTen, String sdtDienThoai, String diaChi, String trangThai, Date ngayDangKy) {
-        this.maTNV = maTNV;
-        this.hoTen = hoTen;
-        this.sdt = sdtDienThoai;
-        this.diaChi = diaChi;
-        this.trangThai = trangThai;
-        this.ngayDangKy = ngayDangKy;
-    }
-
-    // Getters and Setters
-    public int getMaTNV() {
-        return maTNV;
-    }
-
-    public void setMaTNV(int maTNV) {
-        this.maTNV = maTNV;
+    public void setMaThanhVien(int maThanhVien) {
+        this.maThanhVien = maThanhVien;
     }
 
     public String getHoTen() {
@@ -41,12 +30,12 @@ public class Volunteer {
         this.hoTen = hoTen;
     }
 
-    public String getSdtDienThoai() {
+    public String getSdt() {
         return sdt;
     }
 
-    public void setSdtDienThoai(String sdtDienThoai) {
-        this.sdt = sdtDienThoai;
+    public void setSdt(String sdt) {
+        this.sdt = sdt;
     }
 
     public String getDiaChi() {
@@ -72,15 +61,34 @@ public class Volunteer {
     public void setNgayDangKy(Date ngayDangKy) {
         this.ngayDangKy = ngayDangKy;
     }
+
+    public String getUrlAvatar() {
+        return urlAvatar;
+    }
+
+    public void setUrlAvatar(String urlAvatar) {
+        this.urlAvatar = urlAvatar;
+    }
+
+    public String getChucVu() {
+        return chucVu;
+    }
+
+    public void setChucVu(String chucVu) {
+        this.chucVu = chucVu;
+    }
+
     @Override
     public String toString() {
         return "Volunteer{"
-                + "maTNV=" + maTNV
+                + "maThanhVien=" + maThanhVien
                 + ", hoTen='" + hoTen + '\''
-                + ", sdtDienThoai='" + sdtDienThoai + '\''
+                + ", sdt='" + sdt + '\''
                 + ", diaChi='" + diaChi + '\''
                 + ", trangThai='" + trangThai + '\''
                 + ", ngayDangKy=" + ngayDangKy
+                + ", urlAvatar='" + urlAvatar + '\''
+                + ", chucVu='" + chucVu + '\''
                 + '}';
     }
 }

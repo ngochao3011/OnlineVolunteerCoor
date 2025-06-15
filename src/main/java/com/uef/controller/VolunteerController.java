@@ -15,7 +15,6 @@ import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -97,11 +96,11 @@ public class VolunteerController {
             // Kiểm tra dữ liệu đầu vào
             if (volunteer.getHoTen() == null || volunteer.getHoTen().trim().isEmpty()) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Họ tên không được để trống.");
-                return "redirect:/volunteer/edit/" + volunteer.getMaTNV();
+                return "redirect:/volunteer/edit/" + volunteer.getMaThanhVien();
             }
-            if (volunteer.getSdtDienThoai() != null && !volunteer.getSdtDienThoai().matches("^0\\d{9}$")) {
+            if (volunteer.getSdt()!= null && !volunteer.getSdt().matches("^0\\d{9}$")) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số.");
-                return "redirect:/volunteer/edit/" + volunteer.getMaTNV();
+                return "redirect:/volunteer/edit/" + volunteer.getMaThanhVien();
             }
 
             boolean success = volunteerService.updateVolunteer(volunteer);
@@ -112,7 +111,7 @@ public class VolunteerController {
             }
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/volunteer/edit/" + volunteer.getMaTNV();
+            return "redirect:/volunteer/edit/" + volunteer.getMaThanhVien();
         } catch (DataIntegrityViolationException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi dữ liệu: Dữ liệu không hợp lệ hoặc vi phạm ràng buộc cơ sở dữ liệu.");
             e.printStackTrace();
@@ -175,9 +174,9 @@ public class VolunteerController {
         for (Volunteer v : volunteers) {
             String ngayDangKy = v.getNgayDangKy() != null ? sdf.format(v.getNgayDangKy()) : "";
             writer.printf("%s,%s,%s,%s,%s,%s%n",
-                    v.getMaTNV(),
+                    v.getMaThanhVien(),
                     v.getHoTen(),
-                    v.getSdtDienThoai(),
+                    v.getSdt(),
                     v.getDiaChi(),
                     v.getTrangThai(),
                     ngayDangKy);
