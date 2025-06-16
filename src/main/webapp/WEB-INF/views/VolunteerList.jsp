@@ -116,7 +116,7 @@
                     <thead class="table-light">
                         <tr>
                             <th>#</th>
-                            <th>Mã TNV</th>
+                            <th>Mã Thành Viên</th>
                             <th>Họ tên</th>
                             <th>SĐT</th>
                             <th>Địa chỉ</th>
@@ -131,9 +131,9 @@
                                 <c:forEach var="v" items="${volunteers}" varStatus="loop">
                                     <tr>
                                         <td>${loop.index + 1 + (currentPage - 1) * pageSize}</td>
-                                        <td>${v.maTNV}</td>
+                                        <td>${v.maThanhVien}</td>
                                         <td>${fn:escapeXml(v.hoTen)}</td>
-                                        <td>${fn:escapeXml(v.sdtDienThoai)}</td>
+                                        <td>${fn:escapeXml(v.sdt)}</td>
                                         <td>${fn:escapeXml(v.diaChi)}</td>
                                         <td>
                                             <span class="badge ${v.trangThai == 'Hoạt động' ? 'badge-active' : 'badge-inactive'}">
@@ -146,11 +146,11 @@
                                             </c:if>
                                         </td>
                                         <td>
-                                            <a href="${pageContext.request.contextPath}/volunteer/edit/${v.maTNV}" class="btn btn-sm btn-warning">
+                                            <a href="${pageContext.request.contextPath}/volunteer/edit/${v.maThanhVien}" class="btn btn-sm btn-warning">
                                                 <i class="fa fa-pen"></i> Sửa
                                             </a>
                                             <form action="${pageContext.request.contextPath}/volunteer/delete" method="post" style="display:inline;">
-                                                <input type="hidden" name="maTNV" value="${v.maTNV}"/>
+                                                <input type="hidden" name="maThanhVien" value="${v.maThanhVien}"/>
                                                 <input type="hidden" name="page" value="${currentPage}"/>
                                                 <input type="hidden" name="keyword" value="${searchKeyword}"/>
                                                 <button type="submit" class="btn btn-sm btn-danger"
@@ -178,6 +178,7 @@
                             </c:otherwise>
                         </c:choose>
                     </tbody>
+
                 </table>
             </div>
 
