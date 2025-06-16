@@ -125,12 +125,12 @@ public class VolunteerController {
     // Xóa tình nguyện viên theo ID
     @PostMapping("/delete")
     public String deleteVolunteer(
-            @RequestParam("maTNV") int maTNV,
+            @RequestParam("maThanhVien") int maThanhVien,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "keyword", required = false) String keyword,
             RedirectAttributes redirectAttributes) {
         try {
-            boolean deleted = volunteerService.deleteVolunteer(maTNV);
+            boolean deleted = volunteerService.deleteVolunteer(maThanhVien);
             if (deleted) {
                 redirectAttributes.addFlashAttribute("successMessage", "Xóa tình nguyện viên và tài khoản thành công.");
             } else {
