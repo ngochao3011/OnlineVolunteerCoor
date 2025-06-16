@@ -70,7 +70,7 @@
 
             <!-- Form cập nhật -->
             <form action="${pageContext.request.contextPath}/volunteer/edit" method="post" onsubmit="return validateForm();" novalidate>
-                <input type="hidden" name="maTNV" value="${volunteer.maTNV}"/>
+                <input type="hidden" name="maThanhVien" value="${volunteer.maThanhVien}"/>
 
                 <div class="mb-3">
                     <label for="hoTen" class="form-label">Họ tên <span class="text-danger">*</span></label>
@@ -78,9 +78,9 @@
                            value="${fn:escapeXml(volunteer.hoTen)}" required/>
                 </div>
                 <div class="mb-3">
-                    <label for="sdtDienThoai" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
-                    <input type="text" name="sdtDienThoai" id="sdtDienThoai" class="form-control"
-                           value="${fn:escapeXml(volunteer.sdtDienThoai)}" required/>
+                    <label for="sdt" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+                    <input type="text" name="sdt" id="sdt" class="form-control"
+                           value="${fn:escapeXml(volunteer.sdt)}" required/>
                 </div>
                 <div class="mb-3">
                     <label for="diaChi" class="form-label">Địa chỉ <span class="text-danger">*</span></label>
@@ -109,6 +109,7 @@
                     <i class="fas fa-arrow-left"></i> Quay lại
                 </a>
             </form>
+
         </div>
 
         <jsp:include page="layout/footer.jsp" />
@@ -117,7 +118,7 @@
         <script>
             function validateForm() {
                 const hoTen = document.getElementById("hoTen").value.trim();
-                const sdt = document.getElementById("sdtDienThoai").value.trim();
+                const sdt = document.getElementById("sdt").value.trim();
                 const diaChi = document.getElementById("diaChi").value.trim();
                 const trangThai = document.getElementById("trangThai").value;
 
@@ -134,7 +135,7 @@
 
                 if (sdt.length > 20) {
                     alert("Số điện thoại không được vượt quá 20 ký tự.");
-                    document.getElementById("sdtDienThoai").classList.add("invalid");
+                    document.getElementById("sdt").classList.add("invalid");
                     return false;
                 }
 
@@ -147,7 +148,7 @@
                 const phoneRegex = /^0\d{9}$/;
                 if (!phoneRegex.test(sdt)) {
                     alert("Số điện thoại phải bắt đầu bằng số 0 và có đúng 10 chữ số.");
-                    document.getElementById("sdtDienThoai").classList.add("invalid");
+                    document.getElementById("sdt").classList.add("invalid");
                     return false;
                 }
 
@@ -161,5 +162,6 @@
                 return true;
             }
         </script>
+
     </body>
 </html>
