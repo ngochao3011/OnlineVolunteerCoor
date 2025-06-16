@@ -52,7 +52,7 @@
                         <thead class="table-light">
                             <tr>
                                 <th>#</th>
-                                <th>Mã TNV</th>
+                                <th>Mã Thành Viên</th>
                                 <th>Hành động</th>
                                 <th>Trước khi sửa</th>
                                 <th>Sau khi sửa</th>
@@ -63,7 +63,7 @@
                             <c:forEach var="ls" items="${lichSuList}" varStatus="loop">
                                 <tr>
                                     <td>${loop.index + 1}</td>
-                                    <td>${ls.maTNV}</td>
+                                    <td>${ls.maThanhVien}</td>
                                     <td>${ls.hanhDong}</td>
                                     <td><c:out value="${ls.truocKhiSua}" /></td>
                                     <td><c:out value="${ls.sauKhiSua}" /></td>
