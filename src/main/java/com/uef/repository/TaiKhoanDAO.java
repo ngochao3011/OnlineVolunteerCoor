@@ -5,10 +5,13 @@
 package com.uef.repository;
 
 import com.uef.model.TaiKhoan;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -23,11 +26,21 @@ public class TaiKhoanDAO implements TaiKhoanRepo {
 
     @Override
     public TaiKhoan findByEmail(String email) {
-        String sql = "select TK.maTaiKhoan, TK.email, TK.matKhau, TV.ChucVu as quyenHan from TAIKHOAN TK " +
+        String sql = "select TK.maTaiKhoan as maTaiKhoan, TK.email as email, TK.matKhau as matKhau, TV.ChucVu as quyenHan from TAIKHOAN TK " +
                     "inner join THANHVIEN TV on TK.maTaiKhoan = TV.maThanhVien " +
                     "where email = ?";
         try {
-            return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(TaiKhoan.class), email);
+            return jdbcTemplate.queryForObject(sql, new RowMapper<TaiKhoan>(){
+                @Override
+                public TaiKhoan mapRow(ResultSet rs, int rowNum) throws SQLException{
+                    TaiKhoan tk = new TaiKhoan();
+                    tk.setMaTaiKhoan(rs.getInt("maTaiKhoan"));
+                    tk.setEmail(rs.getString("email"));
+                    tk.setMatKhau(rs.getString("matKhau"));
+                    tk.setQuyenHan(rs.getString("quyenHan"));
+                    return tk;
+                }
+            }, email);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }

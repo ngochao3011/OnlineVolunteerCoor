@@ -30,7 +30,7 @@ public class TaiKhoan {
         return quyenHan;
     }
 
-    public void setTaiKhoan(int maTaiKhoan) {
+    public void setMaTaiKhoan(int maTaiKhoan) {
         this.maTaiKhoan = maTaiKhoan;
     }
 

@@ -23,9 +23,4 @@ public class HomeController {
     public String errorPage(HttpSession session) {
         return "403";
     }
-    
-    @GetMapping("/account")
-    public String account(HttpSession session) {
-        return "account";
-    }
 }
