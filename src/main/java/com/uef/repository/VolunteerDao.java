@@ -77,7 +77,7 @@ public class VolunteerDao implements VolunteerRepo {
 
     @Override
     @Transactional
-public boolean delete(int maThanhVien) {
+    public boolean delete(int maThanhVien) {
         try {
             // Xóa bản ghi trong bảng THANHVIEN trước
             String deleteThanhVienSql = "DELETE FROM [THANHVIEN] WHERE maThanhVien = ?";
@@ -108,5 +108,15 @@ public boolean delete(int maThanhVien) {
     public int countByName(String keyword) {
         String sql = "SELECT COUNT(*) FROM [THANHVIEN] WHERE hoTen LIKE ?";
         return jdbcTemplate.queryForObject(sql, Integer.class, "%" + keyword + "%");
+    }
+    
+    @Override
+    public String getAvatar(int id) {
+        String sql = "SELECT urlAvatar FROM [THANHVIEN] WHERE maThanhVien = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, String.class, id);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

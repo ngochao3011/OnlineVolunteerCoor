@@ -74,7 +74,8 @@
                     <c:if test="${not empty sessionScope.user}">
                         <li class="nav-item navbar-img ms-3">
                             <div class="dropdown">
-                                <img src="${pageContext.request.contextPath}/src/images/default-avatar.png" 
+                                <img src="${pageContext.request.contextPath}/src/images/${sessionScope.urlAvatar}" 
+                                     style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;"
                                      alt="Avatar" class="avatar" onclick="toggleDropdown()" />
                                 <div id="accountDropdown" class="dropdown-content">
                                     <a href="${pageContext.request.contextPath}/account">Tài khoản</a>

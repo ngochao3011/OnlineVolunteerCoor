@@ -94,7 +94,7 @@ public class VolunteerService {
     public String exportVolunteersToCSV() {
         List<Volunteer> volunteers = volunteerRepo.getAll(1, Integer.MAX_VALUE); // Lấy tất cả để export
         StringBuilder sb = new StringBuilder();
-sb.append("Mã Thành Viên,Họ Tên,Số Điện Thoại,Địa Chỉ,Trạng Thái,Ngày Đăng Ký,Chức Vụ,URL Avatar\n");
+        sb.append("Mã Thành Viên,Họ Tên,Số Điện Thoại,Địa Chỉ,Trạng Thái,Ngày Đăng Ký,Chức Vụ,URL Avatar\n");
         for (Volunteer v : volunteers) {
             sb.append(v.getMaThanhVien()).append(",");
             sb.append(escapeCSV(v.getHoTen())).append(",");
@@ -118,7 +118,12 @@ sb.append("Mã Thành Viên,Họ Tên,Số Điện Thoại,Địa Chỉ,Trạng 
         }
         return data;
     }
+
     public Volunteer getById(int id) {
         return volunteerRepo.getById(id);
+    }
+    
+    public String getAvatarbyId(int id){
+        return volunteerRepo.getAvatar(id);
     }
 }

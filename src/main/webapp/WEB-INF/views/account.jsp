@@ -10,14 +10,14 @@
 <html>
     <head>
         <title>Account Settings</title>
-        
+
         <!-- CSS FILES -->
         <link href="${pageContext.request.contextPath}/src/css/bootstrap.min.css" rel="stylesheet">
         <link href="${pageContext.request.contextPath}/src/css/bootstrap-icons.css" rel="stylesheet">
         <link href="${pageContext.request.contextPath}/src/css/template-homepage.css" rel="stylesheet">
         <link href="${pageContext.request.contextPath}/src/css/template-navbar.css" rel="stylesheet">
-        
-        
+
+
         <style>
             .container-account {
                 background-color: #ffffff;
@@ -80,65 +80,68 @@
                 <div class="card p-4 settings-card">
                     <div class="text-center mb-3 profile-img-container">
                         <label for="avatarInput">
-                            <c:choose>
-                                <c:when test="${empty thanhVien.urlAvatar}">
-                                    <img src="${pageContext.request.contextPath}/src/images/default-avatar.png" alt="avatar" class="profile-img" />
-                                </c:when>
-                                <c:otherwise>
-                                    <img src="${pageContext.request.contextPath}/src/images/${thanhVien.urlAvatar}" alt="avatar" class="profile-img" />
-                                </c:otherwise>
-                            </c:choose>
-                            <img src="${pageContext.request.contextPath}/src/images/edit-icon.png" class="edit-icon" width="24" />
+                            <img id="avatarPreview" src="${pageContext.request.contextPath}/src/images/${sessionScope.urlAvatar}" alt="avatar" class="profile-img" />
+                            <img id="editIcon" src="${pageContext.request.contextPath}/src/images/edit-icon.png" class="edit-icon" width="24" style="display: none;" />
                         </label>
-                        <input type="file" name="avatarFile" id="avatarInput" />
+                        <input type="file" name="avatarFile" id="avatarInput" accept="image/*" onchange="previewAvatar(this)" style="display: none;" disabled />
                     </div>
 
                     <input type="hidden" name="maThanhVien" value="${thanhVien.maThanhVien}" />
 
                     <div class="mb-3">
                         <label>Email</label>
-                        <input type="email" class="form-control" value="${user.email}" readonly />
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Password</label>
-                        <input type="password" class="form-control" value="${user.matKhau}" readonly />
+                        <input type="email" class="form-control editable-field" value="${user.email}" readonly />
                     </div>
 
                     <div class="mb-3">
                         <label>Họ tên</label>
-                        <input type="text" class="form-control" name="hoTen" value="${thanhVien.hoTen}" readonly />
+                        <input type="text" class="form-control editable-field" name="hoTen" value="${thanhVien.hoTen}" readonly />
                     </div>
 
                     <div class="mb-3">
                         <label>Số điện thoại</label>
-                        <input type="text" class="form-control" name="sdt" value="${thanhVien.sdt}" readonly />
+                        <input type="text" class="form-control editable-field" name="sdt" value="${thanhVien.sdt}" readonly />
                     </div>
 
                     <div class="mb-3">
                         <label>Địa chỉ</label>
-                        <input type="text" class="form-control" name="diaChi" value="${thanhVien.diaChi}" readonly />
+                        <input type="text" class="form-control editable-field" name="diaChi" value="${thanhVien.diaChi}" readonly />
                     </div>
 
-                    <div class="d-flex justify-content-between">
-                        <button type="button" class="btn btn-secondary" onclick="enableEdit()">Edit</button>
-                        <button type="submit" class="btn btn-primary" id="saveBtn" disabled>Cập nhật</button>
+                    <div class="d-flex justify-content-between mt-3">
+                        <div>
+                            <button type="button" id="editBtn" class="btn btn-secondary">Edit</button>
+                            <button type="submit" id="updateBtn" class="btn btn-primary" style="display:none;">Cập nhật</button>
+                        </div>
+
+                        <div>
+                            <button type="button" class="btn btn-warning">Đổi mật khẩu</button>
+                        </div>
                     </div>
                 </div>
             </form>
         </div>
 
         <script>
-            function enableEdit() {
-                const form = document.getElementById("accountForm");
-                const inputs = form.querySelectorAll("input.form-control");
+            const editBtn = document.getElementById('editBtn');
+            const updateBtn = document.getElementById('updateBtn');
+            const avatarInput = document.getElementById('avatarInput');
+            const avatarPreview = document.getElementById('avatarPreview');
+            const editIcon = document.getElementById('editIcon');
 
-                inputs.forEach(input => {
-                    input.removeAttribute("readonly");
-                });
+            editBtn.addEventListener('click', () => {
+                document.querySelectorAll('.editable-field').forEach(input => input.removeAttribute('readonly'));
+                avatarInput.removeAttribute('disabled');
+                updateBtn.style.display = 'inline-block';
+                editIcon.style.display = '';
+            });
 
-                document.getElementById("saveBtn").removeAttribute("disabled");
-            }
+            avatarInput.addEventListener('change', function () {
+                const file = this.files[0];
+                if (file) {
+                    avatarPreview.src = URL.createObjectURL(file); // Hiển thị trước ảnh mới
+                }
+            });
         </script>
 
         <jsp:include page="/WEB-INF/views/layout/footer.jsp" />

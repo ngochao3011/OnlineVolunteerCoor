@@ -20,4 +20,5 @@ public interface VolunteerRepo {
     public boolean update(Volunteer v);
     public boolean delete(int id);
     public List<Volunteer> searchByName(String keyword, int page, int pageSize);
+    public String getAvatar(int id);
 }

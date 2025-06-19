@@ -95,7 +95,12 @@ public class SigninSignupController {
                                RedirectAttributes redirect) {
         TaiKhoan taiKhoan = taiKhoanService.getEmail(username);
         if (taiKhoan != null && new BCryptPasswordEncoder().matches(password, taiKhoan.getMatKhau())) {
+            String urlAvatar = volunteerService.getAvatarbyId(taiKhoan.getMaTaiKhoan());
+            if (urlAvatar == null || urlAvatar.trim().isEmpty()){
+                urlAvatar = "default-avatar.png"; // đường dẫn ảnh mặc định
+            }
             session.setAttribute("user", taiKhoan);
+            session.setAttribute("urlAvatar", urlAvatar);
             return "redirect:/";
         }
         redirect.addFlashAttribute("error", "Sai email hoặc mật khẩu.");
