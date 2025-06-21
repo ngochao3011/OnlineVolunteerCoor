@@ -1,6 +1,6 @@
 <%-- 
     Document   : activitylist
-    Created on : Jun 8, 2025, 2:48:28 AM
+    Created on : Jun 8, 2025, 2:48:28 AM
     Author     : ADMIN
 --%>
 
@@ -61,36 +61,36 @@
                     <div class="col-12 mb-4 text-end">
                         <a href="${pageContext.request.contextPath}/activity/add" class="btn btn-primary">Thêm Hoạt Động Mới</a>
                     </div>
-                    <c:forEach var="suKien" items="${danhSachSuKien}">
+                    <c:forEach var="hoatDong" items="${danhSachHoatDong}">
                         <div class="col-lg-4 col-md-6 mb-4">
                             <div class="blog-item">
                                 <div class="bi-thumb">
-                                    <img src="${pageContext.request.contextPath}/src/images/volunteer-4.png" alt="${suKien.tenSuKien}" style="width:100%; height:200px; object-fit:cover;">
+                                    <img src="${pageContext.request.contextPath}/src/images/volunteer-4.png" alt="${hoatDong.tenHoatDong}" style="width:100%; height:200px; object-fit:cover;">
                                 </div>
                                 <div class="bi-content">
-                                    <h5><a href="${pageContext.request.contextPath}/activity/edit/${suKien.maSuKien}">${suKien.tenSuKien}</a></h5>
+                                    <h5><a href="${pageContext.request.contextPath}/activity/edit/${hoatDong.maHoatDong}">${hoatDong.tenHoatDong}</a></h5>
                                     <p>
-                                        <strong>Thời gian:</strong> ${suKien.thoiGianBatDau} - ${suKien.thoiGianKetThuc}<br/>
-                                        <strong>Địa điểm:</strong> ${suKien.diaDiem}<br/>
-                                        <strong>Trạng thái:</strong> ${suKien.trangThai}
+                                        <strong>Thời gian:</strong> ${hoatDong.getThoiGianBatDauFormatted()} - ${hoatDong.getThoiGianKetThucFormatted()}<br/>
+                                        <strong>Địa điểm:</strong> ${hoatDong.diaDiem}<br/>
+                                        <strong>Trạng thái:</strong> ${hoatDong.trangThai}
                                     </p>
-                                    <a href="${pageContext.request.contextPath}/activity/edit/${suKien.maSuKien}" class="btn btn-sm btn-outline-primary">Sửa</a>
-                                    <a href="${pageContext.request.contextPath}/activity/delete/${suKien.maSuKien}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</a>
+                                    <a href="${pageContext.request.contextPath}/activity/edit/${hoatDong.maHoatDong}" class="btn btn-sm btn-outline-primary">Sửa</a>
+                                    <a href="${pageContext.request.contextPath}/activity/delete/${hoatDong.maHoatDong}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</a>
                                 </div>
                             </div>
                         </div>
                     </c:forEach>
-                    <c:if test="${empty danhSachSuKien}">
+                    <c:if test="${empty danhSachHoatDong}">
                         <p class="text-center mt-4">Hiện chưa có hoạt động nào.</p>
                     </c:if>
                 </div>
-                <c:if test="${empty danhSachSuKien}">
+                <c:if test="${empty danhSachHoatDong}">
                     <p class="text-center mt-4">Hiện chưa có hoạt động nào.</p>
                 </c:if>
             </div>
 
             <!-- Phân trang -->
-            <c:if test="${not empty danhSachSuKien}">
+            <c:if test="${not empty danhSachHoatDong}">
                 <nav aria-label="Page navigation">
                     <ul class="pagination">
                         <!-- Nút Previous -->

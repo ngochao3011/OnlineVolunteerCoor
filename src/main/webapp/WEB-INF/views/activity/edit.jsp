@@ -29,33 +29,33 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-6">
                         <form action="${pageContext.request.contextPath}/activity/edit" method="post" class="p-4 border rounded">
-                            <input type="hidden" name="maSuKien" value="${suKien.maSuKien}">
+                            <input type="hidden" name="maHoatDong" value="${hoatDong.maHoatDong}">
                             <div class="mb-3">
-                                <label for="tenSuKien" class="form-label">Tên Hoạt Động:</label>
-                                <input type="text" class="form-control" id="tenSuKien" name="tenSuKien" value="${suKien.tenSuKien}" required>
+                                <label for="tenHoatDong" class="form-label">Tên Hoạt Động:</label>
+                                <input type="text" class="form-control" id="tenHoatDong" name="tenHoatDong" value="${hoatDong.tenHoatDong}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="moTa" class="form-label">Mô Tả:</label>
-                                <textarea class="form-control" id="moTa" name="moTa" rows="3">${suKien.moTa}</textarea>
+                                <textarea class="form-control" id="moTa" name="moTa" rows="3">${hoatDong.moTa}</textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="thoiGianBatDau" class="form-label">Thời Gian Bắt Đầu:</label>
-                                <input type="datetime-local" class="form-control" id="thoiGianBatDau" name="thoiGianBatDau" value="${suKien.thoiGianBatDau}" required>
+                                <input type="datetime-local" class="form-control" id="thoiGianBatDau" name="thoiGianBatDau" value="${hoatDong.thoiGianBatDau}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="thoiGianKetThuc" class="form-label">Thời Gian Kết Thúc:</label>
-                                <input type="datetime-local" class="form-control" id="thoiGianKetThuc" name="thoiGianKetThuc" value="${suKien.thoiGianKetThuc}" required>
+                                <input type="datetime-local" class="form-control" id="thoiGianKetThuc" name="thoiGianKetThuc" value="${hoatDong.thoiGianKetThuc}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="diaDiem" class="form-label">Địa Điểm:</label>
-                                <input type="text" class="form-control" id="diaDiem" name="diaDiem" value="${suKien.diaDiem}" required>
+                                <input type="text" class="form-control" id="diaDiem" name="diaDiem" value="${hoatDong.diaDiem}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="trangThai" class="form-label">Trạng Thái:</label>
                                 <select class="form-select" id="trangThai" name="trangThai" required>
-                                    <option value="Sắp tới" ${suKien.trangThai == 'Sắp tới' ? 'selected' : ''}>Upcoming</option>
-                                    <option value="Đang diễn ra" ${suKien.trangThai == 'Đang diễn ra' ? 'selected' : ''}>In Progress</option>
-                                    <option value="Đã hoàn thành" ${suKien.trangThai == 'Đã hoàn thành' ? 'selected' : ''}>Completed</option>
+                                    <option value="Sắp tới" ${hoatDong.trangThai == 'Sắp tới' ? 'selected' : ''}>Upcoming</option>
+                                    <option value="Đang diễn ra" ${hoatDong.trangThai == 'Đang diễn ra' ? 'selected' : ''}>In Progress</option>
+                                    <option value="Đã hoàn thành" ${hoatDong.trangThai == 'Đã hoàn thành' ? 'selected' : ''}>Completed</option>
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary">Cập Nhật</button>

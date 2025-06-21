@@ -26,7 +26,7 @@ public class TaiKhoanDAO implements TaiKhoanRepo {
 
     @Override
     public TaiKhoan findByEmail(String email) {
-        String sql = "select TK.maTaiKhoan as maTaiKhoan, TK.email as email, TK.matKhau as matKhau, TV.ChucVu as quyenHan from TAIKHOAN TK " +
+        String sql = "select TK.maTaiKhoan as maTaiKhoan, TK.email as email, TK.matKhau as matKhau, TV.chucVu as quyenHan from TAIKHOAN TK " +
                     "inner join THANHVIEN TV on TK.maTaiKhoan = TV.maThanhVien " +
                     "where email = ?";
         try {

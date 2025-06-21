@@ -38,11 +38,20 @@ public class AuthorizationFilter implements Filter {
             return;
         }
 
-        // Chỉ cho phép Điều phối viên truy cập đường dẫn volunteer, activity
-        if (!"Điều phối viên".equals(user.getQuyenHan())) {
-            response.sendRedirect(request.getContextPath() + "/403");
-            return;
+        // Kiểm tra URL để áp dụng quyền khác nhau
+        String requestURI = request.getRequestURI();
+        String contextPath = request.getContextPath();
+        
+        // Nếu là URL volunteer, chỉ cho phép Điều phối viên
+        if (requestURI.startsWith(contextPath + "/volunteer")) {
+            if (!"Điều phối viên".equals(user.getQuyenHan())) {
+                response.sendRedirect(request.getContextPath() + "/403");
+                return;
+            }
         }
+        
+        // Nếu là URL activity, cho phép tất cả người dùng đã đăng nhập
+        // (không cần kiểm tra quyền hạn)
 
         chain.doFilter(req, res);
     }
