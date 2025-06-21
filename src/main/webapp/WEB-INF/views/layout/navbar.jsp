@@ -19,7 +19,7 @@
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -28,7 +28,7 @@
                     <li class="nav-item">
                         <a class="nav-link click-scroll" href="${pageContext.request.contextPath}/">Home</a>
                     </li>
-                    
+
                     <c:if test="${empty sessionScope.user}">
                         <li class="nav-item">
                             <a class="nav-link click-scroll" href="#section_2">About</a>
@@ -42,26 +42,32 @@
                             <a class="nav-link click-scroll" href="#section_4">Volunteer</a>
                         </li>
                     </c:if>
-                    
+
                     <!-- Nếu đã đăng nhập -->
                     <c:if test="${not empty sessionScope.user and sessionScope.user.quyenHan == 'Điều phối viên'}">
                         <li class="nav-item">
                             <a class="nav-link btn" href="${pageContext.request.contextPath}/volunteer">Volunteer</a>
                         </li>
-                        
+
                         <li class="nav-item">
                             <a class="nav-link btn" href="${pageContext.request.contextPath}/activity">Activity</a>
                         </li>
                     </c:if>
-
+                    <c:if test="${not empty sessionScope.user and sessionScope.user.quyenHan == 'Tình nguyện viên'}">
+                        <li class="nav-item">
+                            <a class="nav-link btn" href="${pageContext.request.contextPath}/activity">Activity</a>
+                        </li>
+                    </c:if>
                     <li class="nav-item dropdown">
                         <a class="nav-link click-scroll dropdown-toggle" href="#section_5"
-                            id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">News</a>
+                           id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">News</a>
 
                         <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
                             <li><a class="dropdown-item" href="news.html">News Listing</a></li>
-
+                            <c:if test="${not empty sessionScope.user and sessionScope.user.quyenHan == 'Tình nguyện viên'}">
+                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/user/history">History</a></li>
+                            </c:if>
                             <li><a class="dropdown-item" href="news-detail.html">News Detail</a></li>
                         </ul>
                     </li>
@@ -69,7 +75,7 @@
                     <li class="nav-item">
                         <a class="nav-link click-scroll" href="#section_6">Contact</a>
                     </li>
-                    
+
                     <!-- Nếu đã đăng nhập -->
                     <c:if test="${not empty sessionScope.user}">
                         <li class="nav-item navbar-img ms-3">
@@ -78,7 +84,7 @@
                                      style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;"
                                      alt="Avatar" class="avatar" onclick="toggleDropdown()" />
                                 <div id="accountDropdown" class="dropdown-content">
-                                    <a href="${pageContext.request.contextPath}/account">Tài khoản</a>
+                                    <a href="${pageContext.request.contextPath}/profile">Tài khoản</a>
                                     <a href="${pageContext.request.contextPath}/logout">Đăng xuất</a>
                                 </div>
                             </div>

@@ -119,4 +119,11 @@ public class VolunteerDao implements VolunteerRepo {
             return null;
         }
     }
+
+    @Override
+    public boolean existsById(int id) {
+        String sql = "SELECT COUNT(*) FROM [THANHVIEN] WHERE maThanhVien = ?";
+        int count = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        return count > 0;
+    }
 }
