@@ -66,7 +66,10 @@ public class VolunteerController {
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("pageSize", PAGE_SIZE);
 
-        return "VolunteerList";
+        model.addAttribute("pageTitle", "Danh sách Tình nguyện viên");
+        model.addAttribute("customCss", "/src/css/template-custom.css");
+        model.addAttribute("pageContent", "/WEB-INF/views/VolunteerList.jsp");
+        return "layout/layoutmaster";
     }
 
     // Hiển thị form thêm mới tình nguyện viên
@@ -74,7 +77,11 @@ public class VolunteerController {
     public String showAddForm(Model model) {
         model.addAttribute("volunteer", new Volunteer());
         model.addAttribute("taiKhoan", new TaiKhoan());
-        return "VolunteerForm";
+        
+        model.addAttribute("pageTitle", "Cập nhật Tình nguyện viên");
+        model.addAttribute("customCss", "/src/css/template-custom.css");
+        model.addAttribute("pageContent", "/WEB-INF/views/VolunteerForm.jsp");
+        return "layout/layoutmaster";
     }
 
     // Hiển thị form sửa tình nguyện viên theo ID
@@ -86,7 +93,11 @@ public class VolunteerController {
         }
         model.addAttribute("volunteer", volunteer);
         model.addAttribute("taiKhoan", new TaiKhoan());
-        return "VolunteerForm";
+        
+        model.addAttribute("pageTitle", "Cập nhật Tình nguyện viên");
+        model.addAttribute("customCss", "/src/css/template-custom.css");
+        model.addAttribute("pageContent", "/WEB-INF/views/VolunteerForm.jsp");
+        return "layout/layoutmaster";
     }
 
     // Xử lý cập nhật thông tin tình nguyện viên

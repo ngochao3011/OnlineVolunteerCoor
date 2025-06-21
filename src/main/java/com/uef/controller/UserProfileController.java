@@ -41,6 +41,9 @@ public class UserProfileController {
         model.addAttribute("attendedEvents", attendedEvents);
         model.addAttribute("reviewedEventIds", reviewedEventIds);
 
-        return "user_history"; // Trả về file JSP mới mà chúng ta sẽ tạo ở bước 3
+        model.addAttribute("pageTitle", "Lịch sử tham gia");
+        model.addAttribute("customCss", "/src/css/template-custom.css");
+        model.addAttribute("pageContent", "/WEB-INF/views/user_history.jsp");
+        return "layout/layoutmaster";
     }
 }

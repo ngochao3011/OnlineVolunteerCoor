@@ -21,7 +21,7 @@ import java.io.IOException;
  * @author ADMIN
  */
 
-@WebFilter(urlPatterns = {"/volunteer", "/volunteer/*", "/activity", "/activity/*"})
+@WebFilter(urlPatterns = {"/volunteer", "/volunteer/*", "/activity", "/activity/*", "/account"})
 public class AuthorizationFilter implements Filter {
 
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)

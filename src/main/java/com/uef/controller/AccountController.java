@@ -26,28 +26,34 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Controller
 public class AccountController {
+
     @Autowired
     private VolunteerService volunteerService;
-        
+
     @GetMapping("/account")
-    public String accountPage(HttpSession session, Model model){
-        if (session != null){
+    public String accountPage(HttpSession session, Model model) {
+        if (session != null && session.getAttribute("user") != null) {
             TaiKhoan user = (TaiKhoan) session.getAttribute("user");
-            
+
             Volunteer thanhVien = volunteerService.getVolunteerById(user.getMaTaiKhoan());
             model.addAttribute("thanhVien", thanhVien);
-            return "account";
+            model.addAttribute("pageTitle", "Thông tin tài khoản");
+            model.addAttribute("customCss", "/src/css/template-custom.css");
+            model.addAttribute("pageContent", "/WEB-INF/views/account.jsp");
+            return "layout/layoutmaster";
+        } else {
+            model.addAttribute("pageTitle", "Đăng nhập");
+            model.addAttribute("customCss", "/src/css/template-signin-signup.css");
+            model.addAttribute("pageContent", "/WEB-INF/views/signin-signup.jsp");
+            return "layout/layoutmaster";
         }
-        else {
-            return "signin-signup";
-        }
-        
+
     }
-    
+
     @PostMapping("/updateAccount")
     public String updateAccount(@ModelAttribute Volunteer thanhVien,
-                            @RequestParam("avatarFile") MultipartFile avatarFile,
-                            HttpServletRequest request) {
+            @RequestParam("avatarFile") MultipartFile avatarFile,
+            HttpServletRequest request) {
 
         if (!avatarFile.isEmpty()) {
             String uploadDir = request.getServletContext().getRealPath("/uploads/");
@@ -62,7 +68,6 @@ public class AccountController {
         }
 
         //thanhVienService.update(thanhVien); // cập nhật thông tin
-
         return "redirect:/account";
     }
 }

@@ -69,9 +69,9 @@
 
                         <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
                             <li><a class="dropdown-item" href="news.html">News Listing</a></li>
-                            <c:if test="${not empty sessionScope.user and sessionScope.user.quyenHan == 'Tình nguyện viên'}">
+                                <c:if test="${not empty sessionScope.user and sessionScope.user.quyenHan == 'Tình nguyện viên'}">
                                 <li><a class="dropdown-item" href="${pageContext.request.contextPath}/user/history">History</a></li>
-                            </c:if>
+                                </c:if>
                             <li><a class="dropdown-item" href="news-detail.html">News Detail</a></li>
                         </ul>
                     </li>
@@ -88,7 +88,7 @@
                                      style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;"
                                      alt="Avatar" class="avatar" onclick="toggleDropdown()" />
                                 <div id="accountDropdown" class="dropdown-content">
-                                    <a href="${pageContext.request.contextPath}/profile">Tài khoản</a>
+                                    <a href="${pageContext.request.contextPath}/account">Tài khoản</a>
                                     <a href="${pageContext.request.contextPath}/logout">Đăng xuất</a>
                                 </div>
                             </div>

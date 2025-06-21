@@ -35,7 +35,10 @@ public class SigninSignupController {
     @GetMapping("/sign-up")
     public String showRegisterPage(Model model) {
         model.addAttribute("taiKhoan", new TaiKhoan());
-        return "signin-signup";
+        model.addAttribute("pageTitle", "Đăng ký");
+        model.addAttribute("customCss", "/src/css/template-signin-signup.css");
+        model.addAttribute("pageContent", "/WEB-INF/views/signin-signup.jsp");
+        return "layout/layoutmaster";
     }
     
     @PostMapping("/sign-up")
@@ -84,8 +87,11 @@ public class SigninSignupController {
     }
     
     @GetMapping("/sign-in")
-    public String showLoginForm() {
-        return "signin-signup";
+    public String showLoginForm(Model model) {
+        model.addAttribute("pageTitle", "Đăng nhập");
+        model.addAttribute("customCss", "/src/css/template-signin-signup.css");
+        model.addAttribute("pageContent", "/WEB-INF/views/signin-signup.jsp");
+        return "layout/layoutmaster";
     }
     
     @PostMapping("/sign-in")

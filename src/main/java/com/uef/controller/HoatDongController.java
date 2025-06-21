@@ -36,7 +36,7 @@ public class HoatDongController {
     private DanhGiaService danhGiaService;
 
     @GetMapping("")
-     public String listHoatDong(@RequestParam(name = "keyword", required = false) String keyword,
+    public String listHoatDong(@RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam(name = "location", required = false) String location,
             @RequestParam(name = "trangThai", required = false) String trangThai,
             @RequestParam(name = "page", defaultValue = "1") int page,
@@ -66,22 +66,33 @@ public class HoatDongController {
             model.addAttribute("trangThai", trangThai);
             System.out.println(currentUser.getQuyenHan());
             if ("Điều phối viên".equals(currentUser.getQuyenHan())) {
-                return "activitylist";
+                model.addAttribute("pageTitle", "Danh sách sự kiện");
+                model.addAttribute("customCss", "/src/css/template-custom.css");
+                model.addAttribute("pageContent", "/WEB-INF/views/activitylist.jsp");
+                return "layout/layoutmaster";
             } else {
-                return "activitylist_volunteer";
+                model.addAttribute("pageTitle", "Danh sách sự kiện");
+                model.addAttribute("customCss", "/src/css/template-custom.css");
+                model.addAttribute("pageContent", "/WEB-INF/views/activitylist_volunteer.jsp");
+                return "layout/layoutmaster";
             }
 
         } catch (Exception e) {
             logger.error("Lỗi khi lấy danh sách sự kiện: {}", e.getMessage(), e);
             model.addAttribute("error", "Không thể tải danh sách sự kiện");
-            return "activitylist";
+            model.addAttribute("pageTitle", "Danh sách sự kiện");
+            model.addAttribute("customCss", "/src/css/template-custom.css");
+            model.addAttribute("pageContent", "/WEB-INF/views/activitylist.jsp");
+            return "layout/layoutmaster";
         }
     }
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
         model.addAttribute("hoatDong", new HoatDong());
-        return "activity/add";
+        model.addAttribute("pageTitle", "Thêm Hoạt Động Mới");
+        model.addAttribute("pageContent", "/WEB-INF/views/activity/add.jsp");
+        return "layout/layoutmaster";
     }
 
     @PostMapping("/add")
@@ -93,16 +104,17 @@ public class HoatDongController {
         } catch (Exception e) {
             logger.error("Lỗi khi thêm hoạt động: {}", e.getMessage(), e);
             model.addAttribute("error", "Không thể thêm hoạt động");
-            return "activity/add";
+            model.addAttribute("pageTitle", "Thêm Hoạt Động Mới");
+            model.addAttribute("pageContent", "/WEB-INF/views/activity/add.jsp");
+            return "layout/layoutmaster";
         }
     }
 
-    
     @GetMapping("/details/{maHoatDong}")
     public String viewHoatDongDetails(@PathVariable int maHoatDong, Model model, HttpSession session) {
         try {
-                HoatDong hoatDong = hoatDongService.layHoatDongTheoMa(maHoatDong);
-                model.addAttribute("hoatDong", hoatDong);
+            HoatDong hoatDong = hoatDongService.layHoatDongTheoMa(maHoatDong);
+            model.addAttribute("hoatDong", hoatDong);
 
             TaiKhoan currentUser = (TaiKhoan) session.getAttribute("user");
             if (currentUser != null && "Tình nguyện viên".equals(currentUser.getQuyenHan())) {
@@ -116,7 +128,10 @@ public class HoatDongController {
                 model.addAttribute("coTheDanhGia", coTheDanhGia);
                 model.addAttribute("daDanhGia", daDanhGia);
             }
-            return "activity/details";
+            model.addAttribute("pageTitle", "Chi tiết Hoạt động - " + hoatDong.getTenHoatDong());
+            model.addAttribute("customCss", "/src/css/template-custom.css");
+            model.addAttribute("pageContent", "/WEB-INF/views/activity/details.jsp");
+            return "layout/layoutmaster";
         } catch (Exception e) {
             logger.error("Lỗi khi lấy chi tiết hoạt động: {}", e.getMessage(), e);
             model.addAttribute("error", "Không thể tải thông tin hoạt động");
@@ -129,7 +144,9 @@ public class HoatDongController {
         try {
             HoatDong hoatDong = hoatDongService.layHoatDongTheoMa(maHoatDong);
             model.addAttribute("hoatDong", hoatDong);
-            return "activity/edit";
+            model.addAttribute("pageTitle", "Chỉnh Sửa Hoạt Động");
+            model.addAttribute("pageContent", "/WEB-INF/views/activity/edit.jsp");
+            return "layout/layoutmaster";
         } catch (Exception e) {
             logger.error("Lỗi khi lấy hoạt động để chỉnh sửa: {}", e.getMessage(), e);
             model.addAttribute("error", "Không thể tải thông tin hoạt động");
@@ -146,7 +163,9 @@ public class HoatDongController {
         } catch (Exception e) {
             logger.error("Lỗi khi cập nhật hoạt động: {}", e.getMessage());
             model.addAttribute("error", "Không thể cập nhật hoạt động");
-            return "activity/edit";
+            model.addAttribute("pageTitle", "Chỉnh Sửa Hoạt Động");
+            model.addAttribute("pageContent", "/WEB-INF/views/activity/edit.jsp");
+            return "layout/layoutmaster";
         }
     }
 
@@ -177,4 +196,4 @@ public class HoatDongController {
             return "redirect:/activity";
         }
     }
-} 
+}

@@ -1,5 +1,5 @@
 window.onload = () => {
-	const container = document.getElementById('container');
+	const container = document.getElementById('container-login');
 	const switchLink = document.getElementById('switch-link');
 
 	// Lấy context path, ví dụ /OnlineVolunteerCoor

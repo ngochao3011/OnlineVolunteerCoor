@@ -1,0 +1,259 @@
+/* Account */
+.container-account {
+    background-color: #ffffff;
+    padding: 15px 30px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+.settings-card {
+    max-width: 700px;
+    margin: 20px auto;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.section-title, .section-subtitle {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.profile-img-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: auto;
+}
+
+.profile-img-container input[type="file"] {
+    display: none;
+}
+
+.profile-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.edit-icon {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    border-radius: 50%;
+    padding: 5px;
+}
+
+.form-control[readonly] {
+    background-color: #f8f9fa;
+    border: none;
+}
+
+/* Lịch sử */
+.container-history {
+    background-color: #ffffff;
+    padding: 20px 30px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+h4 {
+    color: #1976d2;
+}
+.table thead {
+    background-color: #bbdefb;
+}
+
+/* Volunteer form */
+
+.container-volunteer {
+    background-color: #ffffff;
+    padding: 15px 30px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+h4 {
+    color: #1976d2;
+}
+.error-message {
+    color: red;
+}
+.success-message {
+    color: green;
+}
+.invalid {
+    border-color: red !important;
+}
+.valid {
+    border-color: green !important;
+}
+.form-label {
+    font-weight: 500;
+}
+.btn-back {
+    margin-left: 10px;
+}
+
+/* Volunteer list */
+.container-volunteer {
+    background-color: #ffffff;
+    padding: 15px 30px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+.export-btn {
+    margin-left: 0;
+}
+.badge-active {
+    background-color: #4caf50;
+}
+.badge-inactive {
+    background-color: #9e9e9e;
+}
+.pagination {
+    justify-content: center;
+    margin-top: 20px;
+}
+.page-item.active .page-link {
+    background-color: #1976d2;
+    border-color: #1976d2;
+}
+.page-link {
+    color: #1976d2;
+}
+.page-link:hover {
+    color: #ffffff;
+    background-color: #1565c0;
+    border-color: #1565c0;
+}
+
+/* Activity list */
+.card-activity {
+    transition: transform .2s, box-shadow .2s;
+    border: none;
+    border-radius: 10px;
+}
+.card-activity:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+.card-activity .card-img-top {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    height: 200px;
+    object-fit: cover;
+}
+.card-activity .card-title {
+    color: #0057b8;
+}
+.card-activity .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.card-footer {
+    background-color: white;
+    border-top: none;
+}
+
+.container-title {
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.container-event {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #000;
+    text-align: left;
+    margin-top: 0.5rem;
+}
+
+.event-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.event-table th, .event-table td {
+    border: 1px solid #ddd;
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.event-table th {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.event-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.btn-primary {
+    display: inline-block;
+    padding: 8px 16px;
+    margin-bottom: 1rem;
+    background-color: #0097A7;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.btn-primary:hover {
+    background-color: #007C91;
+}
+
+h4 {
+    color: #1976d2;
+}
+.blog-item {
+    border: 2px solid #ccc; /* Viền màu xám, độ dày 2px */
+    border-radius: 6px; /* Góc bo tròn */
+    overflow: hidden; /* Đảm bảo nội dung không tràn ra ngoài viền */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Thêm bóng nhẹ */
+}
+.pagination {
+    justify-content: center;
+    margin-top: 20px;
+}
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+.pagination .page-link {
+    color: #007bff;
+}
+.pagination .page-link:hover {
+    background-color: #e9ecef;
+}
+
+/* user_history */
+.table-history th {
+    background-color: #f8f9fa;
+}
+
+/* details */
+.details-card {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: none;
+}
+.details-card-header {
+    background-color: #0057b8;
+    color: white;
+    padding: 1.5rem;
+}
+.details-card-body .info-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+.details-card-body .info-item i {
+    width: 30px;
+    text-align: center;
+    margin-top: 4px;
+    color: #0057b8;
+}

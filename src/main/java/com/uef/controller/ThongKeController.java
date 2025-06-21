@@ -53,6 +53,10 @@ public class ThongKeController {
         model.addAttribute("to", to);
         model.addAttribute("status", status);
 
-        return "thongke";
+        model.addAttribute("pageTitle", "Thống kê");
+        model.addAttribute("customCss", "/src/css/emplate-thongke.css");
+        model.addAttribute("includeChartJs", true);
+        model.addAttribute("pageContent", "/WEB-INF/views/thongke.jsp");
+        return "layout/layoutmaster";
     }
 }

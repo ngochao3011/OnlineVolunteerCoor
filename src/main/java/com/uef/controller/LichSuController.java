@@ -28,7 +28,10 @@ public class LichSuController {
     public String hienThiLichSu(Model model) {
         List<LichSuThaoTac> list = lichSuService.getAll();
         model.addAttribute("lichSuList", list);
-        return "LichSu"; // đây là lichsuthao.jsp
+        model.addAttribute("pageTitle", "Lịch sử thao tác");
+        model.addAttribute("customCss", "/src/css/template-custom.css");
+        model.addAttribute("pageContent", "/WEB-INF/views/LichSu.jsp");
+        return "layout/layoutmaster";
     }
 }
 

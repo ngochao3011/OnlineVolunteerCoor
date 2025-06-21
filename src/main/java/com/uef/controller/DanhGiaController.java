@@ -27,7 +27,11 @@ public class DanhGiaController {
         HoatDong hoatDong = hoatDongService.layHoatDongTheoMa(maHoatDong);
         model.addAttribute("hoatDong", hoatDong);
         model.addAttribute("danhGia", new DanhGia());
-        return "review_form"; // Trả về view form đánh giá
+        
+        
+        model.addAttribute("pageTitle", "Viết đánh giá: " + hoatDong.getTenHoatDong());
+        model.addAttribute("pageContent", "/WEB-INF/views/review_form.jsp");
+        return "layout/layoutmaster";
     }
 
     @PostMapping("/submit")
