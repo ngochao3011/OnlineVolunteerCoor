@@ -52,6 +52,10 @@
                         <li class="nav-item">
                             <a class="nav-link btn" href="${pageContext.request.contextPath}/activity">Activity</a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link btn" href="${pageContext.request.contextPath}/thongke">Thống kê</a>
+                        </li>
                     </c:if>
                     <c:if test="${not empty sessionScope.user and sessionScope.user.quyenHan == 'Tình nguyện viên'}">
                         <li class="nav-item">
