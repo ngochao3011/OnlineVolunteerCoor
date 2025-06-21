@@ -4,104 +4,91 @@
  */
 package com.uef.model;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
+/**
+ *
+ * @author Asus
+ */
 public class HoatDong {
+    private int tongSoHoatDong;
+    private double tiLeTangTruongTong;
 
-    private int maHoatDong;
-    private String tenHoatDong;
-    private String moTa;
-    private LocalDateTime thoiGianBatDau;
-    private LocalDateTime thoiGianKetThuc;
-    private String diaDiem;
-    private String trangThai;
+    private int soHoanThanh;
+    private double tiLeTangTruongHoanThanh;
 
-    // Constructors
+    private int soDangThucHien;
+    private double tiLeTangTruongDangThucHien;
+
+    private int soDaHuy;
+    private double tiLeTangTruongDaHuy;
+
     public HoatDong() {
     }
 
-    public HoatDong(int maHoatDong, String tenHoatDong, String moTa, LocalDateTime thoiGianBatDau,
-            LocalDateTime thoiGianKetThuc, String diaDiem, String trangThai) {
-        this.maHoatDong = maHoatDong;
-        this.tenHoatDong = tenHoatDong;
-        this.moTa = moTa;
-        this.thoiGianBatDau = thoiGianBatDau;
-        this.thoiGianKetThuc = thoiGianKetThuc;
-        this.diaDiem = diaDiem;
-        this.trangThai = trangThai;
+    // TỔNG
+    public int getTongSoHoatDong() {
+        return tongSoHoatDong;
     }
 
-    public String getThoiGianBatDauFormatted() {
-        if (thoiGianBatDau == null) {
-            return "";
-        }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        return thoiGianBatDau.format(formatter);
+    public void setTongSoHoatDong(int tongSoHoatDong) {
+        this.tongSoHoatDong = tongSoHoatDong;
     }
 
-    public String getThoiGianKetThucFormatted() {
-        if (thoiGianKetThuc == null) {
-            return "";
-        }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        return thoiGianKetThuc.format(formatter);
+    public double getTiLeTangTruongTong() {
+        return tiLeTangTruongTong;
     }
 
-    // Getters and Setters
-    public int getMaHoatDong() {
-        return maHoatDong;
+    public void setTiLeTangTruongTong(double tiLeTangTruongTong) {
+        this.tiLeTangTruongTong = tiLeTangTruongTong;
     }
 
-    public void setMaHoatDong(int maHoatDong) {
-        this.maHoatDong = maHoatDong;
+    // HOÀN THÀNH
+    public int getSoHoanThanh() {
+        return soHoanThanh;
     }
 
-    public String getTenHoatDong() {
-        return tenHoatDong;
+    public void setSoHoanThanh(int soHoanThanh) {
+        this.soHoanThanh = soHoanThanh;
     }
 
-    public void setTenHoatDong(String tenHoatDong) {
-        this.tenHoatDong = tenHoatDong;
+    public double getTiLeTangTruongHoanThanh() {
+        return tiLeTangTruongHoanThanh;
     }
 
-    public String getMoTa() {
-        return moTa;
+    public void setTiLeTangTruongHoanThanh(double tiLeTangTruongHoanThanh) {
+        this.tiLeTangTruongHoanThanh = tiLeTangTruongHoanThanh;
     }
 
-    public void setMoTa(String moTa) {
-        this.moTa = moTa;
+    // ĐANG THỰC HIỆN
+    public int getSoDangThucHien() {
+        return soDangThucHien;
     }
 
-    public LocalDateTime getThoiGianBatDau() {
-        return thoiGianBatDau;
+    public void setSoDangThucHien(int soDangThucHien) {
+        this.soDangThucHien = soDangThucHien;
     }
 
-    public void setThoiGianBatDau(LocalDateTime thoiGianBatDau) {
-        this.thoiGianBatDau = thoiGianBatDau;
+    public double getTiLeTangTruongDangThucHien() {
+        return tiLeTangTruongDangThucHien;
     }
 
-    public LocalDateTime getThoiGianKetThuc() {
-        return thoiGianKetThuc;
+    public void setTiLeTangTruongDangThucHien(double tiLeTangTruongDangThucHien) {
+        this.tiLeTangTruongDangThucHien = tiLeTangTruongDangThucHien;
     }
 
-    public void setThoiGianKetThuc(LocalDateTime thoiGianKetThuc) {
-        this.thoiGianKetThuc = thoiGianKetThuc;
+    // ĐÃ HỦY
+    public int getSoDaHuy() {
+        return soDaHuy;
     }
 
-    public String getDiaDiem() {
-        return diaDiem;
+    public void setSoDaHuy(int soDaHuy) {
+        this.soDaHuy = soDaHuy;
     }
 
-    public void setDiaDiem(String diaDiem) {
-        this.diaDiem = diaDiem;
+    public double getTiLeTangTruongDaHuy() {
+        return tiLeTangTruongDaHuy;
     }
 
-    public String getTrangThai() {
-        return trangThai;
+    public void setTiLeTangTruongDaHuy(double tiLeTangTruongDaHuy) {
+        this.tiLeTangTruongDaHuy = tiLeTangTruongDaHuy;
     }
-
-    public void setTrangThai(String trangThai) {
-        this.trangThai = trangThai;
-    }
-} 
+}
