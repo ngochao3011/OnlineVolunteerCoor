@@ -9,8 +9,7 @@ package com.uef.controller;
  * @author Asus
  */
 
-
-import com.uef.model.HoatDong;
+import com.uef.model.ThongKe;
 import com.uef.service.ThongKeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -43,7 +42,7 @@ public class ThongKeController {
         Map<String, Integer> thongKeThang = thongKeService.laySoLieuThongKeTheoThang();
         Map<String, Integer> thongKeTrangThai = thongKeService.laySoLieuThongKeTheoTrangThai();
 
-        HoatDong summary = thongKeService.layThongKeTongQuan();
+        ThongKe summary = thongKeService.layThongKeTongQuan();
 
         model.addAttribute("thongKeTheoThang", thongKeThang);
         model.addAttribute("thongKeTheoTrangThai", thongKeTrangThai);
