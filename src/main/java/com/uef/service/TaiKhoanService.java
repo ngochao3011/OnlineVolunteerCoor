@@ -33,4 +33,12 @@ public class TaiKhoanService {
     public Integer getID(String email){
         return taiKhoanRepo.getID(email);
     }
+    
+    public boolean updateEmail(int id, String email){
+        return taiKhoanRepo.updateEmail(id, email);
+    }
+    
+    public boolean updatePassword(int id, String pass){
+        return taiKhoanRepo.updatePassword(id, pass);
+    }
 }

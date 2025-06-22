@@ -74,6 +74,21 @@ public class VolunteerDao implements VolunteerRepo {
                 v.getChucVu(),
                 v.getMaThanhVien()) > 0;
     }
+    
+    @Override
+    public boolean updateAccount(Volunteer v) {
+        if (v.getHoTen() == null || v.getHoTen().trim().isEmpty()) {
+            throw new IllegalArgumentException("Họ tên không được để trống.");
+        }
+        String sql = "UPDATE [THANHVIEN] SET hoTen=?, sdt=?, diaChi=?, urlAvatar=? WHERE maThanhVien=?";
+
+        return jdbcTemplate.update(sql,
+                v.getHoTen(),
+                v.getSdt(),
+                v.getDiaChi(),
+                v.getUrlAvatar(),
+                v.getMaThanhVien()) > 0;
+    }
 
     @Override
     @Transactional

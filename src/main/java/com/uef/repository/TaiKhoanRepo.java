@@ -16,4 +16,6 @@ public interface TaiKhoanRepo {
     TaiKhoan findByEmail(String email);
     boolean save(TaiKhoan tk);
     Integer getID(String email);
+    boolean updateEmail(int id, String email);
+    boolean updatePassword(int id, String pass);
 }

@@ -61,4 +61,16 @@ public class TaiKhoanDAO implements TaiKhoanRepo {
         String sql = "SELECT maTaiKhoan FROM TAIKHOAN WHERE email = ?";
         return jdbcTemplate.queryForObject(sql, Integer.class, email);
     }
+    
+    @Override
+    public boolean updateEmail(int id, String email) {
+        String sql = "UPDATE TAIKHOAN set email = ? WHERE maTaiKhoan = ?";
+        return jdbcTemplate.update(sql, email, id) > 0;
+    }
+    
+    @Override
+    public boolean updatePassword(int id, String pass) {
+        String sql = "UPDATE TAIKHOAN set matKhau = ? WHERE maTaiKhoan = ?";
+        return jdbcTemplate.update(sql, pass, id) > 0;
+    }
 }

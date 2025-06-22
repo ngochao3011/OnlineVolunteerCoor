@@ -2,13 +2,13 @@
 <!DOCTYPE html>
 
 <div class="container-account">
-    <form id="accountForm" action="updateAccount" method="post" enctype="multipart/form-data">
+    <form id="accountForm" action="${pageContext.request.contextPath}/updateAccount" method="post" enctype="multipart/form-data">
         <h5 class="mb-1 section-title">Account Settings</h5>
         <p class="text-muted mb-2 section-subtitle">Manage your personal information</p>
         <div class="card p-4 settings-card">
             <div class="text-center mb-3 profile-img-container">
                 <label for="avatarInput">
-                    <img id="avatarPreview" src="${pageContext.request.contextPath}/src/images/${sessionScope.urlAvatar}" alt="avatar" class="profile-img" />
+                    <img id="avatarPreview" src="${pageContext.request.contextPath}${sessionScope.urlAvatar}" alt="avatar" class="profile-img" />
                     <img id="editIcon" src="${pageContext.request.contextPath}/src/images/edit-icon.png" class="edit-icon" width="24" style="display: none;" />
                 </label>
                 <input type="file" name="avatarFile" id="avatarInput" accept="image/*" onchange="previewAvatar(this)" style="display: none;" disabled />
@@ -18,7 +18,7 @@
 
             <div class="mb-3">
                 <label>Email</label>
-                <input type="email" class="form-control editable-field" value="${user.email}" readonly />
+                <input type="email" name="email" class="form-control editable-field" value="${user.email}" readonly />
             </div>
 
             <div class="mb-3">
@@ -43,11 +43,35 @@
                 </div>
 
                 <div>
-                    <button type="button" class="btn btn-warning">Đổi mật khẩu</button>
+                    <button type="button" class="btn btn-warning" onclick="openPasswordDialog()" >Đổi mật khẩu</button>
                 </div>
             </div>
         </div>
     </form>
+    <div id="passwordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+         background-color: rgba(0,0,0,0.5); z-index:1000;">
+        <div style="background:#fff; width:400px; margin:100px auto; padding:20px; border-radius:8px;">
+            <h5>Đổi mật khẩu</h5>
+            <form method="post" action="${pageContext.request.contextPath}/changePassword">
+                <div class="form-group">
+                    <label>Mật khẩu hiện tại:</label>
+                    <input type="password" name="currentPassword" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu mới:</label>
+                    <input type="password" name="newPassword" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Nhập lại mật khẩu mới:</label>
+                    <input type="password" name="confirmNewPassword" class="form-control" required>
+                </div>
+                <div class="mt-3 text-end">
+                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                    <button type="button" class="btn btn-secondary" onclick="closePasswordDialog()">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -70,4 +94,13 @@
             avatarPreview.src = URL.createObjectURL(file); // Hiển thị trước ảnh mới
         }
     });
+    function openPasswordDialog() {
+        document.getElementById('passwordModal').style.display = 'block';
+    }
+    ;
+
+    function closePasswordDialog() {
+        document.getElementById('passwordModal').style.display = 'none';
+    }
+    ;
 </script>

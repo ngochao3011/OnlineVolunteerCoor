@@ -53,7 +53,10 @@ public class ThongKeController {
         model.addAttribute("to", to);
         model.addAttribute("status", status);
 
-        return "thongke/hoatdong";
+        model.addAttribute("pageTitle", "Thống Kê Hoạt Động");
+        model.addAttribute("customCss", "/src/css/template-custom.css");
+        model.addAttribute("pageContent", "/WEB-INF/views/thongke/hoatdong.jsp");
+        return "layout/layoutmaster";
     }
 
     // ================= 2. THỐNG KÊ TÌNH NGUYỆN VIÊN =================
@@ -82,7 +85,10 @@ public class ThongKeController {
         model.addAttribute("from", from);
         model.addAttribute("to", to);
 
-        return "thongke/tinhnguyenvien"; 
+        model.addAttribute("pageTitle", "Thống Kê Tình Nguyện Viên");
+        model.addAttribute("customCss", "/src/css/template-custom.css");
+        model.addAttribute("pageContent", "/WEB-INF/views/thongke/tinhnguyenvien.jsp");
+        return "layout/layoutmaster";
     }
 
     // ================= 3. EXPORT EXCEL - HOẠT ĐỘNG =================

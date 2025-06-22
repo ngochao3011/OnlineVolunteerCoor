@@ -194,7 +194,6 @@ h4 {
 .btn-primary {
     display: inline-block;
     padding: 8px 16px;
-    margin-bottom: 1rem;
     background-color: #0097A7;
     color: white;
     text-decoration: none;
@@ -256,4 +255,20 @@ h4 {
     text-align: center;
     margin-top: 4px;
     color: #0057b8;
+}
+
+/* Thống kê */
+.card-box {
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+.section-title h4 {
+    margin-bottom: 20px;
+}
+.chart-container {
+    position: relative;
+    height: 320px;
+    width: 100%;
 }

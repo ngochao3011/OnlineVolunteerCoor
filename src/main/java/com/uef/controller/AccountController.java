@@ -6,19 +6,21 @@ package com.uef.controller;
 
 import com.uef.model.TaiKhoan;
 import com.uef.model.Volunteer;
+import com.uef.service.TaiKhoanService;
 import com.uef.service.VolunteerService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -29,6 +31,9 @@ public class AccountController {
 
     @Autowired
     private VolunteerService volunteerService;
+
+    @Autowired
+    private TaiKhoanService taiKhoanService;
 
     @GetMapping("/account")
     public String accountPage(HttpSession session, Model model) {
@@ -51,23 +56,74 @@ public class AccountController {
     }
 
     @PostMapping("/updateAccount")
-    public String updateAccount(@ModelAttribute Volunteer thanhVien,
-            @RequestParam("avatarFile") MultipartFile avatarFile,
-            HttpServletRequest request) {
+    public String updateAccount(
+            @RequestParam("email") String email,
+            @RequestParam("avatarFile") MultipartFile avatar,
+            @RequestParam("hoTen") String hoTen,
+            @RequestParam("sdt") String sdt,
+            @RequestParam("diaChi") String diaChi,
+            HttpSession session) throws IOException {
 
-        if (!avatarFile.isEmpty()) {
-            String uploadDir = request.getServletContext().getRealPath("/uploads/");
-            String fileName = avatarFile.getOriginalFilename();
-            File file = new File(uploadDir + fileName);
-            try {
-                avatarFile.transferTo(file);
-                thanhVien.setUrlAvatar("/uploads/" + fileName);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        TaiKhoan user = (TaiKhoan) session.getAttribute("user");
+
+        // Cập nhật thông tin cơ bản
+        Volunteer volunteer = new Volunteer();
+        volunteer.setMaThanhVien(user.getMaTaiKhoan());
+        volunteer.setHoTen(hoTen);
+        volunteer.setSdt(sdt);
+        volunteer.setDiaChi(diaChi);
+
+        if (!avatar.isEmpty()) {
+
+            String fileName = UUID.randomUUID() + "_" + avatar.getOriginalFilename();
+            String uploadDir = "D:/uploads/";
+            File dest = new File(uploadDir + fileName);
+            avatar.transferTo(dest);
+            volunteer.setUrlAvatar("/images/uploads/" + fileName);
+            session.setAttribute("urlAvatar", "/images/uploads/" + fileName);
+
+        }
+        volunteerService.updateVolunteer(volunteer);
+
+        if (!email.equals(user.getEmail())) {
+            taiKhoanService.updateEmail(user.getMaTaiKhoan(), email);
+        }
+        user.setEmail(email);
+        session.setAttribute("user", user);
+
+        return "redirect:/account";
+    }
+
+    @PostMapping("/changePassword")
+    public String changePassword(
+            @RequestParam("currentPassword") String currentPassword,
+            @RequestParam("newPassword") String newPassword,
+            @RequestParam("confirmNewPassword") String confirmNewPassword,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        TaiKhoan user = (TaiKhoan) session.getAttribute("user");
+
+        // Kiểm tra mật khẩu hiện tại
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if (user != null && !encoder.matches(currentPassword, user.getMatKhau())) {
+            redirectAttributes.addFlashAttribute("error", "Mật khẩu hiện tại không đúng!");
+            return "redirect:/account";
+        }
+        
+        // Kiểm tra mật khẩu mới
+        if (!newPassword.equals(confirmNewPassword)) {
+            redirectAttributes.addFlashAttribute("error", "Mật khẩu mới không khớp!");
+            return "redirect:/account";
         }
 
-        //thanhVienService.update(thanhVien); // cập nhật thông tin
+        // Cập nhật mật khẩu mới
+        String encodedNew = encoder.encode(newPassword);
+        taiKhoanService.updatePassword(user.getMaTaiKhoan(), encodedNew);
+        user.setMatKhau(encodedNew);
+        session.setAttribute("user", user);
+        redirectAttributes.addFlashAttribute("success", "Đổi mật khẩu thành công!");
+
         return "redirect:/account";
     }
 }

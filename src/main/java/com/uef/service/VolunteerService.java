@@ -55,6 +55,17 @@ public class VolunteerService {
 
         return success;
     }
+    
+    public boolean updateAccount(Volunteer v) {
+        Volunteer old = volunteerRepo.getById(v.getMaThanhVien());
+        if (old == null) {
+            return false;
+        }
+
+        boolean success = volunteerRepo.updateAccount(v);
+
+        return success;
+    }
 
     public boolean deleteVolunteer(int maThanhVien) {
         Volunteer old = volunteerRepo.getById(maThanhVien);

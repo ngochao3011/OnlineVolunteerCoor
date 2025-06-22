@@ -103,7 +103,7 @@ public class SigninSignupController {
         if (taiKhoan != null && new BCryptPasswordEncoder().matches(password, taiKhoan.getMatKhau())) {
             String urlAvatar = volunteerService.getAvatarbyId(taiKhoan.getMaTaiKhoan());
             if (urlAvatar == null || urlAvatar.trim().isEmpty()){
-                urlAvatar = "default-avatar.png"; // đường dẫn ảnh mặc định
+                urlAvatar = "/src/images/default-avatar.png"; // đường dẫn ảnh mặc định
             }
             session.setAttribute("user", taiKhoan);
             session.setAttribute("urlAvatar", urlAvatar);
