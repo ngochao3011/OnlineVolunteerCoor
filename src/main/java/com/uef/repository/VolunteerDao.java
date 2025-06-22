@@ -79,11 +79,9 @@ public class VolunteerDao implements VolunteerRepo {
     @Transactional
     public boolean delete(int maThanhVien) {
         try {
-            // Xóa bản ghi trong bảng THANHVIEN trước
+            // Thực hiện xóa bản ghi trong bảng THANHVIEN
             String deleteThanhVienSql = "DELETE FROM [THANHVIEN] WHERE maThanhVien = ?";
             int thanhVienRows = jdbcTemplate.update(deleteThanhVienSql, maThanhVien);
-
-            // Xóa bản ghi trong bảng TAIKHOAN sau
             String deleteAccountSql = "DELETE FROM [TAIKHOAN] WHERE maTaiKhoan = ?";
             int accountRows = jdbcTemplate.update(deleteAccountSql, maThanhVien);
 
@@ -91,9 +89,12 @@ public class VolunteerDao implements VolunteerRepo {
             System.out.println("Deleted TAIKHOAN with maTaiKhoan: " + maThanhVien + ", rows affected: " + accountRows);
 
             return thanhVienRows > 0;
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            System.err.println("Data integrity violation when deleting THANHVIEN with maThanhVien: " + maThanhVien + ", " + e.getMessage());
+            throw e; 
         } catch (Exception e) {
-            System.err.println("Error deleting THANHVIEN with maThanhVien: " + maThanhVien + ", " + e.getMessage());
-            throw new RuntimeException("Lỗi khi xóa thành viên: " + e.getMessage());
+            System.err.println("Error deleting THANHVien with maThanhVien: " + maThanhVien + ", " + e.getMessage());
+            throw new RuntimeException("Đã xảy ra lỗi không mong muốn khi xóa thành viên. Vui lòng thử lại.", e);
         }
     }
 
