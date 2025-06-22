@@ -53,9 +53,18 @@
                             <a class="nav-link btn" href="${pageContext.request.contextPath}/activity">Activity</a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link btn" href="${pageContext.request.contextPath}/thongke">Thống kê</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link click-scroll dropdown-toggle" href="#section_5"
+                               id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown"
+                               aria-expanded="false">Thống kê</a>
+
+                            <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
+                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/thongke/hoatdong">Hoạt Động</a></li>
+                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/thongke/tinhnguyenvien">Tình nguyện viên</a></li>
+                            </ul>
+
                         </li>
+
                     </c:if>
                     <c:if test="${not empty sessionScope.user and sessionScope.user.quyenHan == 'Tình nguyện viên'}">
                         <li class="nav-item">
