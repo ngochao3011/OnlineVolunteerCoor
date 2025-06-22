@@ -4,166 +4,269 @@
  */
 package com.uef.repository;
 
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 /**
  *
  * @author Asus
  */
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import javax.sql.DataSource;
-import org.springframework.stereotype.Repository;
-
 @Repository
 public class ThongKeDAO implements ThongKeRepo {
 
-    private final DataSource dataSource;
+    @Autowired
+    private DataSource dataSource;
 
-    public ThongKeDAO(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    // 1. Biểu đồ theo tháng
     @Override
-    public Map<String, Integer> getThongKeTheoThang() {
+    public Map<String, Integer> getThongKeTheoThang(LocalDate from, LocalDate to, String status) {
         Map<String, Integer> result = new LinkedHashMap<>();
-        String sql = "SELECT FORMAT(thoiGianBatDau, 'yyyy-MM') AS thang, COUNT(*) AS soLuong "
-                + "FROM HOATDONG GROUP BY FORMAT(thoiGianBatDau, 'yyyy-MM') ORDER BY thang";
-        try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        StringBuilder sql = new StringBuilder("SELECT FORMAT(thoiGianBatDau, 'yyyy-MM') AS thang, COUNT(*) AS soLuong FROM HOATDONG WHERE 1=1 ");
+        if (from != null) {
+            sql.append(" AND thoiGianBatDau >= ? ");
+        }
+        if (to != null) {
+            sql.append(" AND thoiGianBatDau <= ? ");
+        }
+        if (status != null && !status.isEmpty()) {
+            sql.append(" AND trangThai = ? ");
+        }
+        sql.append(" GROUP BY FORMAT(thoiGianBatDau, 'yyyy-MM') ORDER BY thang");
+
+        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            int index = 1;
+            if (from != null) {
+                ps.setDate(index++, Date.valueOf(from));
+            }
+            if (to != null) {
+                ps.setDate(index++, Date.valueOf(to));
+            }
+            if (status != null && !status.isEmpty()) {
+                ps.setString(index++, status);
+            }
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 result.put(rs.getString("thang"), rs.getInt("soLuong"));
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
     }
 
-    // 2. Thống kê trạng thái hiện tại
     @Override
-    public Map<String, Integer> getThongKeTheoTrangThai() {
+    public Map<String, Integer> getThongKeTheoTrangThai(LocalDate from, LocalDate to, String status) {
         Map<String, Integer> result = new LinkedHashMap<>();
-        String sql = "SELECT trangThai, COUNT(*) AS soLuong FROM HOATDONG GROUP BY trangThai";
-        try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        StringBuilder sql = new StringBuilder("SELECT trangThai, COUNT(*) AS soLuong FROM HOATDONG WHERE 1=1 ");
+        if (from != null) {
+            sql.append(" AND thoiGianBatDau >= ? ");
+        }
+        if (to != null) {
+            sql.append(" AND thoiGianBatDau <= ? ");
+        }
+        if (status != null && !status.isEmpty()) {
+            sql.append(" AND trangThai = ? ");
+        }
+        sql.append(" GROUP BY trangThai");
+
+        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            int index = 1;
+            if (from != null) {
+                ps.setDate(index++, Date.valueOf(from));
+            }
+            if (to != null) {
+                ps.setDate(index++, Date.valueOf(to));
+            }
+            if (status != null && !status.isEmpty()) {
+                ps.setString(index++, status);
+            }
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 result.put(rs.getString("trangThai"), rs.getInt("soLuong"));
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
     }
 
-    // 3. Tổng số hoạt động hiện tại (tháng này)
     @Override
-    public int getTongSoHoatDong() {
-        return countBySQL("SELECT COUNT(*) FROM HOATDONG WHERE MONTH(thoiGianBatDau) = MONTH(GETDATE()) AND YEAR(thoiGianBatDau) = YEAR(GETDATE())");
+    public int getTongSoHoatDong(LocalDate from, LocalDate to, String status) {
+        return countWithCondition(from, to, status, null);
     }
 
     @Override
-    public int getSoHoatDongThangTruoc() {
-        return countBySQL("SELECT COUNT(*) FROM HOATDONG WHERE MONTH(thoiGianBatDau) = MONTH(DATEADD(MONTH, -1, GETDATE())) AND YEAR(thoiGianBatDau) = YEAR(DATEADD(MONTH, -1, GETDATE()))");
+    public int getSoHoatDongThangTruoc(String status) {
+        LocalDate now = LocalDate.now().withDayOfMonth(1);
+        LocalDate from = now.minusMonths(1);
+        LocalDate to = now.minusDays(1);
+        return countWithCondition(from, to, status, null);
     }
 
-    // 4. Thống kê theo trạng thái tháng này / tháng trước
     @Override
-    public int getSoHoanThanh() {
-        return getSoTrangThaiTheoThang("Hoàn thành", 0);
+    public int getSoHoanThanh(LocalDate from, LocalDate to) {
+        return countWithCondition(from, to, "Hoàn thành", null);
     }
 
     @Override
     public int getSoHoanThanhThangTruoc() {
-        return getSoTrangThaiTheoThang("Hoàn thành", -1);
+        LocalDate now = LocalDate.now().withDayOfMonth(1);
+        return countWithCondition(now.minusMonths(1), now.minusDays(1), "Hoàn thành", null);
     }
 
     @Override
-    public int getSoDangThucHien() {
-        return getSoTrangThaiTheoThang("Đang thực hiện", 0);
+    public int getSoDangThucHien(LocalDate from, LocalDate to) {
+        return countWithCondition(from, to, "Đang thực hiện", null);
     }
 
     @Override
     public int getSoDangThucHienThangTruoc() {
-        return getSoTrangThaiTheoThang("Đang thực hiện", -1);
+        LocalDate now = LocalDate.now().withDayOfMonth(1);
+        return countWithCondition(now.minusMonths(1), now.minusDays(1), "Đang thực hiện", null);
     }
 
     @Override
-    public int getSoDaHuy() {
-        return getSoTrangThaiTheoThang("Đã hủy", 0);
+    public int getSoDaHuy(LocalDate from, LocalDate to) {
+        return countWithCondition(from, to, "Đã hủy", null);
     }
 
     @Override
     public int getSoDaHuyThangTruoc() {
-        return getSoTrangThaiTheoThang("Đã hủy", -1);
+        LocalDate now = LocalDate.now().withDayOfMonth(1);
+        return countWithCondition(now.minusMonths(1), now.minusDays(1), "Đã hủy", null);
     }
 
-    // 5. Dành cho lọc từ-to
-    @Override
-    public int getSoHoatDongBetween(String from, String to) {
-        String sql = "SELECT COUNT(*) FROM HOATDONG WHERE thoiGianBatDau BETWEEN ? AND ?";
-        try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, from);
-            stmt.setString(2, to);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
+    private int countWithCondition(LocalDate from, LocalDate to, String status, String extra) {
+        int result = 0;
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM HOATDONG WHERE 1=1 ");
+        if (from != null) {
+            sql.append(" AND thoiGianBatDau >= ? ");
+        }
+        if (to != null) {
+            sql.append(" AND thoiGianBatDau <= ? ");
+        }
+        if (status != null && !status.isEmpty()) {
+            sql.append(" AND trangThai = ? ");
+        }
+        if (extra != null) {
+            sql.append(" AND ").append(extra);
+        }
+
+        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            int index = 1;
+            if (from != null) {
+                ps.setDate(index++, Date.valueOf(from));
             }
-        } catch (SQLException e) {
+            if (to != null) {
+                ps.setDate(index++, Date.valueOf(to));
+            }
+            if (status != null && !status.isEmpty()) {
+                ps.setString(index++, status);
+            }
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                result = rs.getInt(1);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return 0;
+        return result;
     }
 
     @Override
-    public int getSoTrangThaiBetween(String trangThai, String from, String to) {
-        String sql = "SELECT COUNT(*) FROM HOATDONG WHERE trangThai = ? AND thoiGianBatDau BETWEEN ? AND ?";
-        try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, trangThai);
-            stmt.setString(2, from);
-            stmt.setString(3, to);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
+    public Map<String, Integer> getThongKeTNVTheoHoatDong(LocalDate from, LocalDate to) {
+        Map<String, Integer> result = new LinkedHashMap<>();
+        StringBuilder sql = new StringBuilder(
+                "SELECT hd.tenHoatDong, COUNT(DISTINCT d.maTNV) AS soTNV "
+                + "FROM DANGKY d JOIN HOATDONG hd ON d.maHoatDong = hd.maHoatDong "
+                + "WHERE 1=1 ");
+
+        if (from != null) {
+            sql.append(" AND hd.thoiGianBatDau >= ? ");
+        }
+        if (to != null) {
+            sql.append(" AND hd.thoiGianBatDau <= ? ");
+        }
+        sql.append(" GROUP BY hd.tenHoatDong ORDER BY hd.tenHoatDong");
+
+        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            int index = 1;
+            if (from != null) {
+                ps.setDate(index++, Date.valueOf(from));
             }
-        } catch (SQLException e) {
+            if (to != null) {
+                ps.setDate(index++, Date.valueOf(to));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                result.put(rs.getString("tenHoatDong"), rs.getInt("soTNV"));
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return 0;
+
+        return result;
     }
 
-    // ====== HÀM HỖ TRỢ CHUNG ======
-    private int countBySQL(String sql) {
-        try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+    @Override
+    public int getTongTNVThamGia(LocalDate from, LocalDate to) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(DISTINCT d.maTNV) "
+                + "FROM DANGKY d JOIN HOATDONG h ON d.maHoatDong = h.maHoatDong WHERE 1=1 ");
+        if (from != null) {
+            sql.append(" AND h.thoiGianBatDau >= ? ");
+        }
+        if (to != null) {
+            sql.append(" AND h.thoiGianBatDau <= ? ");
+        }
+
+        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            int index = 1;
+            if (from != null) {
+                ps.setDate(index++, Date.valueOf(from));
+            }
+            if (to != null) {
+                ps.setDate(index++, Date.valueOf(to));
+            }
+
+            ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
             }
-        } catch (SQLException e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
         return 0;
     }
 
-    private int getSoTrangThaiTheoThang(String trangThai, int offsetMonth) {
-        String sql = "SELECT COUNT(*) FROM HOATDONG "
-                + "WHERE trangThai = ? "
-                + "AND MONTH(thoiGianBatDau) = MONTH(DATEADD(MONTH, ?, GETDATE())) "
-                + "AND YEAR(thoiGianBatDau) = YEAR(DATEADD(MONTH, ?, GETDATE()))";
-        try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, trangThai);
-            stmt.setInt(2, offsetMonth);
-            stmt.setInt(3, offsetMonth);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
+    @Override
+    public int getTongTNVThangTruoc() {
+        LocalDate now = LocalDate.now().withDayOfMonth(1);
+        LocalDate from = now.minusMonths(1);
+        LocalDate to = now.minusDays(1);
+        return getTongTNVThamGia(from, to);
+    }
+
+    @Override
+    public Map<String, Integer> getThongKeTNVTheoThang(LocalDate from, LocalDate to) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public int getTongTNV(LocalDate from, LocalDate to) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

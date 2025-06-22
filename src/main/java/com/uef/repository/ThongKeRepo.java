@@ -4,31 +4,50 @@
  */
 package com.uef.repository;
 
-
 /**
  *
  * @author Asus
  */
+import java.time.LocalDate;
 import java.util.Map;
 
 public interface ThongKeRepo {
 
-    Map<String, Integer> getThongKeTheoThang();
-    Map<String, Integer> getThongKeTheoTrangThai();
+    // ==== THỐNG KÊ HOẠT ĐỘNG ====
+    // Line chart theo tháng
+    Map<String, Integer> getThongKeTheoThang(LocalDate from, LocalDate to, String status);
 
-    int getTongSoHoatDong();
-    int getSoHoatDongThangTruoc();
+    // Pie chart theo trạng thái
+    Map<String, Integer> getThongKeTheoTrangThai(LocalDate from, LocalDate to, String status);
 
-    int getSoHoanThanh();
+    // Summary cards hoạt động
+    int getTongSoHoatDong(LocalDate from, LocalDate to, String status);
+
+    int getSoHoatDongThangTruoc(String status);
+
+    int getSoHoanThanh(LocalDate from, LocalDate to);
+
     int getSoHoanThanhThangTruoc();
 
-    int getSoDangThucHien();
+    int getSoDangThucHien(LocalDate from, LocalDate to);
+
     int getSoDangThucHienThangTruoc();
 
-    int getSoDaHuy();
+    int getSoDaHuy(LocalDate from, LocalDate to);
+
     int getSoDaHuyThangTruoc();
 
-    // Dành cho lọc theo khoảng thời gian
-    int getSoHoatDongBetween(String from, String to);
-    int getSoTrangThaiBetween(String trangThai, String from, String to);
+    // ==== THỐNG KÊ TÌNH NGUYỆN VIÊN ====
+    Map<String, Integer> getThongKeTNVTheoHoatDong(LocalDate from, LocalDate to);
+
+    int getTongTNVThamGia(LocalDate from, LocalDate to);
+
+    int getTongTNVThangTruoc();
+
+    // Line chart TNV theo tháng
+    Map<String, Integer> getThongKeTNVTheoThang(LocalDate from, LocalDate to);
+
+    // Tổng TNV theo thời gian
+    int getTongTNV(LocalDate from, LocalDate to);
+
 }
