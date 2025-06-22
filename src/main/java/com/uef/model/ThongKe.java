@@ -9,28 +9,65 @@ package com.uef.model;
  * @author Asus
  */
 public class ThongKe {
+
+    // Thống kê hoạt động 
     private int tongSoHoatDong;
-    private double tiLeTangTruongTong;
-
     private int soHoanThanh;
-    private double tiLeTangTruongHoanThanh;
-
     private int soDangThucHien;
-    private double tiLeTangTruongDangThucHien;
-
     private int soDaHuy;
+    private double tiLeTangTruongTong;
+    private double tiLeTangTruongHoanThanh;
+    private double tiLeTangTruongDangThucHien;
     private double tiLeTangTruongDaHuy;
 
-    public ThongKe() {
+    // Thống kê tình nguyện viên 
+    private int tongTNV;
+    private int tongSo;
+    private double tiLeTangTruong;
+
+    public int getTongTNV() {
+        return tongTNV;
     }
 
-    // TỔNG
+    public void setTongTNV(int tongTNV) {
+        this.tongTNV = tongTNV;
+    }
+
+    private String thang;
+    private int soLuongTNV;
+
+    // Getters & Setters
+    //  phần hoạt động 
     public int getTongSoHoatDong() {
         return tongSoHoatDong;
     }
 
     public void setTongSoHoatDong(int tongSoHoatDong) {
         this.tongSoHoatDong = tongSoHoatDong;
+    }
+
+    public int getSoHoanThanh() {
+        return soHoanThanh;
+    }
+
+    public void setSoHoanThanh(int soHoanThanh) {
+        this.soHoanThanh = soHoanThanh;
+    }
+
+    public int getSoDangThucHien() {
+        return soDangThucHien;
+    }
+
+    public void setSoDangThucHien(int soDangThucHien) {
+        this.soDangThucHien = soDangThucHien;
+    }
+
+    public int getSoDaHuy() {
+        return soDaHuy;
+    }
+
+    public void setSoDaHuy(int soDaHuy) {
+        this.soDaHuy = soDaHuy;
     }
 
     public double getTiLeTangTruongTong() {
@@ -41,30 +78,12 @@ public class ThongKe {
         this.tiLeTangTruongTong = tiLeTangTruongTong;
     }
 
-    // HOÀN THÀNH
-    public int getSoHoanThanh() {
-        return soHoanThanh;
-    }
-
-    public void setSoHoanThanh(int soHoanThanh) {
-        this.soHoanThanh = soHoanThanh;
-    }
-
     public double getTiLeTangTruongHoanThanh() {
         return tiLeTangTruongHoanThanh;
     }
 
     public void setTiLeTangTruongHoanThanh(double tiLeTangTruongHoanThanh) {
         this.tiLeTangTruongHoanThanh = tiLeTangTruongHoanThanh;
-    }
-
-    // ĐANG THỰC HIỆN
-    public int getSoDangThucHien() {
-        return soDangThucHien;
-    }
-
-    public void setSoDangThucHien(int soDangThucHien) {
-        this.soDangThucHien = soDangThucHien;
     }
 
     public double getTiLeTangTruongDangThucHien() {
@@ -75,15 +94,6 @@ public class ThongKe {
         this.tiLeTangTruongDangThucHien = tiLeTangTruongDangThucHien;
     }
 
-    // ĐÃ HỦY
-    public int getSoDaHuy() {
-        return soDaHuy;
-    }
-
-    public void setSoDaHuy(int soDaHuy) {
-        this.soDaHuy = soDaHuy;
-    }
-
     public double getTiLeTangTruongDaHuy() {
         return tiLeTangTruongDaHuy;
     }
@@ -91,4 +101,38 @@ public class ThongKe {
     public void setTiLeTangTruongDaHuy(double tiLeTangTruongDaHuy) {
         this.tiLeTangTruongDaHuy = tiLeTangTruongDaHuy;
     }
+
+    //  phần TNV
+    public String getThang() {
+        return thang;
+    }
+
+    public void setThang(String thang) {
+        this.thang = thang;
+    }
+
+    public int getSoLuongTNV() {
+        return soLuongTNV;
+    }
+
+    public void setSoLuongTNV(int soLuongTNV) {
+        this.soLuongTNV = soLuongTNV;
+    }
+
+    public int getTongSo() {
+        return tongSo;
+    }
+
+    public double getTiLeTangTruong() {
+        return tiLeTangTruong;
+    }
+
+    public void setTongSo(int tongSo) {
+        this.tongSo = tongSo;
+    }
+
+    public void setTiLeTangTruong(double tiLeTangTruong) {
+        this.tiLeTangTruong = tiLeTangTruong;
+    }
+    
 }
