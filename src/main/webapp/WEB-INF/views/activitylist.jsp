@@ -32,6 +32,7 @@
                             </p>
                             <a href="${pageContext.request.contextPath}/activity/edit/${hoatDong.maHoatDong}" class="btn btn-sm btn-outline-primary">Sửa</a>
                             <a href="${pageContext.request.contextPath}/activity/delete/${hoatDong.maHoatDong}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</a>
+                            <a href="${pageContext.request.contextPath}/activity/checkin/${hoatDong.maHoatDong}" class="btn btn-sm btn-outline-primary">Điểm danh</a>
                         </div>
                     </div>
                 </div>

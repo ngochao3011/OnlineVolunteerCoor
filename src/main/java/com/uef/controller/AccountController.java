@@ -77,6 +77,10 @@ public class AccountController {
 
             String fileName = UUID.randomUUID() + "_" + avatar.getOriginalFilename();
             String uploadDir = "D:/uploads/";
+            File qrDir = new File(uploadDir);
+            if (!qrDir.exists()) {
+                qrDir.mkdirs(); // tạo cả chuỗi thư mục nếu cần
+            }
             File dest = new File(uploadDir + fileName);
             avatar.transferTo(dest);
             volunteer.setUrlAvatar("/images/uploads/" + fileName);
@@ -110,7 +114,7 @@ public class AccountController {
             redirectAttributes.addFlashAttribute("error", "Mật khẩu hiện tại không đúng!");
             return "redirect:/account";
         }
-        
+
         // Kiểm tra mật khẩu mới
         if (!newPassword.equals(confirmNewPassword)) {
             redirectAttributes.addFlashAttribute("error", "Mật khẩu mới không khớp!");

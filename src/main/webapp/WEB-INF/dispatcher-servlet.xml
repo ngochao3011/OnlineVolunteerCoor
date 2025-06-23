@@ -13,7 +13,9 @@
     <context:component-scan base-package="com.uef" />
   
     <mvc:annotation-driven />
-    <mvc:resources mapping="/src/**" location="/src/" />
+    <mvc:resources mapping="/src/**" location="/src/" >
+        <mvc:cache-control max-age="0" />
+    </mvc:resources>
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/views/" />
@@ -33,6 +35,6 @@
     </bean>
   
     <bean id="multipartResolver"
-      class="org.springframework.web.multipart.support.StandardServletMultipartResolver" />
+          class="org.springframework.web.multipart.support.StandardServletMultipartResolver" />
 
 </beans>

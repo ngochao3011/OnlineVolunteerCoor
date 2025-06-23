@@ -17,8 +17,11 @@ import java.util.List;
 import org.slf4j.*;
 import jakarta.servlet.http.HttpSession;
 import com.uef.model.TaiKhoan;
+import com.uef.util.QRGenerator;
+import java.io.File;
 import java.util.ArrayList;
 import java.time.LocalDate;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/activity")
@@ -196,4 +199,54 @@ public class HoatDongController {
             return "redirect:/activity";
         }
     }
+
+    @GetMapping("/checkin/{maHoatDong}")
+    public String showQRCode(@PathVariable int maHoatDong, Model model, HttpSession session) {
+        TaiKhoan user = (TaiKhoan) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/sign-in";
+        }
+
+        // Link xác nhận điểm danh
+        String qrData = "http://localhost:8080/OnlineVolunteerCoor/activity/confirm-checkin/" + maHoatDong;
+
+        // Tạo ảnh QR nội bộ (tên file: qr_{hoatDongId}.png)
+        String fileName = "qr_" + maHoatDong + ".png";
+        String dirPath = "D:/uploads/qrcodes/";
+        String filePath = dirPath + fileName;
+
+        File qrDir = new File(dirPath);
+        if (!qrDir.exists()) {
+            qrDir.mkdirs(); // tạo cả chuỗi thư mục nếu cần
+        }
+
+        try {
+            QRGenerator.generateQRCodeImage(qrData, filePath);
+        } catch (Exception e) {
+            model.addAttribute("error", "Không thể tạo mã QR");
+        }
+
+        model.addAttribute("qrImage", "/images/uploads/qrcodes/" + fileName);
+        model.addAttribute("qrLink", qrData);
+        model.addAttribute("pageTitle", "Điểm danh Hoạt Động " + maHoatDong);
+        model.addAttribute("pageContent", "/WEB-INF/views/activity/checkin.jsp");
+        return "layout/layoutmaster";
+    }
+
+    @GetMapping("/confirm-checkin/{maHoatDong}")
+    public String confirmCheckin(@PathVariable("maHoatDong") int maHoatDong,
+            Model model,
+            HttpSession session,
+            RedirectAttributes redirect) {
+        TaiKhoan user = (TaiKhoan) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/sign-in";
+        }
+
+        
+        model.addAttribute("pageTitle", "Xác nhận điểm danh hoạt động " + maHoatDong);
+        model.addAttribute("pageContent", "/WEB-INF/views/activity/confirm-checkin.jsp");
+        return "layout/layoutmaster";
+    }
+
 }
