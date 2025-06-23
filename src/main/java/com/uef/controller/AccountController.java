@@ -83,7 +83,7 @@ public class AccountController {
             session.setAttribute("urlAvatar", "/images/uploads/" + fileName);
 
         }
-        volunteerService.updateVolunteer(volunteer);
+        volunteerService.updateAccount(volunteer);
 
         if (!email.equals(user.getEmail())) {
             taiKhoanService.updateEmail(user.getMaTaiKhoan(), email);

@@ -12,12 +12,12 @@
             <param-name>contextConfigLocation</param-name>
             <param-value>/WEB-INF/dispatcher-servlet.xml</param-value>
         </init-param>
+        <load-on-startup>1</load-on-startup>
         <multipart-config>
             <max-file-size>5242880</max-file-size> <!-- 5MB -->
             <max-request-size>5242880</max-request-size>
             <file-size-threshold>0</file-size-threshold>
         </multipart-config>
-        <load-on-startup>1</load-on-startup>
     </servlet>
   
     <servlet-mapping>
