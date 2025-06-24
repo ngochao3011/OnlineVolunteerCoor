@@ -4,12 +4,6 @@
     Author     : ADMIN
 --%>
 
-<%-- 
-    Document   : activitylist
-    Created on : Jun 8, 2025, 2:48:28 AM
-    Author     : ADMIN
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
