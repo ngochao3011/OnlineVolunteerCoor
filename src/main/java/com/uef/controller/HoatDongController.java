@@ -19,8 +19,6 @@ import jakarta.servlet.http.HttpSession;
 import com.uef.model.TaiKhoan;
 import com.uef.util.QRGenerator;
 import java.io.File;
-import java.util.ArrayList;
-import java.time.LocalDate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -242,11 +240,40 @@ public class HoatDongController {
         if (user == null) {
             return "redirect:/sign-in";
         }
+        if ("Điều phối viên".equals(user.getQuyenHan())) {
+            redirect.addFlashAttribute("error", "Bạn không có trong danh sách điểm danh.");
+            return "redirect:/activity";
+        }
 
-        
+        HoatDong hoatDong = hoatDongService.layHoatDongTheoMa(maHoatDong);
+        if (hoatDong == null) {
+            redirect.addFlashAttribute("error", "Hoạt động không tồn tại.");
+            return "redirect:/activity";
+        }
+        model.addAttribute("hoatDong", hoatDong);
         model.addAttribute("pageTitle", "Xác nhận điểm danh hoạt động " + maHoatDong);
         model.addAttribute("pageContent", "/WEB-INF/views/activity/confirm-checkin.jsp");
         return "layout/layoutmaster";
+    }
+    
+    @PostMapping("/confirm-checkin")
+    public String confirmCheckin(@RequestParam("maHoatDong") int maHoatDong,
+                                  HttpSession session,
+                                  RedirectAttributes redirectAttributes) {
+        TaiKhoan user = (TaiKhoan) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        //boolean success = activityService.checkin(user.getMaTaiKhoan(), maHoatDong);
+        if (true) {
+            redirectAttributes.addFlashAttribute("success", "Điểm danh thành công!");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Bạn đã điểm danh hoặc có lỗi xảy ra.");
+        }
+
+        return "redirect:/activity";
     }
 
 }

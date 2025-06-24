@@ -39,6 +39,19 @@
         <!-- Navbar -->
         <jsp:include page="/WEB-INF/views/layout/navbar.jsp" />
 
+        <!-- Hiển thị thông báo -->
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle me-2"></i> ${error}
+            </div>
+        </c:if>
+
+        <c:if test="${not empty success}">
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle me-2"></i> ${success}
+            </div>
+        </c:if>
+
         <!-- Page Content -->
         <jsp:include page="${pageContent}" />
 

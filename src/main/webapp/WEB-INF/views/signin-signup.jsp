@@ -11,8 +11,8 @@
                 <div class="form sign-up">
                     <form action="${pageContext.request.contextPath}/sign-up" method="post">
                         <h3>Sign Up</h3>
-                        <c:if test="${error != null && error != ''}">
-                            <div class="alert alert-danger">${error}</div>
+                        <c:if test="${not empty errMessage}">
+                            <div class="alert alert-danger">${errMessage}</div>
                         </c:if>
                         <div class="input-group">
                             <i class='bx bx-mail-send'></i>
@@ -52,8 +52,8 @@
                 <div class="form sign-in">
                     <form action="${pageContext.request.contextPath}/sign-in" method="post">
                         <h3>Sign In</h3>
-                        <c:if test="${error != null && error != ''}">
-                            <div class="alert alert-danger">${error}</div>
+                        <c:if test="${not empty errMessage}">
+                            <div class="alert alert-danger">${errMessage}</div>
                         </c:if>
                         <div class="input-group">
                             <i class='bx bxs-user'></i>
