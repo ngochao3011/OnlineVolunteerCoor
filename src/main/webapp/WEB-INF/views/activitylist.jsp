@@ -4,9 +4,27 @@
     Author     : ADMIN
 --%>
 
+<%-- 
+    Document   : activitylist
+    Created on : Jun 8, 2025, 2:48:28 AM
+    Author     : ADMIN
+--%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
+
+<style>
+    .btn-approve {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+    }
+    .btn-approve:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+</style>
 
 <section class="blog-section spad">
     <div class="container">
@@ -15,6 +33,7 @@
         </div>
         <div class="row">
             <div class="col-12 mb-4 text-end">
+                <a href="${pageContext.request.contextPath}/activity/approve" class="btn btn-approve me-3">Duyệt đăng ký</a>
                 <a href="${pageContext.request.contextPath}/activity/add" class="btn btn-primary">Thêm Hoạt Động Mới</a>
             </div>
             <c:forEach var="hoatDong" items="${danhSachHoatDong}">
