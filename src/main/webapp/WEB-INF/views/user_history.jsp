@@ -66,3 +66,87 @@
         </div>
     </div>
 </main>
+
+<!-- Bảng lịch sử đăng ký hoạt động -->
+<main class="container py-3">
+    <h2 class="mb-3">Lịch sử đăng ký hoạt động</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle table-history">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 30%;">Tên Hoạt Động</th>
+                            <th style="width: 20%;">Ngày kết thúc</th>
+                            <th style="width: 20%;">Địa điểm</th>
+                            <th style="width: 15%;">Ngày đăng ký</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:choose>
+                            <c:when test="${not empty lichSuDangKy}">
+                                <c:forEach var="ls" items="${lichSuDangKy}" varStatus="loop">
+                                    <tr>
+                                        <td>${loop.index + 1}</td>
+                                        <td>${ls.tenHoatDong}</td>
+                                        <td><fmt:formatDate value="${ls.thoiGianKetThuc}" pattern="dd/MM/yyyy HH:mm"/></td>
+                                        <td>${ls.diaDiem}</td>
+                                        <td><fmt:formatDate value="${ls.createAt}" pattern="dd/MM/yyyy HH:mm"/></td>
+                                    </tr>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">Bạn chưa có lịch sử đăng ký hoạt động nào.</td>
+                                </tr>
+                            </c:otherwise>
+                        </c:choose>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Bảng lịch sử hủy đăng ký hoạt động -->
+<main class="container py-3">
+    <h2 class="mb-3">Lịch sử hủy đăng ký hoạt động</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle table-history">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 30%;">Tên Hoạt Động</th>
+                            <th style="width: 20%;">Ngày kết thúc</th>
+                            <th style="width: 20%;">Địa điểm</th>
+                            <th style="width: 15%;">Ngày hủy</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:choose>
+                            <c:when test="${not empty lichSuHuyDangKy}">
+                                <c:forEach var="ls" items="${lichSuHuyDangKy}" varStatus="loop">
+                                    <tr>
+                                        <td>${loop.index + 1}</td>
+                                        <td>${ls.tenHoatDong}</td>
+                                        <td><fmt:formatDate value="${ls.thoiGianKetThuc}" pattern="dd/MM/yyyy HH:mm"/></td>
+                                        <td>${ls.diaDiem}</td>
+                                        <td><fmt:formatDate value="${ls.createAt}" pattern="dd/MM/yyyy HH:mm"/></td>
+                                    </tr>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">Bạn chưa có lịch sử hủy đăng ký hoạt động nào.</td>
+                                </tr>
+                            </c:otherwise>
+                        </c:choose>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>

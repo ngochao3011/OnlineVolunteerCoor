@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import com.uef.model.LichSuDangKy;
+
 
 @Repository
 public class DangKyDAO implements DangKyRepo {
@@ -16,14 +18,27 @@ public class DangKyDAO implements DangKyRepo {
 
     @Override
     public void save(int maTNV, int maHoatDong) {
-        String sql = "INSERT INTO [DANGKYTHAMGIA] (maThanhVien, maHoatDong, trangThai) VALUES (?, ?, N'Chờ duyệt')";
-        jdbcTemplate.update(sql, maTNV, maHoatDong);
+        // Cập nhật trạng thái đăng ký
+        String sqlUpdate = "UPDATE [DANGKYTHAMGIA] SET trangThai = N'Chờ duyệt' WHERE maThanhVien = ? AND maHoatDong = ?";
+        int affected = jdbcTemplate.update(sqlUpdate, maTNV, maHoatDong);
+        if (affected == 0) {
+            // Nếu chưa có thì insert mới
+            String sqlInsert = "INSERT INTO [DANGKYTHAMGIA] (maThanhVien, maHoatDong, trangThai) VALUES (?, ?, N'Chờ duyệt')";
+            jdbcTemplate.update(sqlInsert, maTNV, maHoatDong);
+        }
+        // Thêm lịch sử đăng ký
+        String sqlHistory = "INSERT INTO LICHSUDANGKY (maThanhVien, maHoatDong, action) VALUES (?, ?, N'Đăng ký')";
+        jdbcTemplate.update(sqlHistory, maTNV, maHoatDong);
     }
 
     @Override
     public void delete(int maTNV, int maHoatDong) {
-        String sql = "DELETE FROM [DANGKYTHAMGIA] WHERE maThanhVien = ? AND maHoatDong = ?";
-        jdbcTemplate.update(sql, maTNV, maHoatDong);
+        // Cập nhật trạng thái hủy
+        String sqlUpdate = "UPDATE [DANGKYTHAMGIA] SET trangThai = N'Đã hủy' WHERE maThanhVien = ? AND maHoatDong = ?";
+        jdbcTemplate.update(sqlUpdate, maTNV, maHoatDong);
+        // Thêm lịch sử đăng ký
+        String sqlHistory = "INSERT INTO LICHSUDANGKY (maThanhVien, maHoatDong, action) VALUES (?, ?, N'Hủy đăng ký')";
+        jdbcTemplate.update(sqlHistory, maTNV, maHoatDong);
     }
 
     @Override
@@ -43,7 +58,7 @@ public class DangKyDAO implements DangKyRepo {
 
     @Override
     public List<Integer> findRegisteredEventIdsByTNV(int maTNV) {
-        String sql = "SELECT maHoatDong FROM [DANGKYTHAMGIA] WHERE maThanhVien = ?";
+        String sql = "SELECT maHoatDong FROM [DANGKYTHAMGIA] WHERE maThanhVien = ? AND trangThai != N'Đã hủy'";
         return jdbcTemplate.queryForList(sql, Integer.class, maTNV);
     }
 
@@ -59,5 +74,49 @@ public class DangKyDAO implements DangKyRepo {
            + "ORDER BY hd.thoiGianKetThuc DESC";
 
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(HoatDong.class), maTNV);
+    }
+
+    @Override
+    public List<HoatDong> findUnregisteredEventsByTNV(int maTNV) {
+        // Lấy danh sách các sự kiện mà TNV đã hủy đăng ký (trạng thái = 'Đã hủy')
+        String sql = "SELECT hd.* FROM [HOATDONG] hd JOIN [DANGKYTHAMGIA] dk ON hd.maHoatDong = dk.maHoatDong "
+                + "WHERE dk.maThanhVien = ? AND dk.trangThai = N'Đã hủy'";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(HoatDong.class), maTNV);
+    }
+
+    public List<LichSuDangKy> getLichSuDangKy(int maTNV) {
+        String sql = "SELECT lsd.*, h.tenHoatDong, h.thoiGianKetThuc, h.diaDiem FROM LICHSUDANGKY lsd " +
+                "JOIN HOATDONG h ON lsd.maHoatDong = h.maHoatDong " +
+                "WHERE lsd.maThanhVien = ? AND lsd.action = N'Đăng ký' ORDER BY lsd.createAt DESC";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            LichSuDangKy lsd = new LichSuDangKy();
+            lsd.setId(rs.getInt("id"));
+            lsd.setCreateAt(rs.getTimestamp("createAt"));
+            lsd.setMaHoatDong(rs.getInt("maHoatDong"));
+            lsd.setMaThanhVien(rs.getInt("maThanhVien"));
+            lsd.setAction(rs.getString("action"));
+            lsd.setTenHoatDong(rs.getString("tenHoatDong"));
+            lsd.setThoiGianKetThuc(rs.getTimestamp("thoiGianKetThuc"));
+            lsd.setDiaDiem(rs.getString("diaDiem"));
+            return lsd;
+        }, maTNV);
+    }
+
+    public List<LichSuDangKy> getLichSuHuyDangKy(int maTNV) {
+        String sql = "SELECT lsd.*, h.tenHoatDong, h.thoiGianKetThuc, h.diaDiem FROM LICHSUDANGKY lsd " +
+                "JOIN HOATDONG h ON lsd.maHoatDong = h.maHoatDong " +
+                "WHERE lsd.maThanhVien = ? AND lsd.action = N'Hủy đăng ký' ORDER BY lsd.createAt DESC";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            LichSuDangKy lsd = new LichSuDangKy();
+            lsd.setId(rs.getInt("id"));
+            lsd.setCreateAt(rs.getTimestamp("createAt"));
+            lsd.setMaHoatDong(rs.getInt("maHoatDong"));
+            lsd.setMaThanhVien(rs.getInt("maThanhVien"));
+            lsd.setAction(rs.getString("action"));
+            lsd.setTenHoatDong(rs.getString("tenHoatDong"));
+            lsd.setThoiGianKetThuc(rs.getTimestamp("thoiGianKetThuc"));
+            lsd.setDiaDiem(rs.getString("diaDiem"));
+            return lsd;
+        }, maTNV);
     }
 }
