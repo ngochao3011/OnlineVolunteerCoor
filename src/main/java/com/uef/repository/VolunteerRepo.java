@@ -23,4 +23,5 @@ public interface VolunteerRepo {
     public List<Volunteer> searchByName(String keyword, int page, int pageSize);
     public String getAvatar(int id);
     public boolean existsById(int id);
+    public Volunteer findById(int maThanhVien);
 }
