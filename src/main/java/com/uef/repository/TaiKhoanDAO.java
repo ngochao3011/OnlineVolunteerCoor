@@ -26,9 +26,9 @@ public class TaiKhoanDAO implements TaiKhoanRepo {
 
     @Override
     public TaiKhoan findByEmail(String email) {
-        String sql = "select TK.maTaiKhoan as maTaiKhoan, TK.email as email, TK.matKhau as matKhau, TV.chucVu as quyenHan from TAIKHOAN TK " +
-                    "inner join THANHVIEN TV on TK.maTaiKhoan = TV.maThanhVien " +
-                    "where email = ?";
+        String sql = "select TK.maTaiKhoan, TK.email, TK.matKhau, TV.ChucVu as quyenHan,TV.hoTen as HoTen from TAIKHOAN TK "
+                + "inner join THANHVIEN TV on TK.maTaiKhoan = TV.maThanhVien "
+                + "where TK.  email = ?";
         try {
             return jdbcTemplate.queryForObject(sql, new RowMapper<TaiKhoan>(){
                 @Override
