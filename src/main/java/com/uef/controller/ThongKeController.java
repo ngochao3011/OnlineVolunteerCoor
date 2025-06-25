@@ -7,7 +7,11 @@ package com.uef.controller;
 import com.uef.model.ThongKe;
 import com.uef.service.ThongKeService;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,14 +29,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/thongke")
 public class ThongKeController {
 
-    private final ThongKeService thongKeService;
-
     @Autowired
-    public ThongKeController(ThongKeService thongKeService) {
-        this.thongKeService = thongKeService;
-    }
+    private ThongKeService thongKeService;
 
-    // ================= 1. THỐNG KÊ HOẠT ĐỘNG =================
+    // ================== 1. THỐNG KÊ HOẠT ĐỘNG ==================
     @GetMapping("/hoatdong")
     public String hienThiThongKeHoatDong(
             @RequestParam(name = "from", required = false)
@@ -42,72 +42,132 @@ public class ThongKeController {
             @RequestParam(name = "status", required = false) String status,
             Model model) {
 
-        Map<String, Integer> thongKeThang = thongKeService.laySoLieuThongKeTheoThang(from, to, status);
-        Map<String, Integer> thongKeTrangThai = thongKeService.laySoLieuThongKeTheoTrangThai(from, to, status);
-        ThongKe summary = thongKeService.layThongKeTongQuan(from, to, status);
+        // Summary cards: theo trạng thái biểu đồ
+        int soDaKetThuc = thongKeService.getSoDaKetThuc(from, to);
+        int soDangHoatDong = thongKeService.getSoDangHoatDong(from, to);
+        int soSapDienRa = thongKeService.getSoSapDienRa(from, to);
+        int tongHoatDong = soDaKetThuc + soDangHoatDong + soSapDienRa;
 
+        model.addAttribute("soDaKetThuc", soDaKetThuc);
+        model.addAttribute("soDangHoatDong", soDangHoatDong);
+        model.addAttribute("soSapDienRa", soSapDienRa);
+        model.addAttribute("tongHoatDong", tongHoatDong);
+
+        // Tổng hợp cho biểu đồ
+        ThongKe thongKe = thongKeService.layThongKeTongQuan(from, to, status);
+
+        // Biểu đồ line: theo tháng
+        Map<String, Integer> thongKeThang = thongKeService.laySoLieuThongKeTheoThang(from, to, status);
+
+        // Biểu đồ tròn: theo trạng thái
+        Map<String, Integer> thongKeTrangThai = thongKeService.laySoLieuThongKeTheoTrangThai(from, to, status);
+
+        model.addAttribute("thongKe", thongKe);
         model.addAttribute("thongKeTheoThang", thongKeThang);
         model.addAttribute("thongKeTheoTrangThai", thongKeTrangThai);
-        model.addAttribute("summary", summary);
         model.addAttribute("from", from);
         model.addAttribute("to", to);
         model.addAttribute("status", status);
 
-        model.addAttribute("pageTitle", "Thống Kê Hoạt Động");
-        model.addAttribute("customCss", "/src/css/template-custom.css");
-        model.addAttribute("pageContent", "/WEB-INF/views/thongke/hoatdong.jsp");
-        return "layout/layoutmaster";
+        return "thongke/hoatdong"; // /WEB-INF/views/thongke/hoatdong.jsp
     }
 
-    // ================= 2. THỐNG KÊ TÌNH NGUYỆN VIÊN =================
-    @GetMapping("/tinhnguyenvien")
-    public String hienThiThongKeTNV(
-            @RequestParam(name = "from", required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-
-            @RequestParam(name = "to", required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
-
-            Model model) {
-
-        Map<String, Integer> soTNVTheoHoatDong = thongKeService.layThongKeTNVTheoHoatDong(from, to);
-        int tongTNV = thongKeService.layTongTNVThamGia(from, to);
-        int tongTNVThangTruoc = thongKeService.layTongTNVThangTruoc();
-
-        double tyLeTang = 0;
-        if (tongTNVThangTruoc > 0) {
-            tyLeTang = ((double)(tongTNV - tongTNVThangTruoc) / tongTNVThangTruoc) * 100;
-        }
-
-        model.addAttribute("soTNVTheoHoatDong", soTNVTheoHoatDong);
-        model.addAttribute("tongTNV", tongTNV);
-        model.addAttribute("tyLeTang", Math.round(tyLeTang * 10.0) / 10.0); // Làm tròn 1 chữ số thập phân
-        model.addAttribute("from", from);
-        model.addAttribute("to", to);
-
-        model.addAttribute("pageTitle", "Thống Kê Tình Nguyện Viên");
-        model.addAttribute("customCss", "/src/css/template-custom.css");
-        model.addAttribute("pageContent", "/WEB-INF/views/thongke/tinhnguyenvien.jsp");
-        return "layout/layoutmaster";
-    }
-
-    // ================= 3. EXPORT EXCEL - HOẠT ĐỘNG =================
-    @GetMapping("/hoatdong/export/excel")
-    public void exportExcelHoatDong(
+    //---xuất csv--
+    @GetMapping("/export/csv")
+    public void exportCSVThongKe(
             @RequestParam(name = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam(name = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
             @RequestParam(name = "status", required = false) String status,
-            HttpServletResponse response) {
+            HttpServletResponse response) throws IOException {
 
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader("Content-Disposition", "attachment; filename=thongke-hoatdong.xlsx");
+        response.setContentType("text/csv; charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=thongke_hoatdong.csv");
 
-        try {
-            thongKeService.exportThongKeHoatDongToExcel(response.getOutputStream(), from, to, status);
-            response.getOutputStream().flush();
-        } catch (Exception e) {
-            e.printStackTrace();
+        List<ThongKe> hoatDongs = thongKeService.getDanhSachHoatDong(from, to, status);
+
+        PrintWriter writer = response.getWriter();
+        writer.println("Mã hoạt động,Tên hoạt động,Ngày bắt đầu,Ngày kết thúc,Địa điểm,Trạng thái");
+
+        for (ThongKe hd : hoatDongs) {
+            String ngayBD = hd.getNgayBatDau() != null ? hd.getNgayBatDau().toString() : "";
+            String ngayKT = hd.getNgayKetThuc() != null ? hd.getNgayKetThuc().toString() : "";
+
+            writer.printf("%s,%s,%s,%s,%s,%s%n",
+                    hd.getMaHoatDong(),
+                    hd.getTenHoatDong(),
+                    ngayBD,
+                    ngayKT,
+                    hd.getDiaDiem(),
+                    hd.getTrangThaiHoatDong());
         }
+
+        writer.flush();
+        writer.close();
     }
+
+    //================== 2. THỐNG KÊ TNV THEO HOẠT ĐỘNG ==================
+    @GetMapping("/tinhnguyenvien")
+    public String thongKeTNV(
+            @RequestParam(name = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(name = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+            @RequestParam(name = "status", required = false) String status,
+            Model model) {
+
+        int tongTNV = thongKeService.getTongTNV();
+        int tongTNVThamGia = thongKeService.getTongTNVThamGia(from, to);
+        int tongTNVTheoHoatDong = thongKeService.getTongSoTNVThamGiaTheoHoatDong(from, to, status);
+
+        List<ThongKe> thongKeTNV = thongKeService.getThongKeTNVTheoHoatDong(from, to, null);
+        for (ThongKe tk : thongKeTNV) {
+            System.out.println("==> " + tk);
+        }
+
+        int tongTNVThucTe = thongKeService.getSoLuongTNVThucTeTheoHoatDong(from, to);
+        model.addAttribute("tongTNVThucTe", tongTNVThucTe);
+
+        model.addAttribute("tongTNV", tongTNV);
+        model.addAttribute("tongTNVThamGia", tongTNVThamGia);
+        model.addAttribute("tongTNVTheoHoatDong", tongTNVTheoHoatDong);
+
+        model.addAttribute("thongKeTNV", thongKeTNV);
+        model.addAttribute("from", from);
+        model.addAttribute("to", to);
+        model.addAttribute("status", status);
+
+        return "thongke/tinhnguyenvien";
+    }
+
+    // --- Export CSV ---
+    @GetMapping("/tinhnguyenvien/export/csv")
+    public void exportCSVTinhNguyenVien(
+            @RequestParam(name = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(name = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+            HttpServletResponse response) throws IOException {
+
+        response.setContentType("text/csv; charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=thongke_tinhnguyenvien.csv");
+
+        List<ThongKe> danhSach = thongKeService.getThongKeTNVTheoHoatDong(from, to, null);
+        PrintWriter writer = response.getWriter();
+
+        writer.println("Mã hoạt động,Tên hoạt động,Ngày bắt đầu,Ngày kết thúc,Địa điểm,Trạng thái,Số lượng TNV");
+
+        for (ThongKe tk : danhSach) {
+            String ngayBD = tk.getNgayBatDau() != null ? tk.getNgayBatDau().toString() : "";
+            String ngayKT = tk.getNgayKetThuc() != null ? tk.getNgayKetThuc().toString() : "";
+
+            writer.printf("%s,%s,%s,%s,%s,%s,%d%n",
+                    tk.getMaHoatDong(),
+                    tk.getTenHoatDong(),
+                    ngayBD,
+                    ngayKT,
+                    tk.getDiaDiem(),
+                    tk.getTrangThaiHoatDong(),
+                    tk.getSoLuongTNV());
+        }
+
+        writer.flush();
+        writer.close();
+        }
 
 }
