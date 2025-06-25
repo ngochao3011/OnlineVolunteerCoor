@@ -137,4 +137,7 @@ public class VolunteerService {
     public String getAvatarbyId(int id){
         return volunteerRepo.getAvatar(id);
     }
+    public Volunteer getThanhVienDetails(int maThanhVien) {
+        return volunteerRepo.findById(maThanhVien);
+    }
 }
