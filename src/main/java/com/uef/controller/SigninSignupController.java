@@ -1,37 +1,30 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.uef.controller;
 
 import com.uef.model.TaiKhoan;
 import com.uef.model.Volunteer;
+import com.uef.service.TaiKhoanService;
+import com.uef.service.VolunteerService;
+
 import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.uef.service.TaiKhoanService;
-import com.uef.service.VolunteerService;
+
 import java.sql.Date;
 
-/**
- *
- * @author ADMIN
- */
 @Controller
 public class SigninSignupController {
+
     @Autowired
     private TaiKhoanService taiKhoanService;
-    
+
     @Autowired
     private VolunteerService volunteerService;
-        
+
     @GetMapping("/sign-up")
     public String showRegisterPage(Model model) {
         model.addAttribute("taiKhoan", new TaiKhoan());
@@ -40,52 +33,55 @@ public class SigninSignupController {
         model.addAttribute("pageContent", "/WEB-INF/views/signin-signup.jsp");
         return "layout/layoutmaster";
     }
-    
+
     @PostMapping("/sign-up")
     public String processRegister(@ModelAttribute TaiKhoan taiKhoan,
-                                @RequestParam String hoTen,
-                                @RequestParam String sdt,
-                                @RequestParam String xacNhanMatKhau, 
-                                RedirectAttributes redirect) {
+            @RequestParam String hoTen,
+            @RequestParam String sdt,
+            @RequestParam String xacNhanMatKhau,
+            RedirectAttributes redirect) {
+
         if (taiKhoanService.getEmail(taiKhoan.getEmail()) != null) {
-            redirect.addFlashAttribute("errMessage", "Email đã tồn tại.");
+            redirect.addFlashAttribute("error", "Email đã tồn tại");
             return "redirect:/sign-up";
         }
-        
-        if (!taiKhoan.getMatKhau().equals(xacNhanMatKhau)){
-            redirect.addFlashAttribute("errMessage", "Mật khẩu không khớp. Vui lòng nhập lại!");
+
+        if (!taiKhoan.getMatKhau().equals(xacNhanMatKhau)) {
+            redirect.addFlashAttribute("error", "Mật khẩu không khớp. Vui lòng nhập lại!");
             return "redirect:/sign-up";
         }
 
         taiKhoan.setMatKhau(new BCryptPasswordEncoder().encode(taiKhoan.getMatKhau()));
-        if (!taiKhoanService.dangKyTaiKhoan(taiKhoan)){
-            redirect.addFlashAttribute("errMessage", "Có lỗi khi đăng ký tài khoản!");
+        if (!taiKhoanService.dangKyTaiKhoan(taiKhoan)) {
+            redirect.addFlashAttribute("error", "Có lỗi khi đăng ký tài khoản!");
             return "redirect:/sign-up";
         }
-        
+
         Integer id = taiKhoanService.getID(taiKhoan.getEmail());
         if (id == null) {
-            redirect.addFlashAttribute("errMessage", "Không tìm thấy ID tài khoản sau khi đăng ký!");
+            redirect.addFlashAttribute("error", "Không tìm thấy ID tài khoản sau khi đăng ký!");
             return "redirect:/sign-up";
         }
+
         Volunteer volunteer = new Volunteer();
         volunteer.setMaThanhVien(id);
         volunteer.setHoTen(hoTen);
         volunteer.setSdt(sdt);
         volunteer.setDiaChi("");
         volunteer.setTrangThai("Đã đăng ký");
-        // Lấy ngày hiện tại của hệ thống
-        Date currentDate = new Date(System.currentTimeMillis());
-        volunteer.setNgayDangKy(currentDate);
+        volunteer.setNgayDangKy(new Date(System.currentTimeMillis()));
         volunteer.setUrlAvatar("");
         volunteer.setChucVu("Tình nguyện viên");
-        if (!volunteerService.addVolunteer(volunteer)){
-            redirect.addFlashAttribute("errMessage", "Có lỗi khi đăng ký thông tin cá nhân!");        
+
+        if (!volunteerService.addVolunteer(volunteer)) {
+            redirect.addFlashAttribute("error", "Có lỗi khi đăng ký thông tin cá nhân!");
             return "redirect:/sign-up";
         }
+
+        redirect.addFlashAttribute("success", "Đăng ký thành công! Vui lòng đăng nhập.");
         return "redirect:/sign-in";
     }
-    
+
     @GetMapping("/sign-in")
     public String showLoginForm(Model model) {
         model.addAttribute("pageTitle", "Đăng nhập");
@@ -93,23 +89,32 @@ public class SigninSignupController {
         model.addAttribute("pageContent", "/WEB-INF/views/signin-signup.jsp");
         return "layout/layoutmaster";
     }
-    
+
     @PostMapping("/sign-in")
     public String processLogin(@RequestParam String username,
-                               @RequestParam String password,
-                               HttpSession session,
-                               RedirectAttributes redirect) {
+            @RequestParam String password,
+            HttpSession session,
+            RedirectAttributes redirect) {
+
         TaiKhoan taiKhoan = taiKhoanService.getEmail(username);
+
         if (taiKhoan != null && new BCryptPasswordEncoder().matches(password, taiKhoan.getMatKhau())) {
-            String urlAvatar = volunteerService.getAvatarbyId(taiKhoan.getMaTaiKhoan());
-            if (urlAvatar == null || urlAvatar.trim().isEmpty()){
-                urlAvatar = "/src/images/default-avatar.png"; // đường dẫn ảnh mặc định
-            }
+            Volunteer volunteer = volunteerService.getThanhVienDetails(taiKhoan.getMaTaiKhoan());
+
+            String urlAvatar = (volunteer != null && volunteer.getUrlAvatar() != null && !volunteer.getUrlAvatar().trim().isEmpty())
+                    ? "/images/uploads" + volunteer.getUrlAvatar()
+                    : "/src/images/default-avatar.png";
+
             session.setAttribute("user", taiKhoan);
             session.setAttribute("urlAvatar", urlAvatar);
+            session.setAttribute("loggedInAccount", taiKhoan);
+            session.setAttribute("loggedInProfile", volunteer);
+            session.setAttribute("isLoggedIn", true);
+
             return "redirect:/";
         }
-        redirect.addFlashAttribute("errMessage", "Sai email hoặc mật khẩu.");
+
+        redirect.addFlashAttribute("error", "Sai email hoặc mật khẩu.");
         return "redirect:/sign-in";
     }
 }
