@@ -13,7 +13,16 @@ public class TaiKhoan {
     private String email;
     private String matKhau;
     private String quyenHan;
+    private String hoTen;
 
+    public String getHoTen() {
+        return hoTen;
+    }
+
+    public void setHoTen(String hoTen) {
+        this.hoTen = hoTen;
+    }
+   
     public int getMaTaiKhoan() {
         return maTaiKhoan;
     }
