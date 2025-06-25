@@ -1,6 +1,7 @@
 package com.uef.service;
 
 import com.uef.model.HoatDong;
+import com.uef.model.LichSuDangKy;
 import com.uef.repository.DangKyRepo;
 import com.uef.repository.VolunteerRepo;
 import java.time.LocalDate;
@@ -13,6 +14,8 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+        
 
 @Service
 public class DangKyService {
@@ -82,6 +85,34 @@ public class DangKyService {
             System.err.println("Lỗi khi lấy danh sách hoạt động đã đăng ký: " + e.getMessage());
             return List.of();
         }
+    }
+
+    public List<HoatDong> getRegisteredEvents(int maTNV) {
+        try {
+
+            return dangKyRepo.findRegisteredEventsByTNV(maTNV);
+        } catch (Exception e) {
+            System.err.println("Lỗi khi lấy danh sách hoạt động đã đăng ký: " + e.getMessage());
+            return List.of();
+        }
+    }
+
+    // Lấy danh sách các hoạt động đã hủy đăng ký (giả sử repo đã có hàm này, nếu chưa có sẽ bổ sung sau)
+    public List<HoatDong> getUnregisteredHistory(int maTNV) {
+        try {
+            return dangKyRepo.findUnregisteredEventsByTNV(maTNV);
+        } catch (Exception e) {
+            System.err.println("Lỗi khi lấy lịch sử hủy đăng ký: " + e.getMessage());
+            return List.of();
+        }
+    }
+
+    public List<LichSuDangKy> getLichSuDangKy(int maTNV) {
+        return dangKyRepo.getLichSuDangKy(maTNV);
+    }
+
+    public List<LichSuDangKy> getLichSuHuyDangKy(int maTNV) {
+        return dangKyRepo.getLichSuHuyDangKy(maTNV);
     }
 
 }
