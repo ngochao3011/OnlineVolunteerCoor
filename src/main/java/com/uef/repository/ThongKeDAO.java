@@ -4,15 +4,15 @@
  */
 package com.uef.repository;
 
-import java.sql.Connection;
+import com.uef.model.ThongKe;
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -23,250 +23,293 @@ import org.springframework.stereotype.Repository;
 public class ThongKeDAO implements ThongKeRepo {
 
     @Autowired
-    private DataSource dataSource;
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public Map<String, Integer> getThongKeTheoThang(LocalDate from, LocalDate to, String status) {
         Map<String, Integer> result = new LinkedHashMap<>();
-        StringBuilder sql = new StringBuilder("SELECT FORMAT(thoiGianBatDau, 'yyyy-MM') AS thang, COUNT(*) AS soLuong FROM HOATDONG WHERE 1=1 ");
+        StringBuilder sql = new StringBuilder("SELECT FORMAT(thoiGianBatDau, 'yyyy-MM') AS thang, COUNT(*) AS soLuong FROM HOATDONG WHERE 1=1");
+
         if (from != null) {
-            sql.append(" AND thoiGianBatDau >= ? ");
+            sql.append(" AND thoiGianBatDau >= ?");
         }
         if (to != null) {
-            sql.append(" AND thoiGianBatDau <= ? ");
+            sql.append(" AND thoiGianBatDau <= ?");
         }
         if (status != null && !status.isEmpty()) {
-            sql.append(" AND trangThai = ? ");
+            sql.append(" AND trangThai = ?");
         }
+
         sql.append(" GROUP BY FORMAT(thoiGianBatDau, 'yyyy-MM') ORDER BY thang");
 
-        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-            int index = 1;
-            if (from != null) {
-                ps.setDate(index++, Date.valueOf(from));
-            }
-            if (to != null) {
-                ps.setDate(index++, Date.valueOf(to));
-            }
-            if (status != null && !status.isEmpty()) {
-                ps.setString(index++, status);
-            }
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                result.put(rs.getString("thang"), rs.getInt("soLuong"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        List<Object> params = new java.util.ArrayList<>();
+        if (from != null) {
+            params.add(Date.valueOf(from));
         }
+        if (to != null) {
+            params.add(Date.valueOf(to));
+        }
+        if (status != null && !status.isEmpty()) {
+            params.add(status);
+        }
+
+        jdbcTemplate.query(sql.toString(), params.toArray(), (rs) -> {
+            result.put(rs.getString("thang"), rs.getInt("soLuong"));
+        });
+
         return result;
     }
 
     @Override
     public Map<String, Integer> getThongKeTheoTrangThai(LocalDate from, LocalDate to, String status) {
         Map<String, Integer> result = new LinkedHashMap<>();
-        StringBuilder sql = new StringBuilder("SELECT trangThai, COUNT(*) AS soLuong FROM HOATDONG WHERE 1=1 ");
+        StringBuilder sql = new StringBuilder("SELECT trangThai, COUNT(*) AS soLuong FROM HOATDONG WHERE 1=1");
+
+        List<Object> params = new java.util.ArrayList<>();
         if (from != null) {
-            sql.append(" AND thoiGianBatDau >= ? ");
+            sql.append(" AND thoiGianBatDau >= ?");
+            params.add(Date.valueOf(from));
         }
         if (to != null) {
-            sql.append(" AND thoiGianBatDau <= ? ");
+            sql.append(" AND thoiGianBatDau <= ?");
+            params.add(Date.valueOf(to));
         }
         if (status != null && !status.isEmpty()) {
-            sql.append(" AND trangThai = ? ");
+            sql.append(" AND trangThai = ?");
+            params.add(status);
         }
+
         sql.append(" GROUP BY trangThai");
 
-        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-            int index = 1;
-            if (from != null) {
-                ps.setDate(index++, Date.valueOf(from));
-            }
-            if (to != null) {
-                ps.setDate(index++, Date.valueOf(to));
-            }
-            if (status != null && !status.isEmpty()) {
-                ps.setString(index++, status);
-            }
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                result.put(rs.getString("trangThai"), rs.getInt("soLuong"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        jdbcTemplate.query(sql.toString(), params.toArray(), (rs) -> {
+            result.put(rs.getString("trangThai"), rs.getInt("soLuong"));
+        });
+
         return result;
+    }
+
+    private int countByStatus(LocalDate from, LocalDate to, String status) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM HOATDONG WHERE 1=1");
+        List<Object> params = new java.util.ArrayList<>();
+
+        if (from != null) {
+            sql.append(" AND thoiGianBatDau >= ?");
+            params.add(Date.valueOf(from));
+        }
+        if (to != null) {
+            sql.append(" AND thoiGianBatDau <= ?");
+            params.add(Date.valueOf(to));
+        }
+        if (status != null && !status.isEmpty()) {
+            sql.append(" AND trangThai = ?");
+            params.add(status);
+        }
+
+        return jdbcTemplate.queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
 
     @Override
     public int getTongSoHoatDong(LocalDate from, LocalDate to, String status) {
-        return countWithCondition(from, to, status, null);
+        return countByStatus(from, to, status);
     }
 
     @Override
     public int getSoHoatDongThangTruoc(String status) {
-        LocalDate now = LocalDate.now().withDayOfMonth(1);
-        LocalDate from = now.minusMonths(1);
-        LocalDate to = now.minusDays(1);
-        return countWithCondition(from, to, status, null);
+        LocalDate from = LocalDate.now().withDayOfMonth(1).minusMonths(1);
+        LocalDate to = LocalDate.now().withDayOfMonth(1).minusDays(1);
+        return countByStatus(from, to, status);
     }
 
     @Override
-    public int getSoHoanThanh(LocalDate from, LocalDate to) {
-        return countWithCondition(from, to, "Hoàn thành", null);
+    public int getSoKetThuc(LocalDate from, LocalDate to) {
+        return countByStatus(from, to, "Đã kết thúc");
     }
 
     @Override
-    public int getSoHoanThanhThangTruoc() {
-        LocalDate now = LocalDate.now().withDayOfMonth(1);
-        return countWithCondition(now.minusMonths(1), now.minusDays(1), "Hoàn thành", null);
+    public int getSoKetThucThangTruoc() {
+        LocalDate from = LocalDate.now().withDayOfMonth(1).minusMonths(1);
+        LocalDate to = LocalDate.now().withDayOfMonth(1).minusDays(1);
+        return countByStatus(from, to, "Đã kết thúc");
     }
 
     @Override
-    public int getSoDangThucHien(LocalDate from, LocalDate to) {
-        return countWithCondition(from, to, "Đang thực hiện", null);
+    public int getSoDangHoatDong(LocalDate from, LocalDate to) {
+        return countByStatus(from, to, "Đang hoạt động");
     }
 
     @Override
-    public int getSoDangThucHienThangTruoc() {
-        LocalDate now = LocalDate.now().withDayOfMonth(1);
-        return countWithCondition(now.minusMonths(1), now.minusDays(1), "Đang thực hiện", null);
+    public int getSoDangHoatDongThangTruoc() {
+        LocalDate from = LocalDate.now().withDayOfMonth(1).minusMonths(1);
+        LocalDate to = LocalDate.now().withDayOfMonth(1).minusDays(1);
+        return countByStatus(from, to, "Đang hoạt động");
     }
 
     @Override
-    public int getSoDaHuy(LocalDate from, LocalDate to) {
-        return countWithCondition(from, to, "Đã hủy", null);
+    public int getSoSapDienRa(LocalDate from, LocalDate to) {
+        return countByStatus(from, to, "Sắp diễn ra");
     }
 
     @Override
-    public int getSoDaHuyThangTruoc() {
-        LocalDate now = LocalDate.now().withDayOfMonth(1);
-        return countWithCondition(now.minusMonths(1), now.minusDays(1), "Đã hủy", null);
+    public int getSoSapDienRaThangTruoc() {
+        LocalDate from = LocalDate.now().withDayOfMonth(1).minusMonths(1);
+        LocalDate to = LocalDate.now().withDayOfMonth(1).minusDays(1);
+        return countByStatus(from, to, "Sắp diễn ra");
     }
 
-    private int countWithCondition(LocalDate from, LocalDate to, String status, String extra) {
-        int result = 0;
-        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM HOATDONG WHERE 1=1 ");
+    @Override
+    public List<ThongKe> getDanhSachHoatDong(LocalDate from, LocalDate to, String status) {
+        StringBuilder sql = new StringBuilder("SELECT maHoatDong, tenHoatDong, thoiGianBatDau, thoiGianKetThuc, diaDiem, trangThai FROM HOATDONG WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
         if (from != null) {
-            sql.append(" AND thoiGianBatDau >= ? ");
+            sql.append(" AND thoiGianBatDau >= ?");
+            params.add(Date.valueOf(from));
         }
         if (to != null) {
-            sql.append(" AND thoiGianBatDau <= ? ");
+            sql.append(" AND thoiGianBatDau <= ?");
+            params.add(Date.valueOf(to));
         }
         if (status != null && !status.isEmpty()) {
-            sql.append(" AND trangThai = ? ");
-        }
-        if (extra != null) {
-            sql.append(" AND ").append(extra);
+            sql.append(" AND trangThai = ?");
+            params.add(status);
         }
 
-        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-            int index = 1;
-            if (from != null) {
-                ps.setDate(index++, Date.valueOf(from));
-            }
-            if (to != null) {
-                ps.setDate(index++, Date.valueOf(to));
-            }
-            if (status != null && !status.isEmpty()) {
-                ps.setString(index++, status);
-            }
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                result = rs.getInt(1);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        return jdbcTemplate.query(sql.toString(), params.toArray(), (rs, rowNum) -> {
+            ThongKe tk = new ThongKe();
+            tk.setMaHoatDong(String.valueOf(rs.getInt("maHoatDong")));
+            tk.setTenHoatDong(rs.getString("tenHoatDong"));
+            tk.setNgayBatDau(rs.getDate("thoiGianBatDau"));
+            tk.setNgayKetThuc(rs.getDate("thoiGianKetThuc"));
+            tk.setDiaDiem(rs.getString("diaDiem"));
+            tk.setTrangThaiHoatDong(rs.getString("trangThai"));
+            return tk;
+        });
+    }
+
+    //tnv
+    @Override
+    public List<ThongKe> getThongKeTNVTheoHoatDong(LocalDate from, LocalDate to, String status) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT hd.maHoatDong, hd.tenHoatDong, hd.thoiGianBatDau, hd.thoiGianKetThuc, "
+                + "hd.diaDiem, hd.trangThai AS trangThaiHoatDong, "
+                + "COUNT(DISTINCT dktg.maThanhVien) AS soLuongTNV "
+                + "FROM HOATDONG hd "
+                + "LEFT JOIN DANGKYTHAMGIA dktg ON hd.maHoatDong = dktg.maHoatDong AND dktg.trangThai = N'Đã duyệt' "
+                + "WHERE 1=1 "
+        );
+
+        List<Object> params = new ArrayList<>();
+        if (from != null) {
+            sql.append("AND hd.thoiGianBatDau >= ? ");
+            params.add(Date.valueOf(from));
         }
-        return result;
+        if (to != null) {
+            sql.append("AND hd.thoiGianBatDau <= ? ");
+            params.add(Date.valueOf(to));
+        }
+        if (status != null && !status.isEmpty()) {
+            sql.append("AND hd.trangThai = ? ");
+            params.add(status);
+        }
+
+        sql.append("GROUP BY hd.maHoatDong, hd.tenHoatDong, hd.thoiGianBatDau, hd.thoiGianKetThuc, hd.diaDiem, hd.trangThai ");
+        sql.append("ORDER BY hd.thoiGianBatDau DESC");
+
+        return jdbcTemplate.query(sql.toString(), params.toArray(), (rs, rowNum) -> {
+            ThongKe tk = new ThongKe();
+            tk.setMaHoatDong(String.valueOf(rs.getInt("maHoatDong")));
+            tk.setTenHoatDong(rs.getString("tenHoatDong"));
+            tk.setNgayBatDau(rs.getDate("thoiGianBatDau"));
+            tk.setNgayKetThuc(rs.getDate("thoiGianKetThuc"));
+            tk.setDiaDiem(rs.getString("diaDiem"));
+            tk.setTrangThaiHoatDong(rs.getString("trangThaiHoatDong"));
+            tk.setSoLuongTNV(rs.getInt("soLuongTNV"));
+            return tk;
+        });
     }
 
     @Override
-    public Map<String, Integer> getThongKeTNVTheoHoatDong(LocalDate from, LocalDate to) {
-        Map<String, Integer> result = new LinkedHashMap<>();
-        StringBuilder sql = new StringBuilder(
-                "SELECT hd.tenHoatDong, COUNT(DISTINCT d.maTNV) AS soTNV "
-                + "FROM DANGKY d JOIN HOATDONG hd ON d.maHoatDong = hd.maHoatDong "
-                + "WHERE 1=1 ");
-
-        if (from != null) {
-            sql.append(" AND hd.thoiGianBatDau >= ? ");
-        }
-        if (to != null) {
-            sql.append(" AND hd.thoiGianBatDau <= ? ");
-        }
-        sql.append(" GROUP BY hd.tenHoatDong ORDER BY hd.tenHoatDong");
-
-        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-
-            int index = 1;
-            if (from != null) {
-                ps.setDate(index++, Date.valueOf(from));
-            }
-            if (to != null) {
-                ps.setDate(index++, Date.valueOf(to));
-            }
-
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                result.put(rs.getString("tenHoatDong"), rs.getInt("soTNV"));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return result;
+    public int getTongTNV() {
+        String sql = "SELECT COUNT(*) FROM THANHVIEN";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 
     @Override
     public int getTongTNVThamGia(LocalDate from, LocalDate to) {
         StringBuilder sql = new StringBuilder(
-                "SELECT COUNT(DISTINCT d.maTNV) "
-                + "FROM DANGKY d JOIN HOATDONG h ON d.maHoatDong = h.maHoatDong WHERE 1=1 ");
+                "SELECT COUNT(DISTINCT dd.maThanhVien) FROM DUYETDANGKY dd "
+                + "JOIN DANGKYTHAMGIA dk ON dd.maDKTG = dk.maDKTG "
+                + "JOIN HOATDONG h ON dk.maHoatDong = h.maHoatDong "
+                + "WHERE dd.trangThaiDuyet = N'Đã duyệt' "
+        );
+
+        List<Object> params = new ArrayList<>();
         if (from != null) {
-            sql.append(" AND h.thoiGianBatDau >= ? ");
+            sql.append(" AND h.thoiGianBatDau >= ?");
+            params.add(Date.valueOf(from));
         }
         if (to != null) {
-            sql.append(" AND h.thoiGianBatDau <= ? ");
+            sql.append(" AND h.thoiGianBatDau <= ?");
+            params.add(Date.valueOf(to));
         }
 
-        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+        return jdbcTemplate.queryForObject(sql.toString(), params.toArray(), Integer.class);
+    }
 
-            int index = 1;
-            if (from != null) {
-                ps.setDate(index++, Date.valueOf(from));
-            }
-            if (to != null) {
-                ps.setDate(index++, Date.valueOf(to));
-            }
+    @Override
+    public ThongKe getThongKeTongHopTNV(LocalDate from, LocalDate to) {
+        ThongKe tk = new ThongKe();
+        tk.setTongTNV(getTongTNV());
+        tk.setTongTNVThamGia(getTongTNVThamGia(from, to));
+        return tk;
+    }
 
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
+    @Override
+    public int getTongSoTNVThamGiaTheoHoatDong(LocalDate from, LocalDate to, String status) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(DISTINCT dktg.maThanhVien) "
+                + "FROM HOATDONG hd "
+                + "LEFT JOIN DANGKYTHAMGIA dktg ON hd.maHoatDong = dktg.maHoatDong AND dktg.trangThai = N'Đã duyệt' "
+                + "WHERE 1=1 ");
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        List<Object> params = new ArrayList<>();
+        if (from != null) {
+            sql.append("AND hd.thoiGianBatDau >= ? ");
+            params.add(Date.valueOf(from));
+        }
+        if (to != null) {
+            sql.append("AND hd.thoiGianBatDau <= ? ");
+            params.add(Date.valueOf(to));
+        }
+        if (status != null && !status.isEmpty()) {
+            sql.append("AND hd.trangThai = ? ");
+            params.add(status);
         }
 
-        return 0;
+        return jdbcTemplate.queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
 
     @Override
-    public int getTongTNVThangTruoc() {
-        LocalDate now = LocalDate.now().withDayOfMonth(1);
-        LocalDate from = now.minusMonths(1);
-        LocalDate to = now.minusDays(1);
-        return getTongTNVThamGia(from, to);
-    }
+    public int getSoLuongTNVThucTeTheoHoatDong(LocalDate from, LocalDate to) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(DISTINCT dktg.maThanhVien) "
+                + "FROM HOATDONG hd "
+                + "JOIN DANGKYTHAMGIA dktg ON hd.maHoatDong = dktg.maHoatDong "
+                + "WHERE dktg.trangThai = N'Đã duyệt' "
+        );
 
-    @Override
-    public Map<String, Integer> getThongKeTNVTheoThang(LocalDate from, LocalDate to) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+        List<Object> params = new ArrayList<>();
+        if (from != null) {
+            sql.append(" AND hd.thoiGianBatDau >= ?");
+            params.add(Date.valueOf(from));
+        }
+        if (to != null) {
+            sql.append(" AND hd.thoiGianBatDau <= ?");
+            params.add(Date.valueOf(to));
+        }
 
-    @Override
-    public int getTongTNV(LocalDate from, LocalDate to) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return jdbcTemplate.queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
+    
+
 }

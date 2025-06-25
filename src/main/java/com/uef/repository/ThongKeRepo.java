@@ -8,46 +8,51 @@ package com.uef.repository;
  *
  * @author Asus
  */
+import com.uef.model.HoatDong;
+import com.uef.model.ThongKe;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 public interface ThongKeRepo {
 
-    // ==== THỐNG KÊ HOẠT ĐỘNG ====
-    // Line chart theo tháng
+    // ---------- Thống kê Hoạt động ----------
     Map<String, Integer> getThongKeTheoThang(LocalDate from, LocalDate to, String status);
 
-    // Pie chart theo trạng thái
     Map<String, Integer> getThongKeTheoTrangThai(LocalDate from, LocalDate to, String status);
 
-    // Summary cards hoạt động
     int getTongSoHoatDong(LocalDate from, LocalDate to, String status);
 
     int getSoHoatDongThangTruoc(String status);
 
-    int getSoHoanThanh(LocalDate from, LocalDate to);
+    List<ThongKe> getDanhSachHoatDong(LocalDate from, LocalDate to, String status);
 
-    int getSoHoanThanhThangTruoc();
+    // ---------- Thống kê theo trạng thái cụ thể ----------
+    int getSoKetThuc(LocalDate from, LocalDate to);
 
-    int getSoDangThucHien(LocalDate from, LocalDate to);
+    int getSoKetThucThangTruoc();
 
-    int getSoDangThucHienThangTruoc();
+    int getSoDangHoatDong(LocalDate from, LocalDate to);
 
-    int getSoDaHuy(LocalDate from, LocalDate to);
+    int getSoDangHoatDongThangTruoc();
 
-    int getSoDaHuyThangTruoc();
+    int getSoSapDienRa(LocalDate from, LocalDate to);
 
-    // ==== THỐNG KÊ TÌNH NGUYỆN VIÊN ====
-    Map<String, Integer> getThongKeTNVTheoHoatDong(LocalDate from, LocalDate to);
+    int getSoSapDienRaThangTruoc();
+
+    // ---------- Thống kê Tình nguyện viên ----------
+    List<ThongKe> getThongKeTNVTheoHoatDong(LocalDate from, LocalDate to, String status);
+
+    int getTongTNV();
 
     int getTongTNVThamGia(LocalDate from, LocalDate to);
+    
+    ThongKe getThongKeTongHopTNV(LocalDate from, LocalDate to);
 
-    int getTongTNVThangTruoc();
-
-    // Line chart TNV theo tháng
-    Map<String, Integer> getThongKeTNVTheoThang(LocalDate from, LocalDate to);
-
-    // Tổng TNV theo thời gian
-    int getTongTNV(LocalDate from, LocalDate to);
+    int getTongSoTNVThamGiaTheoHoatDong(LocalDate from, LocalDate to, String status);
+    
+    int getSoLuongTNVThucTeTheoHoatDong(LocalDate from, LocalDate to);
+    
+    
 
 }
