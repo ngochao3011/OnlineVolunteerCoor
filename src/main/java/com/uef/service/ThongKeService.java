@@ -10,13 +10,14 @@ package com.uef.service;
 
 import com.uef.model.ThongKe;
 import com.uef.repository.ThongKeRepo;
+import java.io.IOException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.io.OutputStream;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -25,7 +26,6 @@ public class ThongKeService {
     @Autowired
     private ThongKeRepo thongKeRepo;
 
-    // ================== THỐNG KÊ HOẠT ĐỘNG ===================
     public Map<String, Integer> laySoLieuThongKeTheoThang(LocalDate from, LocalDate to, String status) {
         return thongKeRepo.getThongKeTheoThang(from, to, status);
     }
@@ -34,77 +34,141 @@ public class ThongKeService {
         return thongKeRepo.getThongKeTheoTrangThai(from, to, status);
     }
 
+    public int getSoDaKetThuc(LocalDate from, LocalDate to) {
+        return thongKeRepo.getSoKetThuc(from, to);
+    }
+
+    public int getSoDangHoatDong(LocalDate from, LocalDate to) {
+        return thongKeRepo.getSoDangHoatDong(from, to);
+    }
+
+    public int getSoSapDienRa(LocalDate from, LocalDate to) {
+        return thongKeRepo.getSoSapDienRa(from, to);
+    }
+
     public ThongKe layThongKeTongQuan(LocalDate from, LocalDate to, String status) {
         ThongKe thongKe = new ThongKe();
 
-        int tong = thongKeRepo.getTongSoHoatDong(from, to, status);
-        int tongTruoc = thongKeRepo.getSoHoatDongThangTruoc(status);
+        Map<String, Integer> theoTrangThai = thongKeRepo.getThongKeTheoTrangThai(from, to, status);
+
+        // Tổng số = tổng 3 trạng thái
+        int tong = theoTrangThai.values().stream().mapToInt(Integer::intValue).sum();
         thongKe.setTongSoHoatDong(tong);
-        thongKe.setTiLeTangTruongTong(tinhTiLe(tong, tongTruoc));
 
-        int hoanThanh = thongKeRepo.getSoHoanThanh(from, to);
-        int hoanThanhTruoc = thongKeRepo.getSoHoanThanhThangTruoc();
-        thongKe.setSoHoanThanh(hoanThanh);
-        thongKe.setTiLeTangTruongHoanThanh(tinhTiLe(hoanThanh, hoanThanhTruoc));
+        // Gán theo đúng trạng thái thống kê
+        thongKe.setSoHoanThanh(theoTrangThai.getOrDefault("Đã kết thúc", 0));
+        thongKe.setSoDangThucHien(theoTrangThai.getOrDefault("Đang hoạt động", 0));
+        thongKe.setSoDaHuy(theoTrangThai.getOrDefault("Sắp diễn ra", 0));
 
-        int dangThucHien = thongKeRepo.getSoDangThucHien(from, to);
-        int dangThucHienTruoc = thongKeRepo.getSoDangThucHienThangTruoc();
-        thongKe.setSoDangThucHien(dangThucHien);
-        thongKe.setTiLeTangTruongDangThucHien(tinhTiLe(dangThucHien, dangThucHienTruoc));
-
-        int daHuy = thongKeRepo.getSoDaHuy(from, to);
-        int daHuyTruoc = thongKeRepo.getSoDaHuyThangTruoc();
-        thongKe.setSoDaHuy(daHuy);
-        thongKe.setTiLeTangTruongDaHuy(tinhTiLe(daHuy, daHuyTruoc));
+        // Không tính tăng trưởng ở đây
+        thongKe.setTiLeTangTruongTong(0);
+        thongKe.setTiLeTangTruongHoanThanh(0);
+        thongKe.setTiLeTangTruongDangThucHien(0);
+        thongKe.setTiLeTangTruongDaHuy(0);
 
         return thongKe;
     }
 
-    // ================== THỐNG KÊ TÌNH NGUYỆN VIÊN ===================
-    public Map<String, Integer> layThongKeTNVTheoHoatDong(LocalDate from, LocalDate to) {
-        return thongKeRepo.getThongKeTNVTheoHoatDong(from, to);
-    }
-
-    public int layTongTNVThamGia(LocalDate from, LocalDate to) {
-        return thongKeRepo.getTongTNVThamGia(from, to);
-    }
-
-    public int layTongTNVThangTruoc() {
-        return thongKeRepo.getTongTNVThangTruoc();
-    }
-
     // ================== EXPORT EXCEL ===================
-    public void exportThongKeHoatDongToExcel(OutputStream out, LocalDate from, LocalDate to, String status) {
-        Map<String, Integer> data = thongKeRepo.getThongKeTheoThang(from, to, status);
+    public List<ThongKe> getDanhSachHoatDong(LocalDate from, LocalDate to, String status) {
+        return thongKeRepo.getDanhSachHoatDong(from, to, status);
+    }
+
+    public void exportExcelThongKe(LocalDate from, LocalDate to, String status, OutputStream out) throws IOException {
+        List<ThongKe> danhSach = thongKeRepo.getDanhSachHoatDong(from, to, status);
 
         try (Workbook workbook = new XSSFWorkbook()) {
-            Sheet sheet = workbook.createSheet("Thống kê hoạt động");
+            Sheet sheet = workbook.createSheet("ThongKe");
 
-            // Tạo tiêu đề
             Row header = sheet.createRow(0);
-            header.createCell(0).setCellValue("Tháng");
-            header.createCell(1).setCellValue("Số lượng hoạt động");
+            header.createCell(0).setCellValue("Mã");
+            header.createCell(1).setCellValue("Tên");
+            header.createCell(2).setCellValue("Ngày bắt đầu");
+            header.createCell(3).setCellValue("Ngày kết thúc");
+            header.createCell(4).setCellValue("Địa điểm");
+            header.createCell(5).setCellValue("Trạng thái");
 
-            // Đổ dữ liệu
-            int rowIdx = 1;
-            for (Map.Entry<String, Integer> entry : data.entrySet()) {
-                Row row = sheet.createRow(rowIdx++);
-                row.createCell(0).setCellValue(entry.getKey());
-                row.createCell(1).setCellValue(entry.getValue());
+            int rowIndex = 1;
+            for (ThongKe tk : danhSach) {
+                Row row = sheet.createRow(rowIndex++);
+                row.createCell(0).setCellValue(tk.getMaHoatDong());
+                row.createCell(1).setCellValue(tk.getTenHoatDong());
+                row.createCell(2).setCellValue(tk.getNgayBatDau().toString());
+                row.createCell(3).setCellValue(tk.getNgayKetThuc().toString());
+                row.createCell(4).setCellValue(tk.getDiaDiem());
+                row.createCell(5).setCellValue(tk.getTrangThaiHoatDong());
             }
 
             workbook.write(out);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
-    // ================== HỖ TRỢ ===================
     private double tinhTiLe(int hienTai, int truocDo) {
         if (truocDo == 0) {
             return hienTai > 0 ? 100.0 : 0.0;
         }
         return ((double) (hienTai - truocDo) / truocDo) * 100;
+    }
+
+    //tnv
+    // Lấy danh sách hoạt động và số TNV đã tham gia (theo thời gian + trạng thái)
+    public List<ThongKe> getThongKeTNVTheoHoatDong(LocalDate from, LocalDate to, String status) {
+        return thongKeRepo.getThongKeTNVTheoHoatDong(from, to, status);
+    }
+
+    public int getSoLuongTNVThucTeTheoHoatDong(LocalDate from, LocalDate to) {
+        return thongKeRepo.getSoLuongTNVThucTeTheoHoatDong(from, to);
+    }
+
+
+    public int getTongTNV() {
+        return thongKeRepo.getTongTNV();
+    }
+
+    public int getTongTNVThamGia(LocalDate from, LocalDate to) {
+        return thongKeRepo.getTongTNVThamGia(from, to);
+    }
+
+    public void exportExcelTNVTheoHoatDong(LocalDate from, LocalDate to, String status, OutputStream out) throws IOException {
+        List<ThongKe> danhSach = thongKeRepo.getThongKeTNVTheoHoatDong(from, to, status);
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("TNV_Theo_HoatDong");
+
+            Row header = sheet.createRow(0);
+            header.createCell(0).setCellValue("Mã");
+            header.createCell(1).setCellValue("Tên hoạt động");
+            header.createCell(2).setCellValue("Ngày bắt đầu");
+            header.createCell(3).setCellValue("Ngày kết thúc");
+            header.createCell(4).setCellValue("Địa điểm");
+            header.createCell(5).setCellValue("Trạng thái");
+            header.createCell(6).setCellValue("Số TNV tham gia");
+
+            int rowIndex = 1;
+            for (ThongKe tk : danhSach) {
+                Row row = sheet.createRow(rowIndex++);
+                row.createCell(0).setCellValue(tk.getMaHoatDong());
+                row.createCell(1).setCellValue(tk.getTenHoatDong());
+                row.createCell(2).setCellValue(tk.getNgayBatDau().toString());
+                row.createCell(3).setCellValue(tk.getNgayKetThuc().toString());
+                row.createCell(4).setCellValue(tk.getDiaDiem());
+                row.createCell(5).setCellValue(tk.getTrangThaiHoatDong());
+                row.createCell(6).setCellValue(tk.getSoLuongTNV());
+            }
+
+            workbook.write(out);
+        }
+    }
+
+    public ThongKe layThongKeTongQuanTNV(LocalDate from, LocalDate to) {
+        ThongKe thongKe = new ThongKe();
+        thongKe.setTongTNV(thongKeRepo.getTongTNV());
+        thongKe.setTongTNVThamGia(thongKeRepo.getTongTNVThamGia(from, to));
+        return thongKe;
+    }
+
+    public int getTongSoTNVThamGiaTheoHoatDong(LocalDate from, LocalDate to, String status) {
+        return thongKeRepo.getTongSoTNVThamGiaTheoHoatDong(from, to, status);
     }
 
 }
