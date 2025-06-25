@@ -142,4 +142,14 @@ public class VolunteerDao implements VolunteerRepo {
         int count = jdbcTemplate.queryForObject(sql, Integer.class, id);
         return count > 0;
     }
+        @Override
+    public Volunteer findById(int maThanhVien) {
+        String sql = "SELECT maThanhVien, HoTen, Sdt, DiaChi, TrangThai, NgayDangKy, UrlAvatar, ChucVu "
+                + "FROM THANHVIEN WHERE maThanhVien = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Volunteer.class), maThanhVien);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
 }
