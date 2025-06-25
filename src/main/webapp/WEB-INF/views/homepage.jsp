@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 
 <main>
@@ -252,61 +253,60 @@
         <div class="container">
             <div class="row">
 
+                <!-- Cột trái: Thông tin cá nhân hoặc form đăng ký -->
                 <div class="col-lg-6 col-12">
-                    <h2 class="text-white mb-4">Volunteer</h2>
-                    <form class="custom-form volunteer-form mb-5 mb-lg-0" action="#" method="post" role="form">
-                        <h3 class="mb-4">Become a volunteer today</h3>
+                    <c:choose>
+                        <c:when test="${isLoggedIn and not empty loggedInProfile and not empty loggedInAccount}">
+                            <h2 class="text-white mb-4">Xin chào, ${loggedInProfile.hoTen}!</h2>
+                            <div class="card shadow-lg p-4 mb-4" style="background-color: #f8f9fa; border-radius: 15px;">
+                                <h3 class="mb-4 text-dark border-bottom pb-2">Thông tin tài khoản của bạn</h3>
 
-                        <div class="row">
-                            <div class="col-lg-6 col-12">
-                                <input type="text" name="volunteer-name" id="volunteer-name" class="form-control"
-                                       placeholder="Jack Doe" required>
-                            </div>
-
-                            <div class="col-lg-6 col-12">
-                                <input type="email" name="volunteer-email" id="volunteer-email"
-                                       pattern="[^ @]*@[^ @]*" class="form-control" placeholder="Jackdoe@gmail.com"
-                                       required>
-                            </div>
-
-                            <div class="col-lg-6 col-12">
-                                <input type="text" name="volunteer-subject" id="volunteer-subject"
-                                       class="form-control" placeholder="Subject" required>
-                            </div>
-
-                            <div class="col-lg-6 col-12">
-                                <div class="input-group input-group-file">
-                                    <input type="file" class="form-control" id="inputGroupFile02">
-
-                                    <label class="input-group-text" for="inputGroupFile02">Upload your CV</label>
-
-                                    <i class="bi-cloud-arrow-up ms-auto"></i>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3"><strong>Họ tên:</strong> ${loggedInProfile.hoTen}</div>
+                                    <div class="col-md-6 mb-3"><strong>Email:</strong> ${loggedInAccount.email}</div>
+                                    <div class="col-md-6 mb-3"><strong>Chức vụ:</strong> ${loggedInProfile.chucVu}</div>
+                                    <div class="col-md-6 mb-3"><strong>SĐT:</strong> ${loggedInProfile.sdt}</div>
+                                    <div class="col-md-6 mb-3"><strong>Địa chỉ:</strong> ${loggedInProfile.diaChi}</div>
+                                    <div class="col-md-6 mb-3"><strong>Trạng thái:</strong> <span class="badge bg-primary">${loggedInProfile.trangThai}</span></div>                   
                                 </div>
                             </div>
-                        </div>
+                        </c:when>
 
-                        <textarea name="volunteer-message" rows="3" class="form-control" id="volunteer-message"
-                                  placeholder="Comment (Optional)"></textarea>
-
-                        <button type="submit" class="form-control">Submit</button>
-                    </form>
+                        <c:otherwise>
+                            <div class="alert alert-warning bg-light p-4 rounded shadow-sm d-flex align-items-center">
+                                <i class="bi bi-exclamation-triangle-fill text-warning fs-3 me-3"></i>
+                                <div>
+                                    <h4 class="text-dark mb-2">Chào mừng đến hệ thống tình nguyện!</h4>
+                                    <p class="text-dark mb-0">Vui lòng <a href="${pageContext.request.contextPath}/sign-in">đăng nhập</a> để xem thông tin.</p>
+                                </div>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
 
+                <!-- Cột phải: Hình ảnh và mô tả -->
                 <div class="col-lg-6 col-12">
-                    <img src="${pageContext.request.contextPath}/src/images/smiling-casual-woman-dressed-volunteer-t-shirt-with-badge.jpg"
-                         class="volunteer-image img-fluid" alt="">
+                    <c:choose>
+                        <c:when test="${isLoggedIn and not empty loggedInProfile.urlAvatar}">
+                            <img src="${pageContext.request.contextPath}${sessionScope.urlAvatar}" 
+                                 alt="Avatar" 
+                                 class="profile-img" 
+                                 style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 10px;" />
 
-                    <div class="custom-block-body text-center">
-                        <h4 class="text-white mt-lg-3 mb-lg-3">About Volunteering</h4>
-
-                        <p class="text-white">Lorem Ipsum dolor sit amet, consectetur adipsicing kengan omeg kohm
-                            tokito Professional charity theme based</p>
-                    </div>
+                        </c:when>
+                        <c:otherwise>
+                            <img src="${pageContext.request.contextPath}/src/images/default-avatar.png"
+                                 class="volunteer-image img-fluid rounded shadow"
+                                 alt="Ảnh mặc định"
+                                 style="border-radius: 10px; object-fit: cover; width: 100%; max-height: 400px;">
+                        </c:otherwise>
+                    </c:choose>
                 </div>
 
             </div>
         </div>
     </section>
+
 
     <section class="news-section section-padding" id="section_5">
         <div class="container">
