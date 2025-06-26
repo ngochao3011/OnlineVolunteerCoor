@@ -40,9 +40,9 @@
                     <div class="mb-3">
                         <label for="trangThai" class="form-label">Trạng Thái:</label>
                         <select class="form-select" id="trangThai" name="trangThai" required>
-                            <option value="Sắp tới" ${hoatDong.trangThai == 'Sắp tới' ? 'selected' : ''}>Upcoming</option>
-                            <option value="Đang diễn ra" ${hoatDong.trangThai == 'Đang diễn ra' ? 'selected' : ''}>In Progress</option>
-                            <option value="Đã hoàn thành" ${hoatDong.trangThai == 'Đã hoàn thành' ? 'selected' : ''}>Completed</option>
+                            <option value="Sắp diễn ra" ${hoatDong.trangThai == 'Sắp diễn ra' ? 'selected' : ''}>Upcoming</option>
+                            <option value="Đang hoạt động" ${hoatDong.trangThai == 'Đang hoạt động' ? 'selected' : ''}>In Progress</option>
+                            <option value="Đã kết thúc" ${hoatDong.trangThai == 'Đã kết thúc' ? 'selected' : ''}>Completed</option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Cập Nhật</button>
