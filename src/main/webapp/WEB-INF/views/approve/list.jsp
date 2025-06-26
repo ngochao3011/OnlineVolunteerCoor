@@ -75,7 +75,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <p>Bạn có chắc chắn muốn duyệt đăng ký với mã <strong>${dangKy.maDDK}</strong>?</p>
+                                    <p>Bạn có chắc chắn muốn duyệt đăng ký?</p>
                                     <div class="mb-3">
                                         <label for="ghiChuApprove-${dangKy.maDDK}" class="form-label">Ghi chú (tùy chọn):</label>
                                         <input type="text" class="form-control" id="ghiChuApprove-${dangKy.maDDK}" name="ghiChu">
@@ -107,7 +107,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <p>Bạn có chắc chắn muốn từ chối đăng ký với mã <strong>${dangKy.maDDK}</strong>?</p>
+                                    <p>Bạn có chắc chắn muốn từ chối đăng ký?</p>
                                     <div class="mb-3">
                                         <label for="ghiChuReject-${dangKy.maDDK}" class="form-label">Ghi chú (tùy chọn):</label>
                                         <input type="text" class="form-control" id="ghiChuReject-${dangKy.maDDK}" name="ghiChu">
