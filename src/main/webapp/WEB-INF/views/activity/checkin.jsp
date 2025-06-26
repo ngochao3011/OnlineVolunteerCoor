@@ -12,6 +12,7 @@
     <img src="${pageContext.request.contextPath}${qrImage}" alt="QR Code" width="250" height="250" style="margin: 20px 0;" />
 
     <p>
-        <a href="${qrLink}" >Link xác nhận điểm danh</a>
+        Link xác nhận điểm danh:
+        <a href="${qrLink}" >${qrLink}</a>
     </p>
 </div>

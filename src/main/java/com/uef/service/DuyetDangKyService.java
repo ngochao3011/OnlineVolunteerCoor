@@ -31,4 +31,8 @@ public class DuyetDangKyService {
     public void capNhatTrangThaiDuyet(int maDDK, String trangThaiDuyet, String ghiChu) {
         duyetDangKyRepository.capNhatTrangThaiDuyet(maDDK, trangThaiDuyet, ghiChu);
     }
+    
+    public boolean checkDangKy(int maThanhVien, int maHoatDong){
+        return duyetDangKyRepository.checkDangKy(maThanhVien, maHoatDong);
+    }
 }

@@ -35,6 +35,12 @@ public class HoatDongController {
 
     @Autowired
     private LichSuHoatDongService lichSuHoatDongService;
+    
+    @Autowired
+    private DuyetDangKyService duyetDangKyService;
+    
+    @Autowired
+    private DiemDanhService diemDanhService;
 
     @GetMapping("")
     public String listHoatDong(@RequestParam(name = "keyword", required = false) String keyword,
@@ -265,14 +271,29 @@ public class HoatDongController {
         if (user == null) {
             return "redirect:/login";
         }
-
-        //boolean success = activityService.checkin(user.getMaTaiKhoan(), maHoatDong);
-        if (true) {
-            redirectAttributes.addFlashAttribute("success", "Điểm danh thành công!");
-        } else {
-            redirectAttributes.addFlashAttribute("error", "Bạn đã điểm danh hoặc có lỗi xảy ra.");
+        
+        if ("Điều phối viên".equals(user.getQuyenHan())) {
+            redirectAttributes.addFlashAttribute("error", "Bạn không có trong danh sách điểm danh.");
+            return "redirect:/activity";
+        }
+        
+        // Check duyet dang ky
+        if(!duyetDangKyService.checkDangKy(maHoatDong, maHoatDong)){
+            redirectAttributes.addFlashAttribute("error", "Bạn chưa đăng ký hoạt động hoặc chưa được duyệt.");
+            return "redirect:/activity";
+        }
+        // Check diem danh
+        if(diemDanhService.checkDiemDanh(maHoatDong, maHoatDong)){
+            redirectAttributes.addFlashAttribute("error", "Bạn đã điểm danh.");
+            return "redirect:/activity";
         }
 
+        boolean success = diemDanhService.checkin(user.getMaTaiKhoan(), maHoatDong);
+        if (success) {
+            redirectAttributes.addFlashAttribute("success", "Điểm danh thành công!");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra khi điểm danh.");
+        }
         return "redirect:/activity";
     }
 

@@ -42,24 +42,24 @@ public class SigninSignupController {
             RedirectAttributes redirect) {
 
         if (taiKhoanService.getEmail(taiKhoan.getEmail()) != null) {
-            redirect.addFlashAttribute("error", "Email đã tồn tại");
+            redirect.addFlashAttribute("errMessage", "Email đã tồn tại");
             return "redirect:/sign-up";
         }
 
         if (!taiKhoan.getMatKhau().equals(xacNhanMatKhau)) {
-            redirect.addFlashAttribute("error", "Mật khẩu không khớp. Vui lòng nhập lại!");
+            redirect.addFlashAttribute("errMessage", "Mật khẩu không khớp. Vui lòng nhập lại!");
             return "redirect:/sign-up";
         }
 
         taiKhoan.setMatKhau(new BCryptPasswordEncoder().encode(taiKhoan.getMatKhau()));
         if (!taiKhoanService.dangKyTaiKhoan(taiKhoan)) {
-            redirect.addFlashAttribute("error", "Có lỗi khi đăng ký tài khoản!");
+            redirect.addFlashAttribute("errMessage", "Có lỗi khi đăng ký tài khoản!");
             return "redirect:/sign-up";
         }
 
         Integer id = taiKhoanService.getID(taiKhoan.getEmail());
         if (id == null) {
-            redirect.addFlashAttribute("error", "Không tìm thấy ID tài khoản sau khi đăng ký!");
+            redirect.addFlashAttribute("errMessage", "Không tìm thấy ID tài khoản sau khi đăng ký!");
             return "redirect:/sign-up";
         }
 
@@ -74,7 +74,7 @@ public class SigninSignupController {
         volunteer.setChucVu("Tình nguyện viên");
 
         if (!volunteerService.addVolunteer(volunteer)) {
-            redirect.addFlashAttribute("error", "Có lỗi khi đăng ký thông tin cá nhân!");
+            redirect.addFlashAttribute("errMessage", "Có lỗi khi đăng ký thông tin cá nhân!");
             return "redirect:/sign-up";
         }
 
@@ -102,7 +102,7 @@ public class SigninSignupController {
             Volunteer volunteer = volunteerService.getThanhVienDetails(taiKhoan.getMaTaiKhoan());
 
             String urlAvatar = (volunteer != null && volunteer.getUrlAvatar() != null && !volunteer.getUrlAvatar().trim().isEmpty())
-                    ? "/images/uploads" + volunteer.getUrlAvatar()
+                    ? volunteer.getUrlAvatar()
                     : "/src/images/default-avatar.png";
 
             session.setAttribute("user", taiKhoan);
@@ -114,7 +114,7 @@ public class SigninSignupController {
             return "redirect:/";
         }
 
-        redirect.addFlashAttribute("error", "Sai email hoặc mật khẩu.");
+        redirect.addFlashAttribute("errMessage", "Sai email hoặc mật khẩu.");
         return "redirect:/sign-in";
     }
 }

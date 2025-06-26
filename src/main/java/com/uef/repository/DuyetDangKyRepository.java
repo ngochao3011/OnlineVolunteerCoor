@@ -9,7 +9,10 @@ import java.time.LocalDateTime;
 import java.util.*;
 import org.slf4j.*;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -156,6 +159,56 @@ public class DuyetDangKyRepository {
             dangKyParams.put("trangThai", "Đã duyệt");
             int rowsAffectedDangKy = namedParameterJdbcTemplate.update(updateDangKyThamGiaSql, dangKyParams);
             logger.info("Updated [DANGKYTHAMGIA] for maDKTG={}, rows affected: {}", maDKTG, rowsAffectedDangKy);
+
+            // Tao data bang diem danh
+            if (rowsAffectedDangKy > 0) {
+                // Lấy maHoatDong và maThanhVien từ maDKTG
+                String selectInfoSql = "SELECT maHoatDong, maThanhVien FROM DANGKYTHAMGIA WHERE maDKTG = :maDKTG";
+                Map<String, Object> infoParams = Map.of("maDKTG", maDKTG);
+                Map<String, Object> info = namedParameterJdbcTemplate.queryForMap(selectInfoSql, infoParams);
+                int maHoatDong = (int) info.get("maHoatDong");
+                int maThanhVien = (int) info.get("maThanhVien");
+
+                String getMaDiemDanhSql = "SELECT TOP 1 maDiemDanh FROM DIEMDANH WHERE maHoatDong = :maHoatDong ORDER BY maDiemDanh DESC";
+
+                // Lấy maDiemDanh (nếu đã có)
+                List<Integer> resultList = namedParameterJdbcTemplate.query(
+                        getMaDiemDanhSql,
+                        Map.of("maHoatDong", maHoatDong),
+                        (rs, rowNum) -> rs.getInt("maDiemDanh")
+                );
+                int maDiemDanh;
+                if (resultList.isEmpty()) {
+                    // Chưa có → thêm mới DIEMDANH
+                    String insertDiemDanhSql = "INSERT INTO DIEMDANH (maHoatDong, ghiNhanDiemDanh) VALUES (:maHoatDong, :ghiNhan)";
+                    MapSqlParameterSource paramSource = new MapSqlParameterSource();
+                    paramSource.addValue("maHoatDong", maHoatDong);
+                    paramSource.addValue("ghiNhan", "Điểm danh cho sự kiện " + maHoatDong);
+
+                    KeyHolder keyHolder = new GeneratedKeyHolder();
+                    namedParameterJdbcTemplate.update(
+                            insertDiemDanhSql,
+                            paramSource,
+                            keyHolder,
+                            new String[]{"maDiemDanh"}
+                    );
+                    maDiemDanh = keyHolder.getKey().intValue();
+                } else {
+                    // Đã có → dùng kết quả
+                    maDiemDanh = resultList.get(0);
+                }
+
+                // Thêm bản ghi PHIEUDIEMDANH
+                String insertPhieuSql = "INSERT INTO PHIEUDIEMDANH (maDiemDanh, maThanhVien, maHoatDong, trangThai) VALUES (:maDiemDanh, :maThanhVien, :maHoatDong, :trangThai)";
+                Map<String, Object> phieuParams = Map.of(
+                        "maDiemDanh", maDiemDanh,
+                        "maThanhVien", maThanhVien,
+                        "maHoatDong", maHoatDong
+                );
+                namedParameterJdbcTemplate.update(insertPhieuSql, phieuParams);
+
+                logger.info("Created PHIEUDIEMDANH for maThanhVien={}, maHoatDong={}", maThanhVien, maHoatDong);
+            }
         }
         if ("Từ chối".equals(trangThaiDuyet) && maDKTG != null) {
             String updateDangKyThamGiaSql = "UPDATE [DANGKYTHAMGIA] SET trangThai = :trangThai WHERE maDKTG = :maDKTG";
@@ -165,5 +218,20 @@ public class DuyetDangKyRepository {
             int rowsAffectedDangKy = namedParameterJdbcTemplate.update(updateDangKyThamGiaSql, dangKyParams);
             logger.info("Updated [DANGKYTHAMGIA] for maDKTG={}, rows affected: {}", maDKTG, rowsAffectedDangKy);
         }
+    }
+
+    public boolean checkDangKy(int maThanhVien, int maHoatDong) {
+        String sql = "select A.maThanhVien from DUYETDANGKY A "
+                + "inner join DANGKYTHAMGIA B on A.maDKTG = B.maDKTG "
+                + "WHERE A.trangThaiDuyet = N'Đã duyệt' "
+                + "AND A.maThanhVien = :maThanhVien "
+                + "AND and B.maHoatDong = :maHoatDong ";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("maThanhVien", maThanhVien);
+        params.put("maHoatDong", maHoatDong);
+
+        int count = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
+        return count > 0;
     }
 }
