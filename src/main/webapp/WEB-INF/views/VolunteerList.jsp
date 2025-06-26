@@ -18,7 +18,7 @@
 
     <div class="row mb-3">
         <div class="col-md-8">
-            <a href="${pageContext.request.contextPath}/volunteer/export" class="btn btn-success export-btn">
+            <a href="${pageContext.request.contextPath}/volunteer/export?keyword=${searchKeyword}" class="btn btn-success export-btn">
                 <i class="fa fa-file-csv"></i> Xuất CSV
             </a>
             <a href="${pageContext.request.contextPath}/lichsu" class="btn btn-secondary ms-2">
