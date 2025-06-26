@@ -4,10 +4,8 @@
  */
 package com.uef.controller;
 
-import com.uef.model.HoatDong;
-import com.uef.service.HoatDongService;
-import com.uef.service.DangKyService;
-import com.uef.service.DanhGiaService;
+import com.uef.model.*;
+import com.uef.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import org.slf4j.*;
 import jakarta.servlet.http.HttpSession;
-import com.uef.model.TaiKhoan;
 import com.uef.util.QRGenerator;
 import java.io.File;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -35,6 +32,9 @@ public class HoatDongController {
 
     @Autowired
     private DanhGiaService danhGiaService;
+
+    @Autowired
+    private LichSuHoatDongService lichSuHoatDongService;
 
     @GetMapping("")
     public String listHoatDong(@RequestParam(name = "keyword", required = false) String keyword,
@@ -274,6 +274,30 @@ public class HoatDongController {
         }
 
         return "redirect:/activity";
+    }
+
+    @GetMapping("/history")
+    public String showHistory(@RequestParam(required = false) Integer maHoatDong, Model model, HttpSession session) {
+        try {
+            logger.info("Truy cập lịch sử với maHoatDong: {}", maHoatDong);
+            if (session.getAttribute("user") == null) {
+                return "redirect:/sign-in";
+            }
+
+            // Lấy toàn bộ lịch sử từ LICHSUHOATDONG
+            List<LichSuHoatDong> lichSuHoatDongs = lichSuHoatDongService.layTatCaLichSu();
+            logger.info("Số lượng lịch sử lấy được: {}", lichSuHoatDongs.size());
+            model.addAttribute("lichSuHoatDongs", lichSuHoatDongs);
+
+            model.addAttribute("pageTitle", "Lịch Sử Hoạt Động");
+            model.addAttribute("customCss", "/src/css/template-custom.css");
+            model.addAttribute("pageContent", "/WEB-INF/views/activity/history.jsp");
+            return "layout/layoutmaster";
+        } catch (Exception e) {
+            logger.error("Lỗi khi lấy lịch sử hoạt động: {}", e.getMessage(), e);
+            model.addAttribute("error", "Không thể tải dữ liệu");
+            return "history"; // Quay lại trang chính
+        }
     }
 
 }
