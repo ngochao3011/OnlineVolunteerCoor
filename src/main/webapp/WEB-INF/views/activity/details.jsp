@@ -54,7 +54,7 @@
                     <p>${hoatDong.moTa}</p>
                 </div>
                 <div class="col-lg-5 mt-4 mt-lg-0">
-                    <img src="${pageContext.request.contextPath}/src/images/activity-details-placeholder.jpg" class="img-fluid rounded shadow" alt="Hình ảnh hoạt động">
+                    <img src="https://mir-s3-cdn-cf.behance.net/projects/404/0967f4197995765.Y3JvcCwxNTM0LDEyMDAsMzAwLDA.png" class="card-img-top" alt="Ảnh hoạt động">
                 </div>
             </div>
         </div>
