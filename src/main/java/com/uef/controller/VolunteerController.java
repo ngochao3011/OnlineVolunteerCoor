@@ -172,11 +172,12 @@ public class VolunteerController {
 
     // Xuất CSV
     @GetMapping("/export")
-    public void exportCSV(HttpServletResponse response) throws IOException {
+    public void exportCSV(@RequestParam(required = false) String keyword,
+            HttpServletResponse response) throws IOException {
         response.setContentType("text/csv; charset=UTF-8");
         response.setHeader("Content-Disposition", "attachment; filename=tinh_nguyen_vien.csv");
 
-        List<Volunteer> volunteers = volunteerService.getAllVolunteers(1, Integer.MAX_VALUE); // Lấy tất cả để xuất CSV
+        List<Volunteer> volunteers = volunteerService.searchByName(keyword, 1, Integer.MAX_VALUE);
 
         PrintWriter writer = response.getWriter();
         writer.println("Mã TNV,Họ tên,SĐT,Địa chỉ,Trạng thái,Ngày đăng ký");
@@ -192,6 +193,7 @@ public class VolunteerController {
                     v.getTrangThai(),
                     ngayDangKy);
         }
+
         writer.flush();
         writer.close();
     }
