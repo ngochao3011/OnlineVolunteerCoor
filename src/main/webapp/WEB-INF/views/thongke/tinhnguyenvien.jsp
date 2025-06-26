@@ -71,7 +71,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="card card-box p-3">
-                            <h6>Số lượng tham gia hoạt động </h6>
+                            <h6>Số lượt tham gia hoạt động </h6>
                             <h3 class="text-4xl font-bold text-gray-800">
                                 <c:out value="${tongTNVThucTe}" default="0" />
                             </h3>
