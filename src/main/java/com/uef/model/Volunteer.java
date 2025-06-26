@@ -80,13 +80,11 @@ public class Volunteer {
 
     @Override
     public String toString() {
-        return "Volunteer{"
-                + "maThanhVien=" + maThanhVien
-                + ", hoTen='" + hoTen + '\''
-                + ", sdt='" + sdt + '\''
-                + ", diaChi='" + diaChi + '\''
-                + ", trangThai='" + trangThai + '\''
-                + ", ngayDangKy=" + ngayDangKy
-                + '}';
+        return "Mã thành viên: " + maThanhVien
+                + ", Họ tên: " + hoTen
+                + ", Số điện thoại: " + sdt
+                + ", Địa chỉ: " + diaChi
+                + ", Trạng thái: " + trangThai
+                + ", Ngày đăng ký: " + ngayDangKy;
     }
 }
