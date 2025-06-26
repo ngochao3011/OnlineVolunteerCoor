@@ -87,8 +87,6 @@ public class Volunteer {
                 + ", diaChi='" + diaChi + '\''
                 + ", trangThai='" + trangThai + '\''
                 + ", ngayDangKy=" + ngayDangKy
-                + ", urlAvatar='" + urlAvatar + '\''
-                + ", chucVu='" + chucVu + '\''
                 + '}';
     }
 }
