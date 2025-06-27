@@ -136,115 +136,73 @@
     <section class="section-padding" id="section_3">
         <div class="container">
             <div class="row">
-
                 <div class="col-lg-12 col-12 text-center mb-4">
-                    <h2>Our Causes</h2>
+                    <h2>Các Hoạt Động Tình Nguyện Nổi Bật</h2>
                 </div>
 
-                <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0">
-                    <div class="custom-block-wrap">
-                        <img src="${pageContext.request.contextPath}/src/images/causes/group-african-kids-paying-attention-class.jpg"
-                             class="custom-block-image img-fluid" alt="">
-
-                        <div class="custom-block">
-                            <div class="custom-block-body">
-                                <h5 class="mb-3">Children Education</h5>
-
-                                <p>Lorem Ipsum dolor sit amet, consectetur adipsicing kengan omeg kohm tokito</p>
-
-                                <div class="progress mt-4">
-                                    <div class="progress-bar w-75" role="progressbar" aria-valuenow="75"
-                                         aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-
-                                <div class="d-flex align-items-center my-2">
-                                    <p class="mb-0">
-                                        <strong>Raised:</strong>
-                                        $18,500
-                                    </p>
-
-                                    <p class="ms-auto mb-0">
-                                        <strong>Goal:</strong>
-                                        $32,000
+                <c:forEach var="hoatDong" items="${danhSachHoatDong}" begin="0" end="2">
+                    <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0">
+                        <div class="custom-block-wrap">
+                            <c:choose>
+                                < c:when test="${isLoggedIn}">
+                                <a href="${pageContext.request.contextPath}/activity/details/${hoatDong.maHoatDong}">
+                                    <img src="https://mir-s3-cdn-cf.behance.net/projects/404/0967f4197995765.Y3JvcCwxNTM0LDEyMDAsMzAwLDA.png"
+                                         class="custom-block-image img-fluid" alt="${hoatDong.tenHoatDong}">
+                                </a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="${pageContext.request.contextPath}/sign-in?redirect=/activity/details/${hoatDong.maHoatDong}"
+                                       onclick="alert('Vui lòng đăng nhập để xem chi tiết hoạt động!')">
+                                        <img src="https://mir-s3-cdn-cf.behance.net/projects/404/0967f4197995765.Y3JvcCwxNTM0LDEyMDAsMzAwLDA.png"
+                                             class="custom-block-image img-fluid" alt="${hoatDong.tenHoatDong}">
+                                    </a>
+                                </c:otherwise>
+                            </c:choose>
+                            <div class="custom-block">
+                                <div class="custom-block-body">
+                                    <c:choose>
+                                        <c:when test="${isLoggedIn}">
+                                            <h5 class="mb-3">
+                                                <a href="${pageContext.request.contextPath}/activity/details/${hoatDong.maHoatDong}">
+                                                    ${hoatDong.tenHoatDong}
+                                                </a>
+                                            </h5>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <h5 class="mb-3">
+                                                <a href="${pageContext.request.contextPath}/sign-in?redirect=/activity/details/${hoatDong.maHoatDong}"
+                                                   onclick="alert('Vui lòng đăng nhập để xem chi tiết hoạt động!')">
+                                                    ${hoatDong.tenHoatDong}
+                                                </a>
+                                            </h5>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <p>
+                                        <c:choose>
+                                            <c:when test="${not empty hoatDong.moTa}">
+                                                ${hoatDong.moTa}
+                                            </c:when>
+                                            <c:otherwise>
+                                                <strong>Địa điểm:</strong> ${hoatDong.diaDiem}<br/>
+                                                <strong>Thời gian:</strong> ${hoatDong.getThoiGianBatDauFormatted()}
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <br/>
+                                        <span class="badge ${hoatDong.trangThai == 'Đang hoạt động' ? 'bg-success' : (hoatDong.trangThai == 'Sắp diễn ra' ? 'bg-warning' : 'bg-secondary')}">
+                                            ${hoatDong.trangThai}
+                                        </span>
                                     </p>
                                 </div>
                             </div>
-
-                            <a href="donate.html" class="custom-btn btn">Donate now</a>
                         </div>
                     </div>
-                </div>
+                </c:forEach>
 
-                <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0">
-                    <div class="custom-block-wrap">
-                        <img src="${pageContext.request.contextPath}/src/images/causes/poor-child-landfill-looks-forward-with-hope.jpg"
-                             class="custom-block-image img-fluid" alt="">
-
-                        <div class="custom-block">
-                            <div class="custom-block-body">
-                                <h5 class="mb-3">Poverty Development</h5>
-
-                                <p>Sed leo nisl, posuere at molestie ac, suscipit auctor mauris. Etiam quis metus
-                                    tempor</p>
-
-                                <div class="progress mt-4">
-                                    <div class="progress-bar w-50" role="progressbar" aria-valuenow="50"
-                                         aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-
-                                <div class="d-flex align-items-center my-2">
-                                    <p class="mb-0">
-                                        <strong>Raised:</strong>
-                                        $27,600
-                                    </p>
-
-                                    <p class="ms-auto mb-0">
-                                        <strong>Goal:</strong>
-                                        $60,000
-                                    </p>
-                                </div>
-                            </div>
-
-                            <a href="donate.html" class="custom-btn btn">Donate now</a>
-                        </div>
+                <c:if test="${empty danhSachHoatDong}">
+                    <div class="col-12 text-center">
+                        <p>Không có hoạt động nào để hiển thị. Vui lòng kiểm tra dữ liệu trong cơ sở dữ liệu hoặc backend.</p>
                     </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 col-12">
-                    <div class="custom-block-wrap">
-                        <img src="${pageContext.request.contextPath}/src/images/causes/african-woman-pouring-water-recipient-outdoors.jpg"
-                             class="custom-block-image img-fluid" alt="">
-
-                        <div class="custom-block">
-                            <div class="custom-block-body">
-                                <h5 class="mb-3">Supply drinking water</h5>
-
-                                <p>Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus
-                                </p>
-
-                                <div class="progress mt-4">
-                                    <div class="progress-bar w-100" role="progressbar" aria-valuenow="100"
-                                         aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-
-                                <div class="d-flex align-items-center my-2">
-                                    <p class="mb-0">
-                                        <strong>Raised:</strong>
-                                        $84,600
-                                    </p>
-
-                                    <p class="ms-auto mb-0">
-                                        <strong>Goal:</strong>
-                                        $100,000
-                                    </p>
-                                </div>
-                            </div>
-
-                            <a href="donate.html" class="custom-btn btn">Donate now</a>
-                        </div>
-                    </div>
-                </div>
-
+                </c:if>
             </div>
         </div>
     </section>
