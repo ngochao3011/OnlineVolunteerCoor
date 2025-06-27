@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author Asus
  */
 @Controller
-@RequestMapping("/thongke")
+@RequestMapping("/admin/thongke")
 public class ThongKeController {
 
     @Autowired
@@ -69,7 +69,9 @@ public class ThongKeController {
         model.addAttribute("to", to);
         model.addAttribute("status", status);
 
-        return "thongke/hoatdong"; // /WEB-INF/views/thongke/hoatdong.jsp
+        model.addAttribute("pageTitle", "Thống kê hoạt động");
+        model.addAttribute("pageContent", "/WEB-INF/views/admin/thongke/hoatdong.jsp");
+        return "layout/layoutadmin";
     }
 
     //---xuất csv--
@@ -134,7 +136,9 @@ public class ThongKeController {
         model.addAttribute("to", to);
         model.addAttribute("status", status);
 
-        return "thongke/tinhnguyenvien";
+        model.addAttribute("pageTitle", "Thống kê tình nguyện viên");
+        model.addAttribute("pageContent", "/WEB-INF/views/admin/thongke/tinhnguyenvien.jsp");
+        return "layout/layoutadmin";
     }
 
     // --- Export CSV ---

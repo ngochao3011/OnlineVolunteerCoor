@@ -14,7 +14,7 @@
                 <img src="${pageContext.request.contextPath}/src/images/logo.png" class="logo img-fluid" alt="Kind Heart Charity">
                 <span>
                     Online Volunteer Coor
-                    <small>Non-profit Organization</small>
+                    <small>Tổ chức phi lợi nhuận</small>
                 </span>
             </a>
 
@@ -26,7 +26,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link click-scroll" href="${pageContext.request.contextPath}/">Home</a>
+                        <a class="nav-link click-scroll" href="${pageContext.request.contextPath}/">Trang chủ</a>
                     </li>
 
                     <c:if test="${empty sessionScope.user}">
@@ -46,29 +46,12 @@
                     <!-- Nếu đã đăng nhập -->
                     <c:if test="${not empty sessionScope.user and sessionScope.user.quyenHan == 'Điều phối viên'}">
                         <li class="nav-item">
-                            <a class="nav-link btn" href="${pageContext.request.contextPath}/volunteer">Volunteer</a>
+                            <a class="nav-link btn" href="${pageContext.request.contextPath}/admin">Quản lý</a>
                         </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link btn" href="${pageContext.request.contextPath}/activity">Activity</a>
-                        </li>
-
-                        <li class="nav-item dropdown">
-                            <a class="nav-link click-scroll dropdown-toggle" href="#section_5"
-                               id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown"
-                               aria-expanded="false">Thống kê</a>
-
-                            <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
-                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/thongke/hoatdong">Hoạt Động</a></li>
-                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/thongke/tinhnguyenvien">Tình nguyện viên</a></li>
-                            </ul>
-
-                        </li>
-
                     </c:if>
                     <c:if test="${not empty sessionScope.user and sessionScope.user.quyenHan == 'Tình nguyện viên'}">
                         <li class="nav-item">
-                            <a class="nav-link btn" href="${pageContext.request.contextPath}/activity">Activity</a>
+                            <a class="nav-link btn" href="${pageContext.request.contextPath}/activity">Hoạt động</a>
                         </li>
                     </c:if>
                     <li class="nav-item dropdown">
@@ -83,10 +66,6 @@
                                 </c:if>
                             <li><a class="dropdown-item" href="news-detail.html">News Detail</a></li>
                         </ul>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link click-scroll" href="#section_6">Contact</a>
                     </li>
 
                     <!-- Nếu đã đăng nhập -->
@@ -107,7 +86,7 @@
                     <!-- Nếu chưa đăng nhập -->
                     <c:if test="${empty sessionScope.user}">
                         <li class="nav-item ms-3">
-                            <a class="nav-link custom-btn custom-border-btn btn" href="${pageContext.request.contextPath}/sign-in">Sign in</a>
+                            <a class="nav-link custom-btn custom-border-btn btn" href="${pageContext.request.contextPath}/sign-in">Đăng nhập</a>
                         </li>
                     </c:if>
                 </ul>

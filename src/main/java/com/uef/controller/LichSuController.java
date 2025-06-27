@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author ACER
  */
 @Controller
-@RequestMapping("/lichsu")
+@RequestMapping("/admin/lichsu")
 public class LichSuController {
 
     @Autowired
@@ -29,9 +29,8 @@ public class LichSuController {
         List<LichSuThaoTac> list = lichSuService.getAll();
         model.addAttribute("lichSuList", list);
         model.addAttribute("pageTitle", "Lịch sử thao tác");
-        model.addAttribute("customCss", "/src/css/template-custom.css");
-        model.addAttribute("pageContent", "/WEB-INF/views/LichSu.jsp");
-        return "layout/layoutmaster";
+        model.addAttribute("pageContent", "/WEB-INF/views/admin/LichSu.jsp");
+        return "layout/layoutadmin";
     }
 }
 

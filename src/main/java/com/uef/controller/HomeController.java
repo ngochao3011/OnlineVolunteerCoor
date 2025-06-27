@@ -64,4 +64,11 @@ public class HomeController {
 
         return "layout/layoutmaster";
     }
+    
+    @GetMapping("/admin")
+    public String admin(HttpSession session, Model model) {
+        model.addAttribute("pageActive", "dashboard");
+        addLoginInfoToModel(model, session);
+        return "layout/layoutadmin";
+    }
 }

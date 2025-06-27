@@ -19,7 +19,7 @@ import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 
 @Controller
-@RequestMapping("/volunteer")
+@RequestMapping("/admin/volunteer")
 public class VolunteerController {
 
     @Autowired
@@ -68,8 +68,9 @@ public class VolunteerController {
 
         model.addAttribute("pageTitle", "Danh sách Tình nguyện viên");
         model.addAttribute("customCss", "/src/css/template-custom.css");
-        model.addAttribute("pageContent", "/WEB-INF/views/VolunteerList.jsp");
-        return "layout/layoutmaster";
+        model.addAttribute("pageContent", "/WEB-INF/views/admin/VolunteerList.jsp");
+        model.addAttribute("pageActive", "volunteer");
+        return "layout/layoutadmin";
     }
 
     // Hiển thị form thêm mới tình nguyện viên
@@ -80,8 +81,9 @@ public class VolunteerController {
         
         model.addAttribute("pageTitle", "Cập nhật Tình nguyện viên");
         model.addAttribute("customCss", "/src/css/template-custom.css");
-        model.addAttribute("pageContent", "/WEB-INF/views/VolunteerForm.jsp");
-        return "layout/layoutmaster";
+        model.addAttribute("pageContent", "/WEB-INF/views/admin/VolunteerForm.jsp");
+        model.addAttribute("pageActive", "volunteer");
+        return "layout/layoutadmin";
     }
 
     // Hiển thị form sửa tình nguyện viên theo ID
@@ -89,15 +91,16 @@ public class VolunteerController {
     public String showEditForm(@PathVariable("id") int id, Model model) {
         Volunteer volunteer = volunteerService.getVolunteerById(id);
         if (volunteer == null) {
-            return "redirect:/volunteer";
+            return "redirect:/admin/volunteer";
         }
         model.addAttribute("volunteer", volunteer);
         model.addAttribute("taiKhoan", new TaiKhoan());
         
         model.addAttribute("pageTitle", "Cập nhật Tình nguyện viên");
         model.addAttribute("customCss", "/src/css/template-custom.css");
-        model.addAttribute("pageContent", "/WEB-INF/views/VolunteerForm.jsp");
-        return "layout/layoutmaster";
+        model.addAttribute("pageContent", "/WEB-INF/views/admin/VolunteerForm.jsp");
+        model.addAttribute("pageActive", "volunteer");
+        return "layout/layoutadmin";
     }
 
     // Xử lý cập nhật thông tin tình nguyện viên
@@ -107,11 +110,11 @@ public class VolunteerController {
             // Kiểm tra dữ liệu đầu vào
             if (volunteer.getHoTen() == null || volunteer.getHoTen().trim().isEmpty()) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Họ tên không được để trống.");
-                return "redirect:/volunteer/edit/" + volunteer.getMaThanhVien();
+                return "redirect:/admin/volunteer/edit/" + volunteer.getMaThanhVien();
             }
             if (volunteer.getSdt()!= null && !volunteer.getSdt().matches("^0\\d{9}$")) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số.");
-                return "redirect:/volunteer/edit/" + volunteer.getMaThanhVien();
+                return "redirect:/admin/volunteer/edit/" + volunteer.getMaThanhVien();
             }
 
             boolean success = volunteerService.updateVolunteer(volunteer);
@@ -122,7 +125,7 @@ public class VolunteerController {
             }
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/volunteer/edit/" + volunteer.getMaThanhVien();
+            return "redirect:/admin/volunteer/edit/" + volunteer.getMaThanhVien();
         } catch (DataIntegrityViolationException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi dữ liệu: Dữ liệu không hợp lệ hoặc vi phạm ràng buộc cơ sở dữ liệu.");
             e.printStackTrace();
@@ -130,7 +133,7 @@ public class VolunteerController {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi hệ thống: " + e.getMessage());
             e.printStackTrace();
         }
-        return "redirect:/volunteer";
+        return "redirect:/admin/volunteer";
     }
 
     // Xóa tình nguyện viên theo ID
@@ -154,7 +157,7 @@ public class VolunteerController {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi xóa: " + e.getMessage());
             e.printStackTrace();
         }
-        String redirectUrl = "redirect:/volunteer?page=" + page;
+        String redirectUrl = "redirect:/admin/volunteer?page=" + page;
         if (keyword != null && !keyword.trim().isEmpty()) {
             redirectUrl += "&keyword=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8);
         }

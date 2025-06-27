@@ -21,7 +21,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/activity")
+@RequestMapping("")
 public class HoatDongController {
 
     private static final Logger logger = LoggerFactory.getLogger(HoatDongController.class);
@@ -47,7 +47,7 @@ public class HoatDongController {
     @Autowired
     private DiemDanhService diemDanhService;
 
-    @GetMapping("")
+    @GetMapping("/activity")
     public String listHoatDong(@RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam(name = "location", required = false) String location,
             @RequestParam(name = "trangThai", required = false) String trangThai,
@@ -80,8 +80,8 @@ public class HoatDongController {
             if ("Điều phối viên".equals(currentUser.getQuyenHan())) {
                 model.addAttribute("pageTitle", "Danh sách sự kiện");
                 model.addAttribute("customCss", "/src/css/template-custom.css");
-                model.addAttribute("pageContent", "/WEB-INF/views/activitylist.jsp");
-                return "layout/layoutmaster";
+                model.addAttribute("pageContent", "/WEB-INF/views/admin/activitylist.jsp");
+                return "layout/layoutadmin";
             } else {
                 model.addAttribute("pageTitle", "Danh sách sự kiện");
                 model.addAttribute("customCss", "/src/css/template-custom.css");
@@ -94,35 +94,87 @@ public class HoatDongController {
             model.addAttribute("error", "Không thể tải danh sách sự kiện");
             model.addAttribute("pageTitle", "Danh sách sự kiện");
             model.addAttribute("customCss", "/src/css/template-custom.css");
-            model.addAttribute("pageContent", "/WEB-INF/views/activitylist.jsp");
+            model.addAttribute("pageContent", "/WEB-INF/views/activitylist_volunteer.jsp");
             return "layout/layoutmaster";
         }
     }
+    
+    @GetMapping("/admin/activity")
+    public String listHoatDongAdmin(@RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "location", required = false) String location,
+            @RequestParam(name = "trangThai", required = false) String trangThai,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            HttpSession session,
+            Model model) {
+        try {
+            TaiKhoan currentUser = (TaiKhoan) session.getAttribute("user");
+            if (currentUser == null) {
+                return "redirect:/sign-in";
+            }
+            List<Integer> registeredEventIds = dangKyService.getRegisteredEventIds(currentUser.getMaTaiKhoan());
+            model.addAttribute("registeredEventIds", registeredEventIds);
 
-    @GetMapping("/add")
+            List<HoatDong> danhSachHoatDong = hoatDongService.timKiemVaPhanTrang(keyword, location, trangThai, page);
+            int totalItems = hoatDongService.demTongSoHoatDongTimKiem(keyword, location, trangThai);
+            int totalPages = (int) Math.ceil((double) totalItems / HoatDongService.PAGE_SIZE);
+
+            if (page > totalPages && totalPages > 0) {
+                page = totalPages;
+            }
+
+            model.addAttribute("danhSachHoatDong", danhSachHoatDong);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("location", location);
+            model.addAttribute("trangThai", trangThai);
+            System.out.println(currentUser.getQuyenHan());
+            if ("Điều phối viên".equals(currentUser.getQuyenHan())) {
+                model.addAttribute("pageTitle", "Danh sách sự kiện");
+                model.addAttribute("customCss", "/src/css/template-custom.css");
+                model.addAttribute("pageContent", "/WEB-INF/views/admin/activitylist.jsp");
+                return "layout/layoutadmin";
+            } else {
+                model.addAttribute("pageTitle", "Danh sách sự kiện");
+                model.addAttribute("customCss", "/src/css/template-custom.css");
+                model.addAttribute("pageContent", "/WEB-INF/views/activitylist_volunteer.jsp");
+                return "layout/layoutmaster";
+            }
+
+        } catch (Exception e) {
+            logger.error("Lỗi khi lấy danh sách sự kiện: {}", e.getMessage(), e);
+            model.addAttribute("error", "Không thể tải danh sách sự kiện");
+            model.addAttribute("pageTitle", "Danh sách sự kiện");
+            model.addAttribute("customCss", "/src/css/template-custom.css");
+            model.addAttribute("pageContent", "/WEB-INF/views/admin/activitylist.jsp");
+            return "layout/layoutadmin";
+        }
+    }
+
+    @GetMapping("/admin/activity/add")
     public String showAddForm(Model model) {
         model.addAttribute("hoatDong", new HoatDong());
         model.addAttribute("pageTitle", "Thêm Hoạt Động Mới");
-        model.addAttribute("pageContent", "/WEB-INF/views/activity/add.jsp");
-        return "layout/layoutmaster";
+        model.addAttribute("pageContent", "/WEB-INF/views/admin/activity/add.jsp");
+        return "layout/layoutadmin";
     }
 
-    @PostMapping("/add")
+    @PostMapping("/admin/activity/add")
     public String addHoatDong(@ModelAttribute HoatDong hoatDong, Model model) {
         try {
             hoatDongService.themHoatDong(hoatDong); // Không set thời gian ở đây, xử lý trong service
             logger.info("Thêm hoạt động thành công: {}", hoatDong.getTenHoatDong());
-            return "redirect:/activity";
+            return "redirect:/admin/activity";
         } catch (Exception e) {
             logger.error("Lỗi khi thêm hoạt động: {}", e.getMessage(), e);
             model.addAttribute("error", "Không thể thêm hoạt động");
             model.addAttribute("pageTitle", "Thêm Hoạt Động Mới");
-            model.addAttribute("pageContent", "/WEB-INF/views/activity/add.jsp");
-            return "layout/layoutmaster";
+            model.addAttribute("pageContent", "/WEB-INF/views/admin/activity/add.jsp");
+            return "layout/layoutadmin";
         }
     }
 
-    @GetMapping("/details/{maHoatDong}")
+    @GetMapping("/activity/details/{maHoatDong}")
     public String viewHoatDongDetails(@PathVariable int maHoatDong, Model model, HttpSession session) {
         try {
             HoatDong hoatDong = hoatDongService.layHoatDongTheoMa(maHoatDong);
@@ -151,42 +203,42 @@ public class HoatDongController {
         }
     }
 
-    @GetMapping("/edit/{maHoatDong}")
+    @GetMapping("/admin/activity/edit/{maHoatDong}")
     public String showEditForm(@PathVariable int maHoatDong, Model model) {
         try {
             HoatDong hoatDong = hoatDongService.layHoatDongTheoMa(maHoatDong);
             model.addAttribute("hoatDong", hoatDong);
             model.addAttribute("pageTitle", "Chỉnh Sửa Hoạt Động");
-            model.addAttribute("pageContent", "/WEB-INF/views/activity/edit.jsp");
-            return "layout/layoutmaster";
+            model.addAttribute("pageContent", "/WEB-INF/views/admin/activity/edit.jsp");
+            return "layout/layoutadmin";
         } catch (Exception e) {
             logger.error("Lỗi khi lấy hoạt động để chỉnh sửa: {}", e.getMessage(), e);
             model.addAttribute("error", "Không thể tải thông tin hoạt động");
-            return "redirect:/activity";
+            return "redirect:/admin/activity";
         }
     }
 
-    @PostMapping("/edit")
+    @PostMapping("/admin/activity/edit")
     public String updateHoatDong(@ModelAttribute HoatDong hoatDong, Model model) {
         try {
             hoatDongService.capNhatHoatDong(hoatDong);
             logger.info("Cập nhật hoạt động thành công: {}", hoatDong.getTenHoatDong());
-            return "redirect:/activity";
+            return "redirect:/admin/activity";
         } catch (Exception e) {
             logger.error("Lỗi khi cập nhật hoạt động: {}", e.getMessage());
             model.addAttribute("error", "Không thể cập nhật hoạt động");
             model.addAttribute("pageTitle", "Chỉnh Sửa Hoạt Động");
-            model.addAttribute("pageContent", "/WEB-INF/views/activity/edit.jsp");
-            return "layout/layoutmaster";
+            model.addAttribute("pageContent", "/WEB-INF/views/admin/activity/edit.jsp");
+            return "layout/layoutadmin";
         }
     }
 
-    @GetMapping("/delete")
+    @GetMapping("/admin/activity/delete")
     public String deleteHoatDong(@RequestParam("maHoatDong") Integer maHoatDong, RedirectAttributes redirectAttributes) {
         if (maHoatDong == null || maHoatDong <= 0) {
             logger.warn("Invalid maHoatDong: {}", maHoatDong);
             redirectAttributes.addFlashAttribute("errorMessage", "Mã hoạt động không hợp lệ.");
-            return "redirect:/activity?page=1";
+            return "redirect:/admin/activity?page=1";
         }
 
         String checkSql = "SELECT trangThai, (SELECT COUNT(*) FROM [DANGKYTHAMGIA] WHERE maHoatDong = ?) AS dangKyCount "
@@ -199,13 +251,13 @@ public class HoatDongController {
             if ("Đang hoạt động".equals(trangThai)) {
                 logger.warn("Cannot delete HOATDONG with maHoatDong={} due to active status", maHoatDong);
                 redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa hoạt động vì hoạt động đang diễn ra.");
-                return "redirect:/activity?page=1";
+                return "redirect:/admin/activity?page=1";
             }
 
             if ("Sắp diễn ra".equals(trangThai) && dangKyCount > 0) {
                 logger.warn("Cannot delete HOATDONG with maHoatDong={} due to {} registrations", maHoatDong, dangKyCount);
                 redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa hoạt động vì có " + dangKyCount + " tình nguyện viên đã đăng ký.");
-                return "redirect:/activity?page=1";
+                return "redirect:/admin/activity?page=1";
             }
 
             // Xóa các bản ghi liên quan
@@ -235,25 +287,25 @@ public class HoatDongController {
             logger.error("Unexpected error deleting HOATDONG with maHoatDong={}: {}", maHoatDong, e.getMessage(), e);
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi không xác định khi xóa hoạt động: " + e.getMessage());
         }
-        return "redirect:/activity?page=1";
+        return "redirect:/admin/activity?page=1";
     }
 
-    @PostMapping("/update")
+    @PostMapping("/admin/activity/update")
     public String updateStatus(@RequestParam int maHoatDong, @RequestParam String trangThai, Model model) {
         try {
             HoatDong hoatDong = hoatDongService.layHoatDongTheoMa(maHoatDong);
             hoatDong.setTrangThai(trangThai);
             hoatDongService.capNhatHoatDong(hoatDong);
             logger.info("Cập nhật trạng thái hoạt động thành công, mã số: {}", maHoatDong);
-            return "redirect:/activity";
+            return "redirect:/admin/activity";
         } catch (Exception e) {
             logger.error("Lỗi khi cập nhật trạng thái: {}", e.getMessage(), e);
             model.addAttribute("error", "Không thể cập nhật trạng thái");
-            return "redirect:/activity";
+            return "redirect:/admin/activity";
         }
     }
 
-    @GetMapping("/checkin/{maHoatDong}")
+    @GetMapping("/admin/activity/checkin/{maHoatDong}")
     public String showQRCode(@PathVariable int maHoatDong, Model model, HttpSession session) {
         TaiKhoan user = (TaiKhoan) session.getAttribute("user");
         if (user == null) {
@@ -282,11 +334,11 @@ public class HoatDongController {
         model.addAttribute("qrImage", "/images/uploads/qrcodes/" + fileName);
         model.addAttribute("qrLink", qrData);
         model.addAttribute("pageTitle", "Điểm danh Hoạt Động " + maHoatDong);
-        model.addAttribute("pageContent", "/WEB-INF/views/activity/checkin.jsp");
-        return "layout/layoutmaster";
+        model.addAttribute("pageContent", "/WEB-INF/views/admin/activity/checkin.jsp");
+        return "layout/layoutadmin";
     }
 
-    @GetMapping("/confirm-checkin/{maHoatDong}")
+    @GetMapping("/activity/confirm-checkin/{maHoatDong}")
     public String confirmCheckin(@PathVariable("maHoatDong") int maHoatDong,
             Model model,
             HttpSession session,
@@ -311,7 +363,7 @@ public class HoatDongController {
         return "layout/layoutmaster";
     }
     
-    @PostMapping("/confirm-checkin")
+    @PostMapping("/activity/confirm-checkin")
     public String confirmCheckin(@RequestParam("maHoatDong") int maHoatDong,
                                   HttpSession session,
                                   RedirectAttributes redirectAttributes) {
@@ -346,7 +398,7 @@ public class HoatDongController {
         return "redirect:/activity";
     }
 
-    @GetMapping("/history")
+    @GetMapping("/activity/history")
     public String showHistory(@RequestParam(required = false) Integer maHoatDong, Model model, HttpSession session) {
         try {
             logger.info("Truy cập lịch sử với maHoatDong: {}", maHoatDong);
