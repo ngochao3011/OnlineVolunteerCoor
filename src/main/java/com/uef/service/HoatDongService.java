@@ -245,4 +245,24 @@ public class HoatDongService {
             throw new RuntimeException("Không thể lấy hoạt động", e);
         }
     }
+
+    public List<HoatDong> layHoatDongNoiBat() {
+        try {
+            String sql = "SELECT TOP 3 * FROM HOATDONG WHERE trangThai = N'Sắp diễn ra' ORDER BY thoiGianBatDau DESC";
+            List<HoatDong> result = jdbcTemplate.query(sql, (rs, rowNum) -> new HoatDong(
+                    rs.getInt("maHoatDong"),
+                    rs.getString("tenHoatDong"),
+                    rs.getString("moTa"),
+                    rs.getObject("thoiGianBatDau", LocalDateTime.class),
+                    rs.getObject("thoiGianKetThuc", LocalDateTime.class),
+                    rs.getString("diaDiem"),
+                    rs.getString("trangThai")
+            ));
+            System.out.println("Số hoạt động nổi bật trả về: " + result.size());
+            return result;
+        } catch (Exception e) {
+            logger.error("Lỗi khi lấy hoạt động nổi bật: {}", e.getMessage(), e);
+            throw new RuntimeException("Không thể lấy danh sách hoạt động nổi bật", e);
+        }
+    }
 }
