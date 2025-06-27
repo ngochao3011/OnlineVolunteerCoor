@@ -16,6 +16,8 @@ import org.slf4j.*;
 import jakarta.servlet.http.HttpSession;
 import com.uef.util.QRGenerator;
 import java.io.File;
+import java.util.Map;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -23,6 +25,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class HoatDongController {
 
     private static final Logger logger = LoggerFactory.getLogger(HoatDongController.class);
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private HoatDongService hoatDongService;
@@ -176,17 +181,61 @@ public class HoatDongController {
         }
     }
 
-    @GetMapping("/delete/{maHoatDong}")
-    public String deleteHoatDong(@PathVariable int maHoatDong, Model model) {
-        try {
-            hoatDongService.xoaHoatDong(maHoatDong);
-            logger.info("Xóa hoạt động thành công, mã số: {}", maHoatDong);
-            return "redirect:/activity";
-        } catch (Exception e) {
-            logger.error("Lỗi khi xóa hoạt động: {}", e.getMessage(), e);
-            model.addAttribute("error", "Không thể xóa hoạt động");
-            return "redirect:/activity";
+    @GetMapping("/delete")
+    public String deleteHoatDong(@RequestParam("maHoatDong") Integer maHoatDong, RedirectAttributes redirectAttributes) {
+        if (maHoatDong == null || maHoatDong <= 0) {
+            logger.warn("Invalid maHoatDong: {}", maHoatDong);
+            redirectAttributes.addFlashAttribute("errorMessage", "Mã hoạt động không hợp lệ.");
+            return "redirect:/activity?page=1";
         }
+
+        String checkSql = "SELECT trangThai, (SELECT COUNT(*) FROM [DANGKYTHAMGIA] WHERE maHoatDong = ?) AS dangKyCount "
+                + "FROM [HOATDONG] WHERE maHoatDong = ?";
+        try {
+            Map<String, Object> result = jdbcTemplate.queryForMap(checkSql, maHoatDong, maHoatDong);
+            String trangThai = (String) result.get("trangThai");
+            int dangKyCount = ((Number) result.get("dangKyCount")).intValue();
+
+            if ("Đang hoạt động".equals(trangThai)) {
+                logger.warn("Cannot delete HOATDONG with maHoatDong={} due to active status", maHoatDong);
+                redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa hoạt động vì hoạt động đang diễn ra.");
+                return "redirect:/activity?page=1";
+            }
+
+            if ("Sắp diễn ra".equals(trangThai) && dangKyCount > 0) {
+                logger.warn("Cannot delete HOATDONG with maHoatDong={} due to {} registrations", maHoatDong, dangKyCount);
+                redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa hoạt động vì có " + dangKyCount + " tình nguyện viên đã đăng ký.");
+                return "redirect:/activity?page=1";
+            }
+
+            // Xóa các bản ghi liên quan
+            jdbcTemplate.update("DELETE FROM [DANGKYTHAMGIA] WHERE maHoatDong = ?", maHoatDong);
+            jdbcTemplate.update("DELETE FROM [DIEMDANH] WHERE maHoatDong = ?", maHoatDong);
+            jdbcTemplate.update("DELETE FROM [PHIEUDIEMDANH] WHERE maHoatDong = ?", maHoatDong);
+            jdbcTemplate.update("DELETE FROM [PHIEUDANHGIA] WHERE maHoatDong = ?", maHoatDong);
+            jdbcTemplate.update("DELETE FROM [HINHANH] WHERE maHoatDong = ?", maHoatDong);
+            jdbcTemplate.update("DELETE FROM [LICHSUHOATDONG] WHERE maHoatDong = ?", maHoatDong);
+
+            // Xóa HOATDONG
+            int rowsAffected = jdbcTemplate.update("DELETE FROM [HOATDONG] WHERE maHoatDong = ?", maHoatDong);
+            if (rowsAffected > 0) {
+                logger.info("Deleted HOATDONG with maHoatDong={}", maHoatDong);
+                redirectAttributes.addFlashAttribute("successMessage", "Xóa hoạt động thành công!");
+            } else {
+                logger.warn("No HOATDONG found with maHoatDong={}", maHoatDong);
+                redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy hoạt động để xóa.");
+            }
+        } catch (org.springframework.jdbc.BadSqlGrammarException e) {
+            logger.error("SQL error deleting HOATDONG with maHoatDong={}: {}", maHoatDong, e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi cú pháp SQL hoặc cấu trúc cơ sở dữ liệu.");
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            logger.error("Data integrity violation deleting HOATDONG with maHoatDong={}: {}", maHoatDong, e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa hoạt động do còn dữ liệu liên quan.");
+        } catch (Exception e) {
+            logger.error("Unexpected error deleting HOATDONG with maHoatDong={}: {}", maHoatDong, e.getMessage(), e);
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi không xác định khi xóa hoạt động: " + e.getMessage());
+        }
+        return "redirect:/activity?page=1";
     }
 
     @PostMapping("/update")
