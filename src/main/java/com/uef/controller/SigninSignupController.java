@@ -94,7 +94,8 @@ public class SigninSignupController {
     public String processLogin(@RequestParam String username,
             @RequestParam String password,
             HttpSession session,
-            RedirectAttributes redirect) {
+            RedirectAttributes redirect,
+            @RequestParam(value = "redirect", required = false) String redirectUrl) {
 
         TaiKhoan taiKhoan = taiKhoanService.getEmail(username);
 
@@ -102,19 +103,30 @@ public class SigninSignupController {
             Volunteer volunteer = volunteerService.getThanhVienDetails(taiKhoan.getMaTaiKhoan());
 
             String urlAvatar = (volunteer != null && volunteer.getUrlAvatar() != null && !volunteer.getUrlAvatar().trim().isEmpty())
-                    ? volunteer.getUrlAvatar()
+                    ? "/images/uploads" + volunteer.getUrlAvatar()
                     : "/src/images/default-avatar.png";
 
+            // Thiết lập các thuộc tính session
             session.setAttribute("user", taiKhoan);
             session.setAttribute("urlAvatar", urlAvatar);
             session.setAttribute("loggedInAccount", taiKhoan);
             session.setAttribute("loggedInProfile", volunteer);
             session.setAttribute("isLoggedIn", true);
 
+            // Xác thực và chuyển hướng
+            if (redirectUrl != null && !redirectUrl.isEmpty() && redirectUrl.startsWith("/")) {
+                // Kiểm tra redirectUrl hợp lệ (chỉ cho phép ký tự an toàn)
+                if (redirectUrl.matches("^/[a-zA-Z0-9/\\-._]+$")) {
+                    return "redirect:" + redirectUrl;
+                } else {
+                    redirect.addFlashAttribute("error", "URL chuyển hướng không hợp lệ.");
+                    return "redirect:/";
+                }
+            }
             return "redirect:/";
         }
 
-        redirect.addFlashAttribute("errMessage", "Sai email hoặc mật khẩu.");
+        redirect.addFlashAttribute("error", "Sai email hoặc mật khẩu.");
         return "redirect:/sign-in";
     }
 }
