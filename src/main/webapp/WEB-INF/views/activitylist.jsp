@@ -30,7 +30,7 @@
                     <div class="blog-item">
                         <div class="bi-thumb">
 
-                            <img src="${pageContext.request.contextPath}/src/images/volunteer-4.png" alt="${hoatDong.tenHoatDong}" style="width:100%; height:200px; object-fit:cover;">
+                            <img src="https://mir-s3-cdn-cf.behance.net/projects/404/0967f4197995765.Y3JvcCwxNTM0LDEyMDAsMzAwLDA.png" alt="${hoatDong.tenHoatDong}" style="width:100%; height:200px; object-fit:cover;">
                         </div>
                         <div class="bi-content">
                             <h5><a href="${pageContext.request.contextPath}/activity/edit/${hoatDong.maHoatDong}">${hoatDong.tenHoatDong}</a></h5>
