@@ -63,6 +63,7 @@
                             <i class='bx bxs-lock-alt'></i>
                             <input type="password" name="password" placeholder="Password" required />
                         </div>
+                        <input type="hidden" name="redirect" value="${param.redirect}">
                         <button type="submit">Sign In</button>
                         <p><b>Forgot password?</b></p>
                         <p>
