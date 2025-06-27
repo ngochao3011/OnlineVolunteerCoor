@@ -45,7 +45,7 @@ public class DuyetDangKyRepository {
                 + "AND (:keyword IS NULL OR tv.hoTen LIKE '%' + :keyword + '%') "
                 + "AND (:location IS NULL OR EXISTS (SELECT 1 FROM [HOATDONG] hd WHERE hd.maHoatDong = dktg.maHoatDong AND hd.diaDiem LIKE '%' + :location + '%')) "
                 + "AND (:trangThai IS NULL OR ddk.trangThaiDuyet = :trangThai) "
-                + "ORDER BY hd.thoiGianBatDau ASC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY";
+                + "ORDER BY ddk.maDDK DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY";
 
         Map<String, Object> params = new HashMap<>();
         params.put("offset", offset);
