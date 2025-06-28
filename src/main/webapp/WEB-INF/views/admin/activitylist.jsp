@@ -36,7 +36,7 @@
                 <div class="action-buttons">
                     <div class="left-buttons">
                         <a href="${pageContext.request.contextPath}/admin/activity/add" class="btn btn-primary">Thêm Hoạt Động Mới</a>
-                        <a href="${pageContext.request.contextPath}/activity/history" class="btn btn-outline-info"> <i class="bi bi-clock-history"></i> Lịch sử</a>
+                        <a href="${pageContext.request.contextPath}/admin/activity/history" class="btn btn-outline-info"> <i class="bi bi-clock-history"></i> Lịch sử</a>
                     </div>
                     <div class="right-button">
                         <a href="${pageContext.request.contextPath}/admin/activity/approve" class="btn btn-approve">Duyệt đăng ký</a>
