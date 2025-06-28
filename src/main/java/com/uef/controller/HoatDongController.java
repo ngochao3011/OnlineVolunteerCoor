@@ -398,7 +398,7 @@ public class HoatDongController {
         return "redirect:/activity";
     }
 
-    @GetMapping("/activity/history")
+    @GetMapping("admin/activity/history")
     public String showHistory(@RequestParam(required = false) Integer maHoatDong, Model model, HttpSession session) {
         try {
             logger.info("Truy cập lịch sử với maHoatDong: {}", maHoatDong);
@@ -414,7 +414,7 @@ public class HoatDongController {
             model.addAttribute("pageTitle", "Lịch Sử Hoạt Động");
             model.addAttribute("customCss", "/src/css/template-custom.css");
             model.addAttribute("pageContent", "/WEB-INF/views/activity/history.jsp");
-            return "layout/layoutmaster";
+            return "layout/layoutadmin";
         } catch (Exception e) {
             logger.error("Lỗi khi lấy lịch sử hoạt động: {}", e.getMessage(), e);
             model.addAttribute("error", "Không thể tải dữ liệu");
