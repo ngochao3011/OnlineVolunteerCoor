@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/activity/approve")
+@RequestMapping("/admin/activity/approve")
 public class DuyetDangKyController {
 
     private static final Logger logger = LoggerFactory.getLogger(DuyetDangKyController.class);
@@ -58,7 +58,7 @@ public class DuyetDangKyController {
         model.addAttribute("trangThai", trangThai != null ? trangThai : "");
         model.addAttribute("pageTitle", "Danh sách đăng ký cần duyệt");
         model.addAttribute("pageContent", "/WEB-INF/views/approve/list.jsp");
-        return "layout/layoutmaster";
+        return "layout/layoutadmin";
     }
 
     @PostMapping("/approve")
