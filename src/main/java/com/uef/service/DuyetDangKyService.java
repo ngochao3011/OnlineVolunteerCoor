@@ -7,6 +7,7 @@ package com.uef.service;
 import com.uef.model.DuyetDangKy;
 import com.uef.repository.DuyetDangKyRepository;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +35,9 @@ public class DuyetDangKyService {
     
     public boolean checkDangKy(int maThanhVien, int maHoatDong){
         return duyetDangKyRepository.checkDangKy(maThanhVien, maHoatDong);
+    }
+    
+    public Map<String, Object> getThongTinMail(int maDDK){
+        return duyetDangKyRepository.getThongTinMail(maDDK);
     }
 }

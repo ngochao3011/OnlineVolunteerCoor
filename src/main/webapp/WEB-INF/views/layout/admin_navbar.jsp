@@ -68,7 +68,7 @@
                         </c:choose>
 
                     </div>
-                    <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i>Thông tin tài khoản</a>
+                    <a class="dropdown-item" href="${pageContext.request.contextPath}/admin/account"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i>Thông tin tài khoản</a>
                     <a class="dropdown-item" href="${pageContext.request.contextPath}/logout"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Đăng xuất</a>
                 </div>
             </li>

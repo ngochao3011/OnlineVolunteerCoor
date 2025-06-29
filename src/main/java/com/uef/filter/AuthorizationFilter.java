@@ -21,7 +21,7 @@ import java.io.IOException;
  * @author ADMIN
  */
 
-@WebFilter(urlPatterns = {"/volunteer", "/volunteer/*", "/activity", "/activity/*", "/account"})
+@WebFilter(urlPatterns = {"/admin", "/admin/*", "/activity", "/activity/*", "/account"})
 public class AuthorizationFilter implements Filter {
 
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
@@ -42,8 +42,8 @@ public class AuthorizationFilter implements Filter {
         String requestURI = request.getRequestURI();
         String contextPath = request.getContextPath();
         
-        // Nếu là URL volunteer, chỉ cho phép Điều phối viên
-        if (requestURI.startsWith(contextPath + "/volunteer")) {
+        // Nếu là URL /admin, chỉ cho phép Điều phối viên
+        if (requestURI.startsWith(contextPath + "/admin")) {
             if (!"Điều phối viên".equals(user.getQuyenHan())) {
                 response.sendRedirect(request.getContextPath() + "/403");
                 return;

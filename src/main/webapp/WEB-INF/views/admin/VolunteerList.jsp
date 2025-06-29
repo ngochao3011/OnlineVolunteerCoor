@@ -5,9 +5,9 @@
 
 <!DOCTYPE html>
 <div class="container-volunteer">
-    <h4 class="d-flex align-items-center">
+    <h3 class="d-flex align-items-center">
         <i class="fas fa-users me-2 text-primary"></i> Danh sách Tình nguyện viên
-    </h4>
+    </h3>
 
     <c:if test="${not empty successMessage}">
         <div class="alert alert-success mt-3">${successMessage}</div>

@@ -31,42 +31,32 @@
 
                     <c:if test="${empty sessionScope.user}">
                         <li class="nav-item">
-                            <a class="nav-link click-scroll" href="#section_2">About</a>
+                            <a class="nav-link click-scroll" href="#section_3">Hoạt động nổi bật</a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link click-scroll" href="#section_3">Causes</a>
+                        <li class="nav-item" display:none>
+                            <a class="nav-link click-scroll" href="#section_4">Tình nguyện viên</a>
                         </li>
-
                         <li class="nav-item">
-                            <a class="nav-link click-scroll" href="#section_4">Volunteer</a>
+                            <a class="nav-link click-scroll" href="#section_5"
+                               id="navbarLightDropdownMenuLink" role="button" >Tin tức mới</a>
                         </li>
                     </c:if>
 
                     <!-- Nếu đã đăng nhập -->
                     <c:if test="${not empty sessionScope.user and sessionScope.user.quyenHan == 'Điều phối viên'}">
                         <li class="nav-item">
-                            <a class="nav-link btn" href="${pageContext.request.contextPath}/admin">Quản lý</a>
+                            <a class="nav-link btn" href="${pageContext.request.contextPath}/admin/activity">Quản lý</a>
                         </li>
                     </c:if>
                     <c:if test="${not empty sessionScope.user and sessionScope.user.quyenHan == 'Tình nguyện viên'}">
                         <li class="nav-item">
                             <a class="nav-link btn" href="${pageContext.request.contextPath}/activity">Hoạt động</a>
                         </li>
+                        <li>
+                            <a class="nav-link btn" href="${pageContext.request.contextPath}/user/history">Lịch sử tham gia</a>
+                        </li>
                     </c:if>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link click-scroll dropdown-toggle" href="#section_5"
-                           id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown"
-                           aria-expanded="false">News</a>
-
-                        <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
-                            <li><a class="dropdown-item" href="news.html">News Listing</a></li>
-                                <c:if test="${not empty sessionScope.user and sessionScope.user.quyenHan == 'Tình nguyện viên'}">
-                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/user/history">History</a></li>
-                                </c:if>
-                            <li><a class="dropdown-item" href="news-detail.html">News Detail</a></li>
-                        </ul>
-                    </li>
 
                     <!-- Nếu đã đăng nhập -->
                     <c:if test="${not empty sessionScope.user}">

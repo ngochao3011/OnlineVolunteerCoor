@@ -10,7 +10,7 @@
             <div class="form-wrapper align-items-center">
                 <div class="form sign-up">
                     <form action="${pageContext.request.contextPath}/sign-up" method="post">
-                        <h3>Sign Up</h3>
+                        <h3>Đăng ký</h3>
                         <c:if test="${not empty errMessage}">
                             <div class="alert alert-danger">${errMessage}</div>
                         </c:if>
@@ -20,25 +20,25 @@
                         </div>
                         <div class="input-group">
                             <i class='bx bxs-user'></i>
-                            <input type="text" name="hoTen" placeholder="Full name" required />
+                            <input type="text" name="hoTen" placeholder="Họ và tên" required />
                         </div>
                         <div class="input-group">
                             <i class='bx bxs-phone'></i>
-                            <input type="text" name="sdt" placeholder="Phone number" />
+                            <input type="text" name="sdt" placeholder="Số điện thoại" />
                         </div>
                         <div class="input-group">
                             <i class='bx bxs-lock-alt'></i>
-                            <input type="password" name="matKhau" placeholder="Password" required />
+                            <input type="password" name="matKhau" placeholder="Mật khẩu" required />
                         </div>
                         <div class="input-group">
                             <i class='bx bxs-lock-alt'></i>
-                            <input type="password" name="xacNhanMatKhau" placeholder="Confirm password" required />
+                            <input type="password" name="xacNhanMatKhau" placeholder="Xác nhận mật khẩu" required />
                         </div>
-                        <button type="submit">Sign up</button>
+                        <button type="submit">Đăng ký</button>
                         <p>
-                            <span>Already have an account?</span>
+                            <span>Bạn đã có tài khoản?</span>
                             <b id="switch-link" onclick="event.preventDefault(); toggle();" class="pointer">
-                                Sign in here
+                                Đăng nhập ở đây
                             </b>
                         </p>
                     </form>
@@ -51,7 +51,7 @@
             <div class="form-wrapper align-items-center">
                 <div class="form sign-in">
                     <form action="${pageContext.request.contextPath}/sign-in" method="post">
-                        <h3>Sign In</h3>
+                        <h3>Đăng nhập</h3>
                         <c:if test="${not empty errMessage}">
                             <div class="alert alert-danger">${errMessage}</div>
                         </c:if>
@@ -61,15 +61,17 @@
                         </div>
                         <div class="input-group">
                             <i class='bx bxs-lock-alt'></i>
-                            <input type="password" name="password" placeholder="Password" required />
+                            <input type="password" name="password" placeholder="Mật khẩu" required />
                         </div>
                         <input type="hidden" name="redirect" value="${param.redirect}">
-                        <button type="submit">Sign In</button>
-                        <p><b>Forgot password?</b></p>
+                        <button type="submit">Đăng nhập</button>
                         <p>
-                            <span>Don't have an account?</span>
+                            <b class="pointer" onclick="forgotPassword()">Quên mật khẩu?</b>
+                        </p>
+                        <p>
+                            <span>Bạn chưa có tài khoản?</span>
                             <b id="switch-link" onclick="event.preventDefault(); toggle();" class="pointer">
-                                Sign up here
+                                Đăng ký ở đây
                             </b>
                         </p>
                     </form>
@@ -78,5 +80,29 @@
         </div>
     </div>
 </div>
+
+<script>
+    function forgotPassword() {
+        const email = document.querySelector('input[name="username"]').value;
+        if (!email) {
+            alert("Vui lòng nhập email trước!");
+            return;
+        }
+
+        const formData = new URLSearchParams();
+        formData.append("email", email);
+
+        fetch("${pageContext.request.contextPath}/forgot-password", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: formData
+        })
+                .then(response => response.text())
+                .then(message => alert(message))
+                .catch(err => alert("Lỗi gửi yêu cầu!"));
+    }
+</script>
 
 <script src="${pageContext.request.contextPath}/src/js/signin-signup.js"></script>

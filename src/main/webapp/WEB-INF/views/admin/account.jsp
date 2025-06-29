@@ -2,14 +2,15 @@
 <!DOCTYPE html>
 
 <div class="container-account">
-    <form id="accountForm" action="${pageContext.request.contextPath}/updateAccount" method="post" enctype="multipart/form-data">
-        <h5 class="mb-1 section-title">Cài đặt tài khoản</h5>
+    <form id="accountForm" action="${pageContext.request.contextPath}/admin/updateAccount" method="post" enctype="multipart/form-data">
+        <h3 class="mb-1 section-title">Cài đặt tài khoản</h3>
         <p class="text-muted mb-2 section-subtitle">Quản lý thông tin tài khoản</p>
         <div class="card p-4 settings-card">
             <div class="text-center mb-3 profile-img-container">
                 <label for="avatarInput">
-                    <img id="avatarPreview" src="${pageContext.request.contextPath}${sessionScope.urlAvatar}" alt="avatar" class="profile-img" />
-                    <img id="editIcon" src="${pageContext.request.contextPath}/src/images/edit-icon.png" class="edit-icon" width="24" style="display: none;" />
+                    <img id="avatarPreview" src="${pageContext.request.contextPath}${sessionScope.urlAvatar}" 
+                         style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover;" alt="avatar" class="profile-img" />
+                    <img id="editIcon" src="${pageContext.request.contextPath}/src/images/edit-icon.png" class="edit-icon" width="24" style="bottom: 0;display: none;" />
                 </label>
                 <input type="file" name="avatarFile" id="avatarInput" accept="image/*" onchange="previewAvatar(this)" style="display: none;" disabled />
             </div>
@@ -52,7 +53,7 @@
          background-color: rgba(0,0,0,0.5); z-index:1000;">
         <div style="background:#fff; width:400px; margin:100px auto; padding:20px; border-radius:8px;">
             <h5>Đổi mật khẩu</h5>
-            <form method="post" action="${pageContext.request.contextPath}/changePassword">
+            <form method="post" action="${pageContext.request.contextPath}/admin/changePassword">
                 <div class="form-group">
                     <label>Mật khẩu hiện tại:</label>
                     <input type="password" name="currentPassword" class="form-control" required>

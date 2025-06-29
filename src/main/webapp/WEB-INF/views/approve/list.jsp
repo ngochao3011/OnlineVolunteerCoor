@@ -83,7 +83,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                    <form action="${pageContext.request.contextPath}/activity/approve/update" method="post" style="display:inline;">
+                                    <form action="${pageContext.request.contextPath}/admin/activity/approve/update" method="post" style="display:inline;">
                                         <input type="hidden" name="maDDK" value="${dangKy.maDDK}">
                                         <input type="hidden" name="trangThaiDuyet" value="Đã duyệt">
                                         <input type="hidden" name="ghiChu" id="ghiChuInputApprove-${dangKy.maDDK}">
@@ -115,7 +115,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                    <form action="${pageContext.request.contextPath}/activity/approve/update" method="post" style="display:inline;">
+                                    <form action="${pageContext.request.contextPath}/admin/activity/approve/update" method="post" style="display:inline;">
                                         <input type="hidden" name="maDDK" value="${dangKy.maDDK}">
                                         <input type="hidden" name="trangThaiDuyet" value="Từ chối">
                                         <input type="hidden" name="ghiChu" id="ghiChuInputReject-${dangKy.maDDK}">

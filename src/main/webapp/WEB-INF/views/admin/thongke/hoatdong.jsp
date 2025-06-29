@@ -7,7 +7,7 @@
 <section class="blog-section spad">
     <div class="container">
         <div class="section-title text-center mb-4">
-            <h4>Thống Kê Hoạt Động Tình Nguyện</h4>
+            <h2 class="text-center my-4 fw-bold">Thống Kê Hoạt Động Tình Nguyện</h2>
         </div>
 
         <!-- Bộ lọc -->

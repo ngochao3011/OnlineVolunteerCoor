@@ -2,6 +2,7 @@ package com.uef.controller;
 
 import com.uef.model.TaiKhoan;
 import com.uef.model.Volunteer;
+import com.uef.service.MailService;
 import com.uef.service.TaiKhoanService;
 import com.uef.service.VolunteerService;
 
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Date;
+import java.util.Map;
+import org.apache.commons.lang3.RandomStringUtils;
 
 @Controller
 public class SigninSignupController {
@@ -24,6 +27,9 @@ public class SigninSignupController {
 
     @Autowired
     private VolunteerService volunteerService;
+
+    @Autowired
+    private MailService mailService;
 
     @GetMapping("/sign-up")
     public String showRegisterPage(Model model) {
@@ -78,7 +84,7 @@ public class SigninSignupController {
             return "redirect:/sign-up";
         }
 
-        redirect.addFlashAttribute("success", "Đăng ký thành công! Vui lòng đăng nhập.");
+        redirect.addFlashAttribute("success", "Đăng ký thành công!");
         return "redirect:/sign-in";
     }
 
@@ -103,7 +109,7 @@ public class SigninSignupController {
             Volunteer volunteer = volunteerService.getThanhVienDetails(taiKhoan.getMaTaiKhoan());
 
             String urlAvatar = (volunteer != null && volunteer.getUrlAvatar() != null && !volunteer.getUrlAvatar().trim().isEmpty())
-                    ? "/images/uploads" + volunteer.getUrlAvatar()
+                    ? volunteer.getUrlAvatar()
                     : "/src/images/default-avatar.png";
 
             // Thiết lập các thuộc tính session
@@ -126,7 +132,38 @@ public class SigninSignupController {
             return "redirect:/";
         }
 
-        redirect.addFlashAttribute("error", "Sai email hoặc mật khẩu.");
+        redirect.addFlashAttribute("errMessage", "Sai email hoặc mật khẩu.");
         return "redirect:/sign-in";
+    }
+
+    @PostMapping(value = "/forgot-password", produces = "text/plain; charset=UTF-8")
+    @ResponseBody
+    public String forgotPassword(
+            @RequestParam("email") String email,
+            RedirectAttributes redirect) {
+
+        // Kiểm tra tài khoản tồn tại
+        TaiKhoan tk = taiKhoanService.getEmail(email);
+        if (tk == null) {
+            return "Email không tồn tại trong hệ thống.";
+        }
+
+        // Tạo mật khẩu ngẫu nhiên
+        String newPassword = RandomStringUtils.randomAlphanumeric(6); // ví dụ: "a8xP2q"
+
+        // Cập nhật mật khẩu mới (có mã hóa nếu cần)
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String encodedNew = encoder.encode(newPassword);
+        taiKhoanService.updatePassword(tk.getMaTaiKhoan(), encodedNew);
+        tk.setMatKhau(encodedNew);
+
+        // Gửi email
+        try {
+            mailService.sendPassword(tk.getEmail(), newPassword);
+        } catch (Exception e) {
+            return "Không thể gửi email. Vui lòng thử lại sau.";
+        }
+
+        return "Mật khẩu mới đã được gửi đến email của bạn.";
     }
 }

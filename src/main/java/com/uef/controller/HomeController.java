@@ -3,6 +3,8 @@ package com.uef.controller;
 import com.uef.model.HoatDong;
 import com.uef.model.TaiKhoan;
 import com.uef.model.Volunteer;
+import com.uef.model.TinTuc;
+import com.uef.service.TinTucService;
 import com.uef.service.HoatDongService;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
@@ -18,6 +20,9 @@ public class HomeController {
     @Autowired
     private HoatDongService hoatDongService;
 
+    @Autowired
+    private TinTucService tinTucService;
+
     private void addLoginInfoToModel(Model model, HttpSession session) {
         TaiKhoan loggedInAccount = (TaiKhoan) session.getAttribute("loggedInAccount");
         Volunteer loggedInProfile = (Volunteer) session.getAttribute("loggedInProfile");
@@ -32,9 +37,18 @@ public class HomeController {
         try {
             // Lấy 3 hoạt động nổi bật
             List<HoatDong> danhSachHoatDong = hoatDongService.layHoatDongNoiBat();
+            List<TinTuc> tinNgauNhien = tinTucService.getTinNgauNhien();  // gọi từ service
+            List<TinTuc> tinGanDay = tinTucService.getTinGanDay();
+            List<String> danhMucs = tinTucService.getDanhMucs();
+            List<String> hashtags = tinTucService.getTopHashtags();  // phải khai báo trong service
+
             model.addAttribute("danhSachHoatDong", danhSachHoatDong);
             System.out.println("Số hoạt động truyền vào homepage: " + danhSachHoatDong.size());
 
+            model.addAttribute("tinNgauNhien", tinNgauNhien);
+            model.addAttribute("tinGanDay", tinGanDay);
+            model.addAttribute("danhMucs", danhMucs);
+            model.addAttribute("hashtags", hashtags);
             model.addAttribute("pageTitle", "Online Volunteer Coor");
             model.addAttribute("pageContent", "/WEB-INF/views/homepage.jsp");
             addLoginInfoToModel(model, session);
@@ -60,15 +74,8 @@ public class HomeController {
         model.addAttribute("pageTitle", "Error");
         model.addAttribute("pageContent", "/WEB-INF/views/403.jsp");
 
-        addLoginInfoToModel(model, session); 
+        addLoginInfoToModel(model, session);
 
         return "layout/layoutmaster";
-    }
-    
-    @GetMapping("/admin")
-    public String admin(HttpSession session, Model model) {
-        model.addAttribute("pageActive", "dashboard");
-        addLoginInfoToModel(model, session);
-        return "layout/layoutadmin";
     }
 }

@@ -379,12 +379,12 @@ public class HoatDongController {
         }
         
         // Check duyet dang ky
-        if(!duyetDangKyService.checkDangKy(maHoatDong, maHoatDong)){
+        if(!duyetDangKyService.checkDangKy(user.getMaTaiKhoan(), maHoatDong)){
             redirectAttributes.addFlashAttribute("error", "Bạn chưa đăng ký hoạt động hoặc chưa được duyệt.");
             return "redirect:/activity";
         }
         // Check diem danh
-        if(diemDanhService.checkDiemDanh(maHoatDong, maHoatDong)){
+        if(diemDanhService.checkDiemDanh(user.getMaTaiKhoan(), maHoatDong)){
             redirectAttributes.addFlashAttribute("error", "Bạn đã điểm danh.");
             return "redirect:/activity";
         }

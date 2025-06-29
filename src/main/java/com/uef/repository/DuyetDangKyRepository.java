@@ -8,6 +8,7 @@ import com.uef.model.*;
 import java.time.LocalDateTime;
 import java.util.*;
 import org.slf4j.*;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -203,7 +204,8 @@ public class DuyetDangKyRepository {
                 Map<String, Object> phieuParams = Map.of(
                         "maDiemDanh", maDiemDanh,
                         "maThanhVien", maThanhVien,
-                        "maHoatDong", maHoatDong
+                        "maHoatDong", maHoatDong,
+                        "trangThai", "Chưa điểm danh"
                 );
                 namedParameterJdbcTemplate.update(insertPhieuSql, phieuParams);
 
@@ -221,17 +223,37 @@ public class DuyetDangKyRepository {
     }
 
     public boolean checkDangKy(int maThanhVien, int maHoatDong) {
-        String sql = "select A.maThanhVien from DUYETDANGKY A "
+        String sql = "select COUNT(*) from DUYETDANGKY A "
                 + "inner join DANGKYTHAMGIA B on A.maDKTG = B.maDKTG "
                 + "WHERE A.trangThaiDuyet = N'Đã duyệt' "
+                + "AND B.trangThai = N'Đã duyệt' "
                 + "AND A.maThanhVien = :maThanhVien "
-                + "AND and B.maHoatDong = :maHoatDong ";
+                + "AND B.maHoatDong = :maHoatDong ";
 
         Map<String, Object> params = new HashMap<>();
         params.put("maThanhVien", maThanhVien);
         params.put("maHoatDong", maHoatDong);
 
-        int count = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
-        return count > 0;
+        Integer count = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
+        return count != null && count > 0;
+    }
+
+    public Map<String, Object> getThongTinMail(int maDDK) {
+        String sql = "SELECT E.email, D.hoTen, C.tenHoatDong "
+                + "FROM DUYETDANGKY A "
+                + "INNER JOIN DANGKYTHAMGIA B ON A.maDKTG = B.maDKTG "
+                + "INNER JOIN HOATDONG C ON B.maHoatDong = C.maHoatDong "
+                + "INNER JOIN THANHVIEN D ON B.maThanhVien = D.maThanhVien "
+                + "INNER JOIN TAIKHOAN E ON A.maThanhVien = E.maTaiKhoan "
+                + "WHERE A.maDDK = :maDDK";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("maDDK", maDDK);
+
+        try {
+            return namedParameterJdbcTemplate.queryForMap(sql, params);
+        } catch (EmptyResultDataAccessException e) {
+            return null; // Không có dữ liệu
+        }
     }
 }

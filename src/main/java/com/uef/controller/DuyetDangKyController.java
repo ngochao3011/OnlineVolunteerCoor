@@ -6,7 +6,11 @@ package com.uef.controller;
 
 import com.uef.model.DuyetDangKy;
 import com.uef.service.DuyetDangKyService;
+import com.uef.service.MailService;
+import jakarta.servlet.http.HttpSession;
+import static java.awt.SystemColor.info;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -25,6 +30,9 @@ public class DuyetDangKyController {
 
     @Autowired
     private DuyetDangKyService duyetDangKyService;
+
+    @Autowired
+    private MailService mailService;
 
     @GetMapping
     public String showApprovePage(
@@ -67,6 +75,13 @@ public class DuyetDangKyController {
         return "redirect:/activity/approve";
     }
 
+    @GetMapping("/test-mail")
+    @ResponseBody
+    public String testMail() {
+        mailService.sendTestMail("haoln21@uef.edu.vn");
+        return "Đã gửi mail";
+    }
+
     @PostMapping("/update")
     public String updateDuyetDangKy(
             @RequestParam("maDDK") int maDDK,
@@ -81,11 +96,17 @@ public class DuyetDangKyController {
         logger.info("Updating maDDK: {}, trangThaiDuyet: {}, ghiChu: {}", maDDK, trangThaiDuyet, ghiChu);
         duyetDangKyService.capNhatTrangThaiDuyet(maDDK, trangThaiDuyet, ghiChu != null ? ghiChu : "");
 
+        // Gửi mail
+        Map<String, Object> mailInfo = duyetDangKyService.getThongTinMail(maDDK);
+        String mailTo = (String) mailInfo.get("email");
+        String hoTen = (String) mailInfo.get("hoTen");
+        String tenHoatDong = (String) mailInfo.get("tenHoatDong");
+        mailService.sendApprovedEmail(mailTo, hoTen, tenHoatDong);
         // Thêm thông báo thành công
-        redirectAttributes.addFlashAttribute("message", "Cập nhật thành công!");
-
+        redirectAttributes.addFlashAttribute("message", "Cập nhật và gửi mail thông báo thành công!");
+        
         // Chuyển hướng về trang hiện tại với các tham số lọc
-        String redirectUrl = "/activity/approve?page=" + (page != null ? page : 1);
+        String redirectUrl = "/admin/activity/approve?page=" + (page != null ? page : 1);
         if (keyword != null && !keyword.isEmpty()) {
             redirectUrl += "&keyword=" + keyword;
         }

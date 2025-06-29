@@ -20,15 +20,15 @@ public class DiemDanhDAO implements DiemDanhRepo {
 
     @Override
     public boolean checkDiemDanh(int maThanhVien, int maHoatDong) {
-        String sql = "select * from PHIEUDIEMDANH where trangThai = N'Có mặt' and maHoatDong = ? and maThanhVien = ?";
-        return jdbcTemplate.queryForObject(sql, Integer.class, maHoatDong, maThanhVien) > 0;
+        String sql = "select COUNT(*) from PHIEUDIEMDANH where trangThai = N'Có mặt' and maHoatDong = ? and maThanhVien = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, maHoatDong, maThanhVien);
+        return count != null && count > 0;
     }
 
     @Override
     public boolean checkin(int maThanhVien, int maHoatDong) {
         String sql = "update PHIEUDIEMDANH set trangThai = N'Có mặt' where maHoatDong = ? and maThanhVien = ?";
-        return jdbcTemplate.queryForObject(sql, Integer.class, maHoatDong, maThanhVien) > 0;
+        int affectedRows = jdbcTemplate.update(sql, maHoatDong, maThanhVien);
+        return affectedRows > 0;
     }
-    
-    
 }
